@@ -1,0 +1,53 @@
+
+<?php
+    $translator = \Velacolib\Utility\Utility::translate();
+$config =  \Velacolib\Utility\Utility::getConfig();
+?>
+<ul class='nav nav-stacked'>
+    <li class=''>
+        <a  href='/frontend'>
+            <i class='icon-table'></i>
+            <span><?php echo $translator->translate('Menu') ?></span>
+            <i class='icon-angle-down angle-down'></i>
+        </a>
+    </li>
+
+    <li>
+        <a class=' ' href='/frontend/com'>
+            <i class='icon-cogs'></i>
+            <span><?php echo $translator->translate('Combo') ?></span>
+            <i class='icon-angle-down angle-down'></i>
+        </a>
+
+    </li>
+    <li>
+        <a class=' ' href='/frontend/order'>
+            <i class='icon-cogs'></i>
+            <span><?php echo $translator->translate('Order') ?></span>
+            <i class='icon-angle-down angle-down'></i>
+        </a>
+
+    </li>
+    <li>
+        <a class=' ' href='/frontend/order/add'>
+            <i class='icon-edit'></i>
+            <span><?php echo $translator->translate('Add new order') ?></span>
+            <i class='icon-angle-down angle-down'></i>
+        </a>
+
+    </li>
+
+    <li>
+        <a class=' ' href='/frontend/table'>
+            <i class='icon-edit'></i>
+            <span><?php echo $translator->translate('Table') ?></span>
+            <i class='icon-angle-down angle-down'></i>
+        </a>
+
+    </li>
+    </ul>
+<div class="hot-key-note">
+    <p>
+   <?php echo $translator->translate($config['key_note']) ?>
+    </p>
+</div>

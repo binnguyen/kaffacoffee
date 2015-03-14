@@ -1,0 +1,25 @@
+<?php
+$title = array();
+$title['title'] = $this->title;
+$title['link'] =   $this->url('admin/child', array('controller'=>'menustoremain','action' => 'add'));
+$this->titleHelper($title);
+$partialData = array(
+    'ajaxUrl' => $this->url('admin/child', array('controller'=>'menustoremain','action' => 'ajax-list')),
+    'actions' => array(
+        'edit' => array('action' => 'edit', 'label' => 'Edit'),
+        'delete' => array('action' => 'delete', 'label' => 'Delete')
+    ),
+    'columns' => array(
+        0 => array('field' => 'id',                                    'searchable' => false,  'primaryKey' => true),
+        1 => array('field' => 'name',    'label' => 'Name',    'searchable' => true,   'sortable' => true),
+        2 => array('field' => 'quantityInput',    'label' => 'In',    'searchable' => true,   'sortable' => true),
+        3 => array('field' => 'quantityOut',    'label' => 'Out',    'searchable' => true,   'sortable' => true),
+        4 => array('field' => 'quantity_in_stock',    'label' => 'In stock',    'searchable' => true,   'sortable' => true),
+        5 => array('field' => 'cost',    'label' => 'Cost',    'searchable' => true,   'sortable' => true),
+        6 => array('field' => 'unit',    'label' => 'Unit',    'searchable' => true,   'sortable' => true),
+        7 => array('field' => 'supplier',    'label' => 'Supplier',    'searchable' => true,   'sortable' => true),
+        8 => array('field' => 'action',    'label' => 'Action',    'searchable' => true, 'action'=>true ,  'sortable' => false),
+    )
+);
+
+echo $this->partial('partial/listing.phtml', $partialData);

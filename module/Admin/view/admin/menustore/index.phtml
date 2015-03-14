@@ -1,0 +1,25 @@
+<?php
+$data = $this->data;
+$title = array();
+$title['title'] = $this->title;
+$title['link'] =   $this->url('admin/child', array('controller'=>'menustore','action' => 'add'));
+$this->titleHelper($title);
+$partialData = array(
+    'ajaxUrl' => $this->url('admin/child', array('controller'=>'menustore','action' => 'ajax-list')),
+
+    'columns' => array(
+
+        0 => array('field' => 'id',                                    'searchable' => false,  'primaryKey' => true),
+        1 => array('field' => 'name',    'label' => 'Name',    'searchable' => true,   'sortable' => true),
+        2 => array('field' => 'quantityInput',    'label' => 'Quantity input',    'searchable' => false,   'sortable' => false),
+        3 => array('field' => 'quantityOut',    'label' => 'Quantity out',    'searchable' => false,   'sortable' => false),
+        4 => array('field' => 'quantity_in_stock',    'label' => 'Quantity in stock',    'searchable' => false,   'sortable' => false),
+        5 => array('field' => 'unit',    'label' => 'Unit',    'searchable' => false,   'sortable' => false),
+        6 => array('field' => 'supply_item',    'label' => 'Supply item',    'searchable' => false,   'sortable' => false),
+        7 => array('field' => 'inMenu',    'label' => 'In menu',    'searchable' => false,   'sortable' => false),
+        8 => array('field' => 'action',    'label' => 'Action',    'searchable' => false,   'sortable' => false),
+
+    )
+);
+
+echo $this->partial('partial/listing.phtml', $partialData);

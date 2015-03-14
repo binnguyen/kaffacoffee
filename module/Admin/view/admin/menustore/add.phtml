@@ -1,0 +1,217 @@
+<?php
+$title = array();
+$title['title'] = $this->title;
+$title['link'] =   $this->url('admin/child', array('controller'=>'menustore','action' => 'add'));
+$this->titleHelper($title);
+$data = $this->data;
+$translator = \Velacolib\Utility\Utility::translate();
+
+?>
+<div class="row-fluid">
+    <div class="span12 box">
+        <div class="box-header blue-background">
+            <div class="title">
+                <div class="icon-edit"></div>
+                <?php echo $this->title; ?>
+            </div>
+            <div class="actions">
+                <a href="#" class="btn box-remove btn-mini btn-link"><i class="icon-remove"></i>
+                </a>
+                <a href="#" class="btn box-collapse btn-mini btn-link"><i></i>
+                </a>
+            </div>
+        </div>
+        <div class="box-content">
+            <form accept-charset="UTF-8" action="<?php
+            $url = $this->url('admin/child',array('controller'=>'menustore','action'=>'add'));
+            if($data){
+                $url = $this->url('admin/child',array('controller'=>'menustore','action'=>'add','id'=>$data->getId()));
+            }
+            echo $url; ?>" class="form form-horizontal" method="post"
+                  style="margin-bottom: 0;">
+                <input type="hidden" name="id" value="<?php if($data){ echo $data->getId();} ?>">
+
+                <div class="control-group">
+                    <label class="control-label" for="inputText1"><?php echo $translator->translate('Name'); ?></label>
+                    <div class="controls">
+<!--                        <input id="" placeholder="Name" name="name" type="text" value="--><?php //if($data){echo $data->getName();} ?><!--">-->
+
+                        <?php
+                            $menuStoreMains = \Velacolib\Utility\Utility::getMenuStoreArrayAutoComplete(false);
+                        ?>
+
+                        <input type="hidden" name="mainMenuStoreId" id="mainMenuStoreId" value="">
+                        <select id="select_menu_store_main" name="name" class="input-block-level menu_selecte menu_select select2-icon">
+                            <option data-unit="0">Please select...</option>
+                            <?php foreach($menuStoreMains as $itemMenuStore){
+                                ?>
+                                <option data-unit="<?php echo $itemMenuStore['unit'] ?>"
+                                        data-id="<?php echo $itemMenuStore['id'] ?>"
+                                        data-quantityInStock="<?php echo $itemMenuStore['quantityInStock'] ?>"
+                                        data-outOfStock="<?php echo $itemMenuStore['outOfStock'] ?>"
+                                        data-supplyType="<?php echo $itemMenuStore['supplyType'] ?>"
+                                        value="<?php echo $itemMenuStore['name']; ?>"><?php echo $itemMenuStore['name'] ?>
+                                </option>
+                            <?php
+                            }  ?>
+                        </select>
+                    </div>
+                </div>
+
+
+                <!-- Quantity -->
+
+                <!-- Quantity -->
+                <div class="control-group">
+                    <label class="control-label" for="inputText1"><?php echo $translator->translate('Quantity'); ?></label>
+                    <div class="controls">
+                        <input  class=""  id="number_after_new" placeholder="Quantity" name="quantity" type="text"  value="">
+                        <label id="labelOutOfStock" ></label>
+                        <input readonly type="text" name="unit" id="unit_store_new">
+                    </div>
+                </div>
+
+
+
+                <!-- --->
+<!--                <div class="control-group">-->
+<!--                    <label class="control-label" for="inputText1">--><?php //echo $translator->translate('Cost'); ?><!--</label>-->
+<!--                    <div class="controls">-->
+<!--                        <input id="" placeholder="Cost" name="cost" type="text" value="--><?php //if($data){echo $data->getCost();} ?><!--">-->
+<!--                    </div>-->
+<!--                </div>-->
+
+                <!--- -->
+
+
+                <!-- loai san pham cung cap -->
+                <div class="control-group">
+                    <label class="control-label" for="inputText1"><?php echo $translator->translate('Supply Item Type'); ?></label>
+                    <div class="controls">
+
+                        <?php
+                        $suppliers =   \Velacolib\Utility\Utility::getAllSuplyItemsArray();
+                        ?>
+                        <select  name="supplyType"  id="supplyType">
+                            <?php
+                            foreach($suppliers as $k => $supplier){
+                                $slected = '';
+                                if($data){
+                                    if($k == $data->getSupplyItem())
+                                    {
+                                        $slected = 'selected';
+                                    }
+                                }
+                                ?>
+                                <option <?php echo $slected; ?> value="<?php echo $k; ?>"><?php echo $supplier ?></option>
+                            <?php
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+
+
+
+                <!-- -->
+<!--                <div class="control-group">-->
+<!--                    <label class="control-label" for="inputText1">--><?php
+//
+//                        echo $translator->translate('Supplier'); ?><!--</label>-->
+<!--                    <div class="controls">-->
+<!---->
+<!--                        --><?php
+//                        $suppliers =   \Velacolib\Utility\Utility::getSupplierArray();
+//                        ?>
+<!--                        <select name="supplier"  id="supplier" class="">-->
+<!--                            --><?php
+//
+//                                foreach($suppliers as $supplier ){
+//                                $slected = '';
+//                                    if($data){
+//                                        if( $supplier['id'] ==  $data->getSupplier())
+//                                        {
+//                                            $slected = 'selected';
+//                                        }
+//
+//                                    }
+//                                    ?>
+<!---->
+<!--                                    <option --><?php //echo $slected ?><!-- value="--><?php //echo $supplier['id'] ?><!--">--><?php //echo $supplier['company'].' - '.$supplier['for'] ?><!--</option>-->
+<!--                                --><?php
+//                                }
+//                            ?>
+<!--                        </select>-->
+<!--                    </div>-->
+<!--                </div>-->
+                <!-- -->
+
+
+
+                <!-- -->
+
+
+                <!-- -->
+                <div class="control-group">
+                    <label class="control-label" for="inputText1"><?php echo $translator->translate('OutOfStock'); ?></label>
+                    <div class="controls">
+                        <input id="outOfStock" placeholder="Quantity" name="OutOfStock" type="text" value="<?php if($data){echo $data->getOutOfStock();} ?>">
+                    </div>
+                </div>
+
+
+                <div class="control-group">
+                    <label class="control-label" for="inputText1"><?php echo $translator->translate('Description'); ?></label>
+                    <div class="controls">
+                        <textarea name="des"><?php if($data){echo $data->getDes();} ?></textarea>
+                    </div>
+                </div>
+
+
+                <div class="form-actions">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="icon-save"></i>
+                        <?php echo $translator->translate('Save'); ?>
+                    </button>
+                    <button class="btn" type="submit"><?php echo $translator->translate('Cancel'); ?></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<?php if($data){     ?>
+
+<?php } ?>
+
+<script>
+    $(document).on('change','#select_menu_store_main',function(){
+
+        var unit = $(this).find(':selected').attr('data-unit');
+        var id = $(this).find(':selected').attr('data-id');
+        var quantityInStock = $(this).find(':selected').attr('data-quantityInStock');
+        var outOfStock = $(this).find(':selected').attr('data-outOfStock');
+        var supplyType = $(this).find(':selected').attr('data-supplyType');
+        if(unit == 0){
+          $('#unit_store_new').val(0);
+           $('#labelOutOfStock').text('');
+        }
+        $('#mainMenuStoreId').val(id);
+        $('#unit_store_new').val(unit);
+        $('#outOfStock').val(outOfStock);
+        $('#labelOutOfStock').text(quantityInStock);
+        $('#supplyType').val(supplyType);
+        $('#number_after_new').attr('in_stock',quantityInStock);
+    });
+
+    $(document).on('change','#number_after_new',function(){
+        var quantityInStock = $(this).attr('in_stock');
+        var val = $(this).val();
+        var outOfStock = $(this).attr('outOfStock');
+        if(parseFloat(val) > parseFloat(quantityInStock)){
+            alert('Out of stock');
+            $('.form-actions .btn-primary').hide();
+        }else{
+            $('.form-actions .btn-primary').show();
+        }
+    });
+</script>

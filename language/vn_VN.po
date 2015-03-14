@@ -1,0 +1,853 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: ZendSkeletonApplication\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-07-05 22:17-0700\n"
+"PO-Revision-Date: 2015-03-06 14:58+0700\n"
+"Last-Translator: Evan Coury <me@evancoury.com>\n"
+"Language-Team: ZF Contibutors <zf-devteam@zend.com>\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: translate\n"
+"X-Poedit-Basepath: .\n"
+"X-Generator: Poedit 1.7.4\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../view/layout/layout.phtml:6 ../view/layout/layout.phtml:33
+msgid "Skeleton Application"
+msgstr ""
+
+#: ../view/layout/layout.phtml:36
+msgid "Home"
+msgstr ""
+
+#: ../view/layout/layout.phtml:50
+msgid "All rights reserved."
+msgstr ""
+
+#: ../view/application/index/index.phtml:2
+#, php-format
+msgid "Welcome to %sZend Framework 2%s"
+msgstr ""
+
+#: ../view/application/index/index.phtml:3
+#, php-format
+msgid ""
+"Congratulations! You have successfully installed the %sZF2 Skeleton "
+"Application%s. You are currently running Zend Framework version %s. This "
+"skeleton can serve as a simple starting point for you to begin building your "
+"application on ZF2."
+msgstr ""
+
+#: ../view/application/index/index.phtml:4
+msgid "Fork Zend Framework 2 on GitHub"
+msgstr ""
+
+#: ../view/application/index/index.phtml:10
+msgid "Follow Development"
+msgstr ""
+
+#: ../view/application/index/index.phtml:11
+#, php-format
+msgid ""
+"Zend Framework 2 is under active development. If you are interested in "
+"following the development of ZF2, there is a special ZF2 portal on the "
+"official Zend Framework website which provides links to the ZF2 %swiki%s, "
+"%sdev blog%s, %sissue tracker%s, and much more. This is a great resource for "
+"staying up to date with the latest developments!"
+msgstr ""
+
+#: ../view/application/index/index.phtml:12
+msgid "ZF2 Development Portal"
+msgstr ""
+
+#: ../view/application/index/index.phtml:16
+msgid "Discover Modules"
+msgstr ""
+
+#: ../view/application/index/index.phtml:17
+#, php-format
+msgid ""
+"The community is working on developing a community site to serve as a "
+"repository and gallery for ZF2 modules. The project is available %son GitHub"
+"%s. The site is currently live and currently contains a list of some of the "
+"modules already available for ZF2."
+msgstr ""
+
+#: ../view/application/index/index.phtml:18
+msgid "Explore ZF2 Modules"
+msgstr ""
+
+#: ../view/application/index/index.phtml:22
+msgid "Help &amp; Support"
+msgstr ""
+
+#: ../view/application/index/index.phtml:23
+#, php-format
+msgid ""
+"If you need any help or support while developing with ZF2, you may reach us "
+"via IRC: %s#zftalk on Freenode%s. We'd love to hear any questions or "
+"feedback you may have regarding the beta releases. Alternatively, you may "
+"subscribe and post questions to the %smailing lists%s."
+msgstr ""
+
+#: ../view/application/index/index.phtml:24
+msgid "Ping us on IRC"
+msgstr ""
+
+#: ../view/error/index.phtml:1
+msgid "An error occurred"
+msgstr ""
+
+#: ../view/error/index.phtml:8
+msgid "Additional information"
+msgstr ""
+
+#: ../view/error/index.phtml:11 ../view/error/index.phtml:35
+msgid "File"
+msgstr ""
+
+#: ../view/error/index.phtml:15 ../view/error/index.phtml:39
+msgid "Message"
+msgstr ""
+
+#: ../view/error/index.phtml:19 ../view/error/index.phtml:43
+#: ../view/error/404.phtml:55
+msgid "Stack trace"
+msgstr ""
+
+#: ../view/error/index.phtml:29
+msgid "Previous exceptions"
+msgstr ""
+
+#: ../view/error/index.phtml:58
+msgid "No Exception available"
+msgstr ""
+
+#: ../view/error/404.phtml:1
+msgid "A 404 error occurred"
+msgstr ""
+
+#: ../view/error/404.phtml:10
+msgid "The requested controller was unable to dispatch the request."
+msgstr ""
+
+#: ../view/error/404.phtml:13
+msgid ""
+"The requested controller could not be mapped to an existing controller class."
+msgstr ""
+
+#: ../view/error/404.phtml:16
+msgid "The requested controller was not dispatchable."
+msgstr ""
+
+#: ../view/error/404.phtml:19
+msgid "The requested URL could not be matched by routing."
+msgstr ""
+
+#: ../view/error/404.phtml:22
+msgid "We cannot determine at this time why a 404 was generated."
+msgstr ""
+
+#: ../view/error/404.phtml:34
+msgid "Controller"
+msgstr ""
+
+#: ../view/error/404.phtml:41
+#, php-format
+msgid "resolves to %s"
+msgstr ""
+
+#: ../view/error/404.phtml:51
+msgid "Exception"
+msgstr ""
+
+#: ..path
+msgid "Menu"
+msgstr "Thực đơn"
+
+#: ..path
+msgid "Manager menu"
+msgstr "Quản lý Thực đơn"
+
+#: ../view/error/..
+msgid "Manager order"
+msgstr "Quản lý hóa đơn"
+
+#: ../view/..
+msgid "New order"
+msgstr "Lập đơn hàng mới"
+
+#: ../view/..
+msgid "Add new order"
+msgstr "Thêm hóa đơn mới"
+
+#: ../view/..
+msgid "Total cost"
+msgstr "Tổng tiền"
+
+#: ../view/..
+msgid "Total real cost"
+msgstr "Tổng tiền thực tế"
+
+#: ../view/..
+msgid "Create date"
+msgstr "Ngày khởi tạo"
+
+#: ../view/..
+msgid "Category"
+msgstr "Danh mục"
+
+#: ../view/..
+msgid "Order detail"
+msgstr "Chi tiết hóa đơn"
+
+#: ../view/..
+msgid "Total take away cost"
+msgstr "Tổng tiền mang đi"
+
+#: ../view/..
+msgid "Quantity"
+msgstr "Số lượng"
+
+#: ../view/..
+msgid "Real cost"
+msgstr "Giá tiền"
+
+#: ../view/..
+msgid "Code"
+msgstr "Mã"
+
+#: ../view/..
+msgid "Tyle"
+msgstr "Loại"
+
+#: ../view/..
+msgid "Add new order detail"
+msgstr "Thêm chi tiết hóa đơn"
+
+#: ../view/..
+msgid "Save"
+msgstr "Lưu"
+
+#: ../view/..
+msgid "Cancel"
+msgstr "Quay lại"
+
+#: ../view/..
+msgid "Search"
+msgstr "Tìm kiếm"
+
+#: ../view/..
+msgid "Bàn"
+msgstr "Tìm kiếm"
+
+#: ../view/..
+msgid "All menu"
+msgstr "Tất cả thực đơn"
+
+#: ../view/..
+msgid "Add new menu"
+msgstr "Thêm mới thực đơn"
+
+#: ../view/..
+msgid "Add new category"
+msgstr "Thêm mới danh mục"
+
+#: ../view/..
+msgid "Add new table"
+msgstr "Thêm bàn"
+
+#: ../view/..
+msgid "Edit Table"
+msgstr "Sửa bàn"
+
+#: ../view/..
+msgid "Manager table"
+msgstr "Quản lý bàn"
+
+#: ../view/..
+msgid "Table"
+msgstr "Bàn"
+
+#: ../view/..
+msgid "User"
+msgstr "Người dùng"
+
+msgid "User name"
+msgstr "Tên đăng nhập"
+
+#: ../view/..
+msgid "Add new user"
+msgstr "Thêm người dùng"
+
+#: ../view/..
+msgid "Manager user"
+msgstr "Quản lý người dùng"
+
+#: ../view/..
+msgid "Name"
+msgstr "Tên"
+
+#: ../view/..
+msgid "Coupon"
+msgstr "Giảm giá"
+
+#: ../view/..
+msgid "Select coupon"
+msgstr "Chọn giảm giá"
+
+#: ../view/..
+msgid "All coupon"
+msgstr "Tất cả Gói giảm giá"
+
+#: ../view/..
+msgid "Add new coupon"
+msgstr "Thêm mới mã giảm giá"
+
+#: ../view/..
+msgid "Combo"
+msgstr "Combo"
+
+#: ../view/..
+msgid "All combo"
+msgstr "Tất cả Combo"
+
+#: ../view/..
+msgid "Add new combo"
+msgstr "Thêm mới Combo"
+
+#: ../view/..
+msgid "Take away"
+msgstr "Mang đi"
+
+#: ../view/..
+msgid "Take away cost"
+msgstr "Giá mang đi"
+
+#: ../view/..
+msgid "Cost"
+msgstr "Giá"
+
+#: ../view/..
+msgid "Description"
+msgstr "Mô tả"
+
+#: ../view/..
+msgid "Is combo"
+msgstr "Combo ??"
+
+#: ../view/..
+msgid "Stay here"
+msgstr "Tại quán"
+
+#: ../view/..
+msgid "Select"
+msgstr "Chọn ..."
+
+#: ../view/..
+msgid "Cost Type"
+msgstr "Kiểu tiền"
+
+#: ../view/..
+msgid "Sign out"
+msgstr "Đăng xuất"
+
+#: ../view/..
+msgid "From date"
+msgstr "Ngày bắt đầu"
+
+#: ../view/..
+msgid "To date"
+msgstr "Ngày kết thúc"
+
+#: ../view/..
+msgid "Type"
+msgstr "Loại"
+
+#: ../view/..
+msgid "Yes"
+msgstr "Có"
+
+#: ../view/..
+msgid "No"
+msgstr "Không"
+
+#: ../view/..
+msgid "Value"
+msgstr "Giá trị"
+
+#: ../view/..
+msgid "Coupon percent"
+msgstr "Giảm giá theo %"
+
+#: ../view/..
+msgid "Real value"
+msgstr "Giảm bằng tiền mặt"
+
+#: ../view/..
+msgid "Invoice"
+msgstr "Hóa đơn"
+
+#: ../view/..
+msgid "Product"
+msgstr "Sản phẩm"
+
+#: ../view/..
+msgid "Sum"
+msgstr "Tổng cộng"
+
+#: ../view/..
+msgid "Line total"
+msgstr "Thành tiền"
+
+#: ../view/..
+msgid "Discount"
+msgstr "Giảm giá"
+
+#: ../view/..
+msgid "Menu Parent Id"
+msgstr "Tên Combo"
+
+#: ../view/..
+msgid "Menu Child Id"
+msgstr "Tên Thực Đơn"
+
+#: ../view/..
+msgid "Desc"
+msgstr "Miêu tả"
+
+#: ../view/..
+msgid "Detail"
+msgstr "Thông tin"
+
+#: ../view/..
+msgid "Manage Child Combo"
+msgstr "Quản lý nội dung combo"
+
+#: ../view/..
+msgid "Manage Menu"
+msgstr "Quản lý thực đơn"
+
+#: ../view/..
+msgid "Manage Categories"
+msgstr "Quản lý danh mục"
+
+#: ../view/..
+msgid "Edit Category"
+msgstr "Chỉnh sửa danh mục"
+
+#: ../view/..
+msgid "Manage combo"
+msgstr "Quản lý combo"
+
+#: ../view/..
+msgid "Edit Combo"
+msgstr "Sửa combo"
+
+#: ../view/..
+msgid "Edit Menu: "
+msgstr "Sửa thực đơn: "
+
+#: ../view/..
+msgid "Orders"
+msgstr "Đơn hàng"
+
+#: ../view/..
+msgid "Total Real Cost (after coupon)"
+msgstr "Tổng tiền sau khi dùng coupon"
+
+#: ../view/..
+msgid "Surtax"
+msgstr "Phụ thu"
+
+#: ../view/..
+msgid "Surtax Manager"
+msgstr "Quản lý phụ thu"
+
+#: ../view/..
+msgid "Coupon Code"
+msgstr "Mã coupon"
+
+#: ../view/..
+msgid "Manage Order"
+msgstr "Quản lý đơn hàng"
+
+msgid "Order"
+msgstr "Đơn hàng"
+
+msgid "Manage users"
+msgstr "Quản lý người dùng"
+
+msgid "Users"
+msgstr "Người dùng"
+
+msgid "Users name"
+msgstr "Tên đăng nhập"
+
+msgid "Full name"
+msgstr "Họ tên"
+
+msgid "Edit User:"
+msgstr "Sửa người dùng: "
+
+msgid "password"
+msgstr "Mật khẩu: "
+
+msgid "Manage coupon"
+msgstr "Quản lý giảm giá"
+
+msgid "Edit coupon:"
+msgstr "Sửa giảm giá"
+
+msgid "Coupon code"
+msgstr "Mã coupon"
+
+msgid "Coupon value"
+msgstr "Giá trị coupon"
+
+msgid "Coupon description"
+msgstr "Miêu tả coupon"
+
+msgid "Manage order detail"
+msgstr "Chi tiết đơn hàng"
+
+msgid "Menu Cost Type"
+msgstr "Mang đi/ ở quán"
+
+msgid "Order id"
+msgstr "Mã đơn hàng"
+
+msgid "Manage order"
+msgstr "Quản lý đơn hàng"
+
+msgid "Print"
+msgstr "In"
+
+msgid "Print window"
+msgstr "Phiếu tính tiền"
+
+msgid "Login"
+msgstr "Đăng nhập"
+
+msgid "User create"
+msgstr "Người tạo"
+
+msgid "Report"
+msgstr "Báo cáo"
+
+msgid "Report table"
+msgstr "Báo cáo theo bàn"
+
+msgid "Report user"
+msgstr "Báo cáo theo người bán"
+
+msgid "Table name"
+msgstr "Tên bàn"
+
+msgid "Count number"
+msgstr "Số đơn hàng"
+
+msgid "Report menu"
+msgstr "Báo cáo theo thực đơn"
+
+msgid "You have total:"
+msgstr "Số đon hàng: "
+
+msgid "Datetime report"
+msgstr "Báo cáo trong khoảng"
+
+msgid "Config"
+msgstr "Thiết lập"
+
+msgid "Add new surtax"
+msgstr "Thêm mới phụ thu"
+
+msgid "Percent"
+msgstr "Phần trăm"
+
+msgid "Cash"
+msgstr "Tiền mặt"
+
+msgid "All surtax"
+msgstr "Tất cả phụ thu"
+
+msgid "Menu store"
+msgstr "Kho hàng"
+
+msgid "Add new menu store"
+msgstr "Thêm hàng"
+
+msgid "Add menu store"
+msgstr "Thêm hàng"
+
+msgid "Manage menu store"
+msgstr "Quản lý kho hàng"
+
+msgid "Unit"
+msgstr "Đơn vị"
+
+msgid "Import item into store"
+msgstr "Nhập hàng"
+
+msgid "Export item into order"
+msgstr "Xuất hàng trong hóa đơn"
+
+msgid "quantityInput"
+msgstr "Số lượng nhập"
+
+msgid "quantityOutput"
+msgstr "Số lượng xuất"
+
+msgid "quantityInStock"
+msgstr "Số lượng tồn kho"
+
+msgid "Add new menu item"
+msgstr "Thêm chi tiết thực đơn"
+
+msgid "Property"
+msgstr "Tài sản"
+
+msgid "Property manager"
+msgstr "Quản lý tài sản"
+
+msgid "Add new property"
+msgstr "Thêm tài sản"
+
+msgid "Out of stock"
+msgstr "Hết hàng"
+
+msgid "History"
+msgstr "Lịch sử"
+
+msgid "Manager history"
+msgstr "Nhật ký truy cập"
+
+msgid "OutOfStock"
+msgstr "Hết hàng"
+
+msgid "Edit menu store"
+msgstr "Chỉnh sửa kho hàng"
+
+msgid "Manage history"
+msgstr "Lược sử truy cập"
+
+msgid "Page order: "
+msgstr "Liên: "
+
+msgid "Key note"
+msgstr ""
+"<strong>F6:</strong> Thêm hóa đơn <br/><strong> F7:</strong> Thêm chi tiết "
+"hóa đơn"
+
+msgid "No re use"
+msgstr "Giảm giá dùng 1 lần"
+
+msgid "re use"
+msgstr "Giảm giá dùng nhiều lần"
+
+msgid "New not exists product"
+msgstr "Thực đơn chưa có"
+
+msgid "Close"
+msgstr "Đóng"
+
+msgid "All"
+msgstr "Tất cả"
+
+msgid "Input"
+msgstr "Nhập"
+
+msgid "Output"
+msgstr "Xuất"
+
+msgid "Supplier"
+msgstr "Nhà cung cấp"
+
+msgid "Add supplier"
+msgstr "Thêm Nhà cung cấp"
+
+msgid "Manager In out"
+msgstr "Quản lý nhập xuất"
+
+msgid "Supply Item Type"
+msgstr "Loại sản phẩm cung cấp"
+
+msgid "Unit in store"
+msgstr "Đơn vị cần chuyển"
+
+msgid "Unit input"
+msgstr "Đơn vị nhập"
+
+msgid "Quantity after convert"
+msgstr "Số lượng sau khi chuyển đổi"
+
+msgid "Company"
+msgstr "Cty"
+
+msgid "Add new supplier"
+msgstr "Thêm mới nhà cung cấp"
+
+msgid "Phone"
+msgstr "Điện thoại"
+
+msgid "Mobile"
+msgstr "Di Động"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Address"
+msgstr "Địa chỉ"
+
+msgid "Supplier item"
+msgstr "Sản phẩm cung cấp"
+
+msgid "Add supplier item"
+msgstr "Thêm sản phẩm"
+
+msgid "Add new supplier item"
+msgstr "Thêm sản phẩm"
+
+msgid "Menu store main"
+msgstr "Kho Chính"
+
+msgid "Add menu store main"
+msgstr "Nhập kho chính"
+
+msgid "Insert success"
+msgstr "Nhập thành công"
+
+msgid "Update success"
+msgstr "Sửa thành công"
+
+msgid "In menu"
+msgstr "Thành phần của danh mục"
+
+msgid "Add new menu store multi"
+msgstr "Thê hàng (nhìu hàng)"
+
+msgid "Formula"
+msgstr "Công thức"
+
+msgid "Reason"
+msgstr "Lý do"
+
+msgid "Title"
+msgstr "Tiêu đề"
+
+msgid "Accrued"
+msgstr "Chi phí"
+
+msgid "All accrued"
+msgstr "Tất cả chi phí"
+
+msgid "Add new accrued"
+msgstr "Thêm mới"
+
+msgid "Time"
+msgstr "Thời gian"
+
+msgid "Payment"
+msgstr "Thanh toán"
+
+msgid "Import in menu store"
+msgstr "Nhập vào kho phụ"
+
+msgid "Supply item type"
+msgstr "Mặt hàng nhập"
+
+msgid "Quantity in put"
+msgstr "Số lượng nhập"
+
+msgid "Quantity out put"
+msgstr "Số lượng xuất"
+
+msgid "Quantity in stock"
+msgstr "Số lượng trong kho"
+
+msgid "Add multi menu store"
+msgstr "Thêm nhập kho (nhiều item) "
+
+msgid "Customer"
+msgstr "Khách hàng "
+
+msgid "All customer"
+msgstr "Tất cả khách hàng "
+
+msgid "Add new customer"
+msgstr "Thêm khách hàng"
+
+msgid "Report all"
+msgstr "Báo cáo"
+
+msgid "Report by menu"
+msgstr "Báo cáo theo nguyên liệu"
+
+msgid "Report by categories"
+msgstr "Báo cáo danh mục"
+
+msgid "Report by menu daterange"
+msgstr "Báo cáo thực đơn (ngày tháng)"
+
+msgid "Report tracking daterange"
+msgstr "Báo cáo chênh lệch"
+
+msgid "Report expense report"
+msgstr "Báo cáo kinh phí"
+
+msgid "Report payment"
+msgstr "Báo cáo chi phí"
+
+msgid "All month in year"
+msgstr "Báo cáo năm"
+
+msgid "Date time report"
+msgstr "Báo cáo theo thời gian"
+
+msgid "Select Year"
+msgstr "Chọn năm"
+
+msgid "Report Total menu store"
+msgstr "Báo cáo nguyên liệu"
+
+msgid "Start date"
+msgstr "Ngày bắt đầu"
+
+msgid "End date"
+msgstr "Ngày kết thúc"
+
+msgid "Select menu store"
+msgstr "Chọn nguyên liệu"
+
+msgid "Export"
+msgstr "Xuất excel"
+
+msgid "Find"
+msgstr "Báo cáo"
+
+msgid "Report menu follow category"
+msgstr "Báo cáo theo danh mục"
+
+msgid "Report detail menu"
+msgstr "Báo cáo theo thực đơn"
+
+msgid "Report Tracking"
+msgstr "Báo cáo theo chênh lệch"
+
+msgid "Select category"
+msgstr "Chọn danh mục"
+
+msgid "Tracking"
+msgstr "Theo dõi"
+
+msgid "Add new tracking"
+msgstr "Tạo mới theo dõi"
+
+msgid "Supplier Item Name"
+msgstr "Nhà cung cấp"
+
+msgid "Note"
+msgstr "Ghi chú"

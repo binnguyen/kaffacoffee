@@ -1,0 +1,38 @@
+<?php
+    $heading = $this->heading;
+    $data = $this->data;
+    $callbackLink = $this->link;
+?>
+<div class="row-fluid">
+    <div class="row-fluid">
+        <div class="span12 box">
+            <div class="box-header purple-background">
+                <div class="title">
+                    <div class="icon-resize-horizontal"></div>
+                    <?php echo $this->title; ?>
+                </div>
+                <div class="actions">
+                    <a href="#" class="btn box-remove btn-mini btn-link"><i class="icon-remove"></i>
+                    </a>
+                    <a class="btn box-collapse btn-mini btn-link btn-delete" data-link="/admin/index" data-id="<?php echo $data['id'] ?>"><i></i>
+                    </a>
+                </div>
+            </div>
+            <div class="box-content">
+                <form accept-charset="UTF-8" class="form form-horizontal">
+                    <ul class="left-detail">
+                <?php
+                    foreach($heading as $k => $value) {
+                        ?>
+                        <li>
+                            <p class="text-blue "><strong><?php echo $value; ?></strong></p>
+                            <p> <?php echo $data[$k]; ?></p>
+                        </li>
+                    <?php
+                    }
+            ?></ul>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

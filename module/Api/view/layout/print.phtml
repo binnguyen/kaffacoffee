@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <title>Manager System Template</title>
+    <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'/>
+
+    <!--[if lt IE 9]>
+    <script src='js/backend/html5shiv.js' type='text/javascript'></script>
+    <![endif]-->
+    <!-- hepler style here -->
+    <?php $this->styleHelper(); ?>
+    <!--end helper style -->
+    <!--- script helper -->
+    <?php $this->scriptHelper(); ?>
+    <!-- end script helper -->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+</head>
+<body>
+
+<div class="container">
+    <!-- Simple Invoice - START -->
+    <div class="container">
+        <?php echo $this->content; ?>
+    </div>
+</div>
+<style>
+    .height {
+        min-height: 200px;
+    }
+
+    .icon {
+        font-size: 47px;
+        color: #5CB85C;
+    }
+
+    .iconbig {
+        font-size: 77px;
+        color: #5CB85C;
+    }
+
+    .table > tbody > tr > .emptyrow {
+        border-top: none;
+    }
+
+    .table > thead > tr > .emptyrow {
+        border-bottom: none;
+    }
+
+    .table > tbody > tr > .highrow {
+        border-top: 3px solid;
+    }
+</style>
+</body>
+</html>

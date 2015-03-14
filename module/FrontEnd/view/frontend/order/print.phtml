@@ -1,0 +1,199 @@
+<?php
+$translator = \Velacolib\Utility\Utility::translate();
+$config = \Velacolib\Utility\Utility::getConfig();
+$info = $this->info;
+$invoiceCode = date("d",time()).date("m",time()).date("y",time()).(($this->id)+50);
+
+?>
+<div class="row">
+    <div class="offset4 span3">
+        <div class="text-center" style="width: 250px">
+            <img src="<?php echo $config['logo_printer'] ?>" class="" style="width: 100px"/>
+        </div>
+    </div>
+</div>
+<div class="row" style="margin-bottom: 50px">
+    <div class="offset4 span3">
+        <div class="panel panel-default" style="width: 250px;font-size: 10px !important;">
+            <div class="panel-heading text-center">
+                <span><?php echo $translator->translate('Invoice'); ?> #<?php echo $invoiceCode; ?></span>
+            </div>
+            <div style="float: left; width: 100%; text-align: center">
+               <span><?php echo $translator->translate('Page order: ') ?></span> <span id="pageNumber"></span>
+            </div>
+            <div>
+                <div>ADD: <?php echo $config['print_address']; ?></div>
+                <div>Tel: <?php echo $config['print_phone'] ?></div>
+                <div>Date: <?php echo
+                    date("d-m-Y H:i:s",$info->getCreateDate());
+
+                    ?></div>
+            </div>
+            <div class="panel-body">
+                <div class="table-responsive">
+                    <table class="table table-condensed" style="width: 250px">
+                        <thead>
+                        <tr>
+                            <td><strong><?php echo $translator->translate('Product'); ?></strong></td>
+                            <td class="text-center"><strong><?php echo $translator->translate('Cost'); ?></strong></td>
+                            <td class="text-center" style="width: 20px">
+                                <strong><?php //echo $translator->translate('Quantity'); ?> SL</strong>
+                            </td>
+                            <td class="text-center" style="width: 20px">
+                                <strong><?php echo $translator->translate('Discount'); ?></strong>
+                            </td>
+                            <td class="text-right"><strong><?php echo $translator->translate('Line total'); ?></strong>
+                            </td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php
+
+                        $totalCost = 0;
+                        foreach ($this->orderDetail as $value) {
+
+                            $menuId = $value->getMenuId();
+                            $menuName = \Velacolib\Utility\Utility::getMenuInfo($value->getMenuId())->getName();
+
+                            $return  = strpos($menuName,'-');
+                            if($return != false){
+                                $menuName = explode('-',$menuName);
+                                $menuName = $menuName[1];
+                            }
+
+
+                            $isCombo = \Velacolib\Utility\Utility::getMenuInfo($menuId)->getIsCombo();
+                            $combo = '';
+                            $isCombo == 1 ? $combo = '(Combo)' : $combo = '';
+                            $costType = \Velacolib\Utility\Utility::getMenuCostType($value->getCostType());
+                            $couponInfo = \Velacolib\Utility\Utility::getCouponInfo($value->getDiscount());
+//                            echo '<pre>';
+//                            print_r($couponInfo);
+//                            echo '</pre>';
+                            $quantity = $value->getQuantity();
+                            $menuCost = $value->getMenuCost();
+                            $realCost = $value->getRealCost();
+                            $isDelete = $value->getIsdelete();
+                            $subtotal = ($menuCost * $quantity);
+                            $discount = $couponInfo->getDescription();
+                            //number_format($value->getDiscount());
+                            if($discount == -1) $discount =0;
+                            ?>
+                            <tr>
+                                <td><?php echo $menuName; ?> <?= $combo ?></td>
+                                <td class="text-center"><?php echo number_format($menuCost); ?></td>
+                                <td class="text-center"><?php echo $quantity; ?></td>
+                                <td class="text-center"><?php echo $discount; ?></td>
+                                <td class="text-right"><?php echo number_format($realCost) ?></td>
+                            </tr>
+                            <?php
+                            $totalCost += $subtotal;
+                        }
+                        // get coupon value
+                        $finalCost = 0;
+                     //   foreach ($this->info as $info) {
+
+                            $counponId = $info->getCouponId();
+
+                            if ($counponId != -1) {
+                                $coupon = \Velacolib\Utility\Utility::getCouponInfo($counponId);
+                                $couponValue = $coupon->getValue();
+                                $couponType = $coupon->getType();
+                                $countdownCost = 0;
+                                if ($couponType == 0) {
+                                    $finalCost = $totalCost - $couponValue;
+                                    $countdownCost = number_format($couponValue);
+                                } else {
+                                    $finalCost = $totalCost - (($totalCost * $couponValue) / 100);
+                                    $countdownCost = $couponValue . ' %';
+                                }
+                            } else {
+                                $countdownCost = 0;
+                                $finalCost = $totalCost;
+                            }
+
+                       // }
+
+                        // get surtax value
+                        $surtaxValue = 0;
+                        if ($info->getSurtaxId() != 0) {
+                        $surtax = \Velacolib\Utility\Utility::getSurTaxInfo($info->getSurtaxId());
+                            $surtaxValue = $surtax->getValue();
+                            $surtaxType = $surtax->getType();
+                            if ($surtaxType == 'cash') {
+                                $surtaxValue = number_format($surtaxValue);
+                                $finalCost = $finalCost + $surtaxValue;
+                            } else {
+                                $surtaxValue = $surtaxValue .'%';
+                                $finalCost = $finalCost + (($finalCost * $surtaxValue) / 100);
+                            }
+                        }
+
+                        ?>
+
+                        <tr>
+                            <td style="line-height: 10px !important;" class="highrow text-center " colspan="4">
+                                <strong><?php echo $translator->translate('Sum'); ?></strong></td>
+                            <td style="line-height: 10px !important;" class="highrow text-right"><strong
+                                    style="font-size: 13px"><?php echo number_format($totalCost); ?></strong></td>
+                        </tr>
+                        <!-- -->
+                        <?php if($countdownCost != 0): ?>
+                        <tr>
+                            <td style="line-height: 10px !important;" class="emptyrow text-center" colspan="4">
+                                <strong><?php echo $translator->translate('Discount'); ?></strong></td>
+
+                            <td style="line-height: 10px !important;" class="emptyrow text-right"><strong
+                                    style="font-size: 13px"><?php echo $countdownCost; ?></strong></td>
+                        </tr>
+                        <?php endif ?>
+
+                        <!-- -->
+                        <?php if($surtaxValue != 0): ?>
+                        <tr>
+                            <td style="line-height: 10px !important;" class="emptyrow text-center" colspan="4">
+                                <strong><?php echo $translator->translate('Surtax'); ?></strong></td>
+
+                            <td style="line-height: 10px !important;" class="emptyrow text-right"><strong
+                                    style="font-size: 13px"><?php echo $surtaxValue ; ?></strong></td>
+                        </tr>
+                        <?php endif ?>
+                        <tr>
+                            <td style="line-height: 10px !important;" class="emptyrow text-center" colspan="4">
+                                <strong><?php echo $translator->translate('Line total'); ?></strong></td>
+                            <td style="line-height: 10px !important;" class="emptyrow text-right"><strong
+                                    style="font-size: 13px"><?php echo number_format($info->getTotalRealCost()); ?> </strong></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="footer text-center">
+
+                <span><?php echo $config['thank_text'] ?></span>
+
+            </div>
+            <button id="printFunc" class="btn btn-primary pull-right confirm"
+                    style="margin-top:20px;position: absolute;right: 5%;top: 0px"
+                    onclick="">Print
+            </button>
+        </div>
+    </div>
+</div>
+<?php
+//    echo '<pre>';
+//print_r($config);
+//    echo '</pre>';
+//    echo $config['print_number'];
+?>
+<script>
+    $(document).on('click','#printFunc', function(){
+//        $(this).css('').opacity='0';
+        $(this).css('opacity',0);
+        var print_number = <?php echo  $config['print_number']; ?>;
+        for($i=1;$i<= print_number ;$i++){
+            $('#pageNumber').text($i);
+            window.print();
+        }
+    });
+</script>

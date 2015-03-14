@@ -1,0 +1,13 @@
+<?php
+$data = $this->data;
+$title = array();
+$title['title'] = $this->title;
+$this->titleHelper($title);
+$this->tableHelper($data);
+?>
+<script>
+    $('.dataTable').dataTable({
+        "bProcessing": false,
+        "bServerSide": false
+    }) ;
+</script>

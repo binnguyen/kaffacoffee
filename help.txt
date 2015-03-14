@@ -1,0 +1,43 @@
+start cmd:
+
+    --cd vendor/bin
+
+    ---ubutu
+    vendor/bin/doctrine-module orm:schema-tool:create --dump-sql
+
+    ----
+
+    -- create database by console: create database from php Entity code to BD
+    doctrine-module orm:schema-tool:create
+
+    -- export db to class zend 2: Export DB to php code Entity
+    doctrine-module orm:convert-mapping --force --from-database annotation ./module/Admin/src/Admin/Entity
+
+    ------------in ubuntu
+    vendor/bin/doctrine-module orm:convert-mapping --force --from-database annotation ./module/Admin/src/Admin/Entity
+
+      vendor/bin/doctrine-module orm:convert-mapping --namespace="Admin\\Entity\\" --force  --from-database annotation ./module/Admin/src/Admin/Entity
+
+
+    -----------------generte entity + namspace
+    /var/www/doctrine# vendor/bin/doctrine-module orm:generate-entities module/Admin/src/ --generate-annotations=true
+
+    vendor/bin/doctrine-module orm:convert-mapping --namespace="Admin\\Entity\\" --force  --from-database annotation ./module/Admin/src/
+
+
+
+
+    --- update db from Entity:
+    doctrine-module orm:schema-tool:update --force
+
+
+
+end cmd:
+
+
+---re:
+    http://docs.doctrine-project.org/en/2.0.x/reference/tools.html
+    http://stackoverflow.com/questions/20147331/doctrine-2-console-tool-on-zf2-you-are-missing-a-cli-config-php-or-config-cl
+
+--- data execute fuction
+    http://www.doctrine-project.org/api/orm/2.4/class-Doctrine.ORM.EntityRepository.html

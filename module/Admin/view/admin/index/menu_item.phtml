@@ -1,0 +1,152 @@
+<div class="row-fluid">
+    <div class="span12 box bordered-box blue-border" style="margin-bottom:0;">
+        <div class="box-header blue-background">
+            <div class="title"><?php echo $translator->translate('Menu item'); ?></div>
+            <div class="actions">
+                <a href="#" class="btn box-remove btn-mini btn-link"><i class="icon-remove"></i>
+                </a>
+                <a href="#" class="btn box-collapse btn-mini btn-link"><i></i>
+                </a>
+            </div>
+        </div>
+        <div class="box-content box-no-padding">
+            <div class="responsive-table">
+                <div class="scrollable-area">
+                    <table class="table" style="margin-bottom:0;">
+                        <thead>
+                        <tr>
+                            <th>
+                                <?php echo $translator->translate('Menu store'); ?>
+                            </th>
+                            <th>
+                                <?php echo $translator->translate('Quantity'); ?>
+                            </th>
+                            <th>
+                                <?php echo $translator->translate('Unit'); ?>
+                            </th>
+                            <th></th>
+
+                        </tr>
+                        </thead>
+                        <tbody class="tableOrderDetail" id="tableMenuStore">
+                        <input type="hidden" id="countMenuItem" name="countMenuItem"
+                               value="<?php echo count($menuItems); ?>">
+                        <?php
+                        if ($menuItems) {
+                            $i = 100;
+                            foreach ($menuItems as $item) {
+                                $itemMenu = \Velacolib\Utility\Utility::getMenuItemInfo($item->getId()); ?>
+
+                                <tr id="<?php echo $i ?>">
+                                    <!-- kho hang -->
+                                    <td>
+                                        <?php
+                                        $menuStore = \Velacolib\Utility\Utility::getMenuStore();
+                                        ?>
+
+                                        <select class="select2-icon input-block-level select-store" name="item[<?php echo $i; ?>][menu_store_id]">
+                                            <option><?php echo $translator->translate('Select'); ?></option>
+                                            <?php
+                                            foreach ($menuStore as $store) {
+                                                ?>
+                                                <option <?php if($item->getMenuStoreId() == $store->getId()){echo 'selected';} ?>  value="<?php echo $store->getId() ?>" data-unit="<?php echo $store->getUnit(); ?>">
+                                                    <?= $store->getName() ?>
+                                                </option>
+                                            <?php } ?>
+                                        </select>
+                                    </td>
+
+
+                                    <!-- so luong -->
+                                    <td>
+                                        <input type="text" name="item[<?php echo $i; ?>][quantity]" id="quantity" value="<?php echo $item->getQuantity(); ?>"
+                                               placeholder="<?php echo $translator->translate('Quantity'); ?>">
+                                    </td>
+
+                                    <!-- don vi chuan -->
+                                    <td>
+                                        <input readonly type="text" name="item[<?php echo $i; ?>][unit]"
+                                               placeholder="<?php echo $translator->translate('Unit'); ?>" class="unit-<?=$i?>" value="<?php echo $item->getUnit(); ?>">
+                                    </td>
+                                    <!-- remove icon -->
+                                    <td>
+                                        <a class="btn btn-danger btn-mini btn-remove" data-del="<?php echo $i; ?>">                    <i class="icon-remove"></i></a>
+                                    </td>
+                                </tr>
+
+                          <?php
+                               $i ++;
+                            }
+                        }
+                        ?>
+
+
+                        </tbody>
+                        <tbody class="tableOrderDetailAction" id="tableOrderDetailAction">
+                        <tr>
+                            <td>
+                                <input type="button" class="btn btn-success  btn-default"
+                                       value="<?php echo $translator->translate('Add new menu item'); ?>"
+                                       id="addMenuItem">
+                            </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).on('click', '#addMenuItem', function () {
+        var countMenuItem = $("#countMenuItem").val();
+        countMenuItem = parseInt(countMenuItem) + 1;
+        $("#countMenuItem").val(countMenuItem);
+        var menuStore = '<tr id="' + countMenuItem + '">' +
+            '<td>' +
+            '<select class="select-store select2-icon input-block-level" name="item[' + countMenuItem + '][menu_store_id]" >' +
+            '<option><?php echo $translator->translate('Select'); ?></option>'+
+            '<?php
+             $menuStore = \Velacolib\Utility\Utility::getMenuStore();
+             foreach($menuStore as $store){
+            echo '<option data-unit="'. $store->getUnit().'" value="'.$store->getId().'">'.$store->getName().'</option>';
+            } ?>' +
+            '</td>' +
+            '<td>' +
+            '<input type="text" name="item[' + countMenuItem + '][quantity]" id="quantity" value="" placeholder="<?php echo $translator->translate('Quantity'); ?>">' +
+            '</td>' +
+            '<td>' +
+            '<input readonly type="text" name="item[' + countMenuItem + '][unit]" placeholder="<?php echo $translator->translate('Unit'); ?>" value="" class="unit-'+countMenuItem+'">' +
+            '</td>' +
+            '<td>' +
+            '<a class="btn btn-danger btn-mini btn-remove" data-del="' + countMenuItem + '">                    <i class="icon-remove"></i></a>' +
+            '</td>' +
+            '</tr>';
+        $("#tableMenuStore").append(menuStore);
+        select2icon = function(e) {
+            return "<i class='" + e.text + "'></i>" + e.text;
+        };
+        $(".select2-icon").select2({
+            formatResult: select2icon,
+            formatSelection: select2icon,
+            escapeMarkup: function(e) {
+                return e;
+            }
+        });
+    });
+    $(document).on('click', '.btn-remove', function () {
+        var id = $(this).attr('data-del');
+        $("#" + id).remove();
+        var countMenuItem = $("#countMenuItem").val();
+        countMenuItem = parseInt(countMenuItem) - 1;
+        $("#countMenuItem").val(countMenuItem);
+    });
+    $(document).on('change','.select-store',function(){
+       var unit = $(this).find(":selected").attr('data-unit');
+        var tr = $(this).parent().parent().attr('id');
+        $(".unit-"+tr).val(unit);
+    })
+
+</script>

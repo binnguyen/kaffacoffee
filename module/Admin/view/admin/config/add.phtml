@@ -1,0 +1,10 @@
+<?php
+$title = array();
+$title['title'] = $this->title;
+$title['link'] =   $this->url('admin/child', array('controller'=>'config','action' => 'add'));
+
+$this->titleHelper($title);
+$data = $this->data;
+?>
+<?php echo $this->formHelper($form,$title); ?>
+

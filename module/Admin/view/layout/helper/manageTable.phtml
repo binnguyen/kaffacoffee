@@ -1,0 +1,281 @@
+<?php
+$tables = $this->data['data'];
+isset($this->data['hide']) ? $hide = $this->data['hide'] : $hide = false;
+$translator = \Velacolib\Utility\Utility::translate();
+?>
+<div class="row-fluid">
+    <div class="span12 box bordered-box orange-border" style="">
+        <div class="box-header orange-background">
+            <div class="title"><?php echo  $translator->translate('Table'); ?></div>
+            <div class="actions">
+                <a href="#" class="btn box-remove btn-mini btn-link">
+                    <i class="icon-remove"></i>
+                </a>
+                <a href="#" class="btn box-collapse btn-mini btn-link">
+                    <i></i>
+                </a>
+            </div>
+        </div>
+        <div class="box-content">
+            <div class="row-fluid">
+
+                <?php
+                $i = 0;
+                foreach ($tables as $table) :
+                    $i++;
+                    $status = Velacolib\Utility\Utility::getTableStatus($table->getId());
+
+                    if($i%7 == 0){
+                        $class = 'first';
+                        $i = 1;
+                    }else{
+                        $class = '' ;
+                    }
+                    if($hide){
+                        if ( strtolower($status['status']) != strtolower('Finish')) {
+                            ?>
+
+                            <div class="span2 <?= $class ?>">
+                                <div class="row row-cus">
+                                    <div class="span12 icon-content">
+                                        <div data-order-id="<?php echo $status['id'] ?>"
+                                             class="muted cancel-order icon-remove align-right"></div>
+                                        <?php  if (strtolower($status['status']) != strtolower('Finish')) {   ?>
+                                            <!-- link switch user -->
+                                            <a href="#user-modal" class="switch-order-user " title="Switch invoice user"
+                                               data-toggle="modal" data-order-id="<?php echo $status['id'] ?>">
+                                                <div class="muted  icon-briefcase align-left" style="float: left"></div>
+                                            </a>
+
+                                            <!-- link merge order -->
+                                            <a href="#merge-modal" class="merge-order " data-toggle="modal"
+                                               data-order-id="<?php echo $status['id'] ?>" data-table="<?= $table->getId(); ?>"
+                                               title="Merge Invoice">
+                                                <div class="muted  icon-refresh align-left" style="float: left"></div>
+                                            </a>
+                                            <!-- -->
+                                            <a href="#split-modal" class="split-order " data-toggle="modal"
+                                               data-order-id="<?php echo $status['id'] ?>"
+                                               data-table="<?php echo $table->getId(); ?>" title="Split Invoice">
+                                                <div class="muted  icon-random align-left" style="float: left"></div>
+                                            </a>
+                                        <?php    } ?>
+                                    </div>
+                                </div>
+                                <a href="<?= $status['link'] ?>" class="" style="text-decoration: none">
+                                    <div class="box-content box-statistic <?= $status['background'] ?>">
+                                        <h3 class="title text-error"><?php echo $table->getName() ?></h3>
+                                        <small ><?= $status['status'] ?></small>
+                                        <small class="pull-right"><?= $status['cost'] ?></small>
+                                        <div class="text-error icon-inbox align-right"></div>
+                                    </div>
+                                </a>
+
+                            </div>
+
+                        <?php
+                        }
+                    }else{      ?>
+                        <div class="span2 <?= $class ?>">
+                            <div class="row row-cus">
+                                <div class="span12 icon-content">
+                                    <div data-order-id="<?php echo $status['id'] ?>"
+                                         class="muted cancel-order icon-remove align-right"></div>
+                                    <?php  if (strtolower($status['status']) != strtolower('Finish')) {   ?>
+                                        <!-- link switch user -->
+                                        <a href="#user-modal" class="switch-order-user " title="Switch invoice user"
+                                           data-toggle="modal" data-order-id="<?php echo $status['id'] ?>">
+                                            <div class="muted  icon-briefcase align-left" style="float: left"></div>
+                                        </a>
+
+                                        <!-- link merge order -->
+                                        <a href="#merge-modal" class="merge-order " data-toggle="modal"
+                                           data-order-id="<?php echo $status['id'] ?>" data-table="<?= $table->getId(); ?>"
+                                           title="Merge Invoice">
+                                            <div class="muted  icon-refresh align-left" style="float: left"></div>
+                                        </a>
+                                        <!-- -->
+                                        <a href="#split-modal" class="split-order " data-toggle="modal"
+                                           data-order-id="<?php echo $status['id'] ?>"
+                                           data-table="<?php echo $table->getId(); ?>" title="Split Invoice">
+                                            <div class="muted  icon-random align-left" style="float: left"></div>
+                                        </a>
+                                    <?php    } ?>
+                                </div>
+                            </div>
+                            <a href="<?= $status['link'] ?>" class="" style="text-decoration: none">
+                                <div class="box-content box-statistic <?= $status['background'] ?>">
+                                    <h3 class="title text-error"><?php echo $table->getName() ?></h3>
+                                    <small ><?= $status['status'] ?></small>
+                                    <small class="pull-right"><?= $status['cost'] ?></small>
+                                    <div class="text-error icon-inbox align-right"></div>
+                                </div>
+                            </a>
+
+                        </div>
+                   <?php }
+                        ?>
+                   <?php
+                endforeach   ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- user modal -->
+<div class='modal hide fade' id='user-modal' role='dialog' tabindex='-1'>
+    <form class='form' style='margin-bottom: 0;'
+          action="<?php echo $this->url('frontend/child', array('controller' => 'order', 'action' => 'switch')); ?>"
+          method="post">
+        <div class='modal-header'>
+            <button class='close' data-dismiss='modal' type='button'>&times;</button>
+            <h3><?php echo  $translator->translate('Switch order between 2 users'); ?></h3>
+        </div>
+        <div class='modal-body'>
+
+            <div class='control-group'>
+                <label class='control-label'><?php echo  $translator->translate('Full name'); ?></label>
+
+                <div class='controls'>
+                    <select name="user_id">
+                        <?php
+                        $staffs = Velacolib\Utility\Utility::getStaff();
+                        foreach ($staffs as $staff) {
+                            ?>
+                            <option value="<?= $staff->getId(); ?>"> <?= $staff->getFullName(); ?></option>
+
+                        <?php } ?>
+                    </select>
+                    <input class='span12' id='order_id_hidden' type='hidden' name="order_id_hidden" value=""/>
+
+                    <p class='help-block'><?php echo  $translator->translate('Chosen one staff to switch order'); ?></p>
+                </div>
+            </div>
+
+        </div>
+        <div class='modal-footer'>
+            <button class='btn' data-dismiss='modal'><?php echo  $translator->translate('Close'); ?></button>
+            <button class='btn btn-primary' type="submit"><?php echo  $translator->translate('Save change'); ?></button>
+        </div>
+    </form>
+</div>
+
+<div class='modal hide fade' id='merge-modal' role='dialog' tabindex='-2'>
+    <form class='form' style='margin-bottom: 0;'
+          action="<?php echo $this->url('frontend/child', array('controller' => 'order', 'action' => 'merge')); ?>"
+          method="post">
+        <div class='modal-header'>
+            <button class='close' data-dismiss='modal' type='button'>&times;</button>
+            <h3><?php echo  $translator->translate('Merge invoices'); ?></h3>
+        </div>
+        <div class='modal-body'>
+
+            <div class='control-group'>
+                <label class='control-label'><?php echo  $translator->translate('Table'); ?></label>
+
+                <div class='controls'>
+                    <select name="toTable">
+                        <?php
+                        $tables = Velacolib\Utility\Utility::getOrderPending();
+                        foreach ($tables as $table) {
+                            $tableInfo = Velacolib\Utility\Utility::getTableInfo($table->getTableId());
+                            ?>
+                            <option value="<?= $table->getId(); ?>"> <?= $tableInfo->getName(); ?></option>
+
+                        <?php } ?>
+                    </select>
+                    <input type="hidden" name="fromTable" id="fromTable" value="">
+                    <input class='span12' id='order_id_hidden' type='hidden' name="order_id_hidden" value=""/>
+
+                    <p class='help-block'><?php echo  $translator->translate('Chosen one table to merge to another table'); ?></p>
+                </div>
+            </div>
+
+        </div>
+        <div class='modal-footer'>
+            <button class='btn' data-dismiss='modal'><?php echo  $translator->translate('Close'); ?></button>
+            <button class='btn btn-primary' type="submit"><?php echo  $translator->translate('Save changes'); ?></button>
+        </div>
+    </form>
+</div>
+
+<!-- Split invoice -->
+<div class='modal hide fade' id='split-modal' role='dialog' tabindex='-2' style="">
+    <form class='form' style='margin-bottom: 0;'
+          action="<?php echo $this->url('frontend/child', array('controller' => 'order', 'action' => 'split')); ?>"
+          method="post">
+        <div class='modal-header'>
+            <button class='close' data-dismiss='modal' type='button'>&times;</button>
+            <h3><?php echo  $translator->translate('Split invoice'); ?></h3>
+        </div>
+        <div class='modal-body' id="split-body">
+            <!-- ajax content -->
+            <div class="responsive-table">
+                <div class="scrollable-area">
+                    <table class="table">
+                        <thead>
+                            <th><?php echo  $translator->translate('Menu'); ?></th>
+                            <th><?php echo  $translator->translate('Price'); ?></th>
+                            <th><?php echo  $translator->translate('Quantity'); ?></th>
+                            <th><?php echo  $translator->translate('Quantity split'); ?></th>
+                            <th><?php echo  $translator->translate('Discount'); ?></th>
+                        </thead>
+                        <tbody id="split-tbody">
+
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td ><?php echo  $translator->translate('Chosen table'); ?></td>
+                            <td colspan="4">
+                                <?php
+                                $tables = Velacolib\Utility\Utility::getTables();
+                                if (!empty($tables)):
+                                    ?>
+
+                                    <select name="table-new" class="input-small">
+                                        <?php foreach ($tables as $itemTable) : ?>
+                                            <?php
+                                            $status = Velacolib\Utility\Utility::getTableStatus($itemTable->getId());
+                                    if (strtolower($status['status']) == strtolower('Finish')):
+                                            ?>
+                                            <option value="<?= $itemTable->getId(); ?>"><?= $itemTable->getName(); ?></option>
+                                        <?php endif ?>
+                                        <?php endforeach ?>
+                                    </select>
+                                <?php endif ?>
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td ><?php echo  $translator->translate('Discount'); ?></td>
+                            <td colspan="4">
+                                <?php
+                                $coupons = Velacolib\Utility\Utility::getCouponCheckExpire();
+
+                                    ?>
+                                    <select name="discount" class="input-small">
+                                        <option value="-1"><?php echo  $translator->translate('Select'); ?></option>
+                                        <?php  if (!empty($coupons)): ?>
+                                        <?php foreach ($coupons as $coupon) : ?>
+                                            <option value="<?= $coupon->getId(); ?>"><?= $coupon->getDescription(); ?></option>
+                                        <?php endforeach ?>
+                                        <?php endif ?>
+                                    </select>
+
+                            </td>
+                        </tr>
+                           <input type="hidden" name="oldOrder" id="oldOrder" value="" />
+                        </tfoot>
+
+                    </table>
+                </div>
+            </div>
+
+        </div>
+        <div class='modal-footer'>
+            <button class='btn' data-dismiss='modal'><?php echo  $translator->translate('Close'); ?></button>
+            <button class='btn btn-primary' type="submit"><?php echo  $translator->translate('Split'); ?></button>
+        </div>
+    </form>
+</div>
+

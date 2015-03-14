@@ -1,0 +1,100 @@
+<?php
+$translator = \Velacolib\Utility\Utility::translate();
+
+?>
+<div class='controls'>
+    <div class='caret'></div>
+    <div class='form-wrapper'>
+        <h1 class='text-center'><?php echo $translator->translate('Report menu follow category'); ?></h1>
+        <form accept-charset="UTF-8" action="<?php echo $this->url('admin/child',array('controller'=>'report','action'=>'reportexpense')); ?>" method="post" /><div style="margin:0;padding:0;display:inline"></div>
+
+        <div class='row-fluid'>
+            <div class='span6 icon-over-input'>
+                <label><?php echo $translator->translate('Category'); ?></label>
+                <div>
+                    <select name="expense_category" id="expense_category">
+                        <option value="0"><?php echo $translator->translate('Select category') ?></option>
+                        <?php foreach($categories as $category): ?>
+                        <option value="<?php echo $category->getId(); ?>"><?php echo $category->getName(); ?></option>
+                        <?php endforeach ?>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class='row-fluid'>
+            <div class='span6 icon-over-input'>
+                <label><?php echo $translator->translate('Start date'); ?></label>
+                <div>
+                    <input type="text" name="start" class="date-picker">
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <!-- -->
+            <div class='span5 icon-over-input'>
+                <label><?php echo $translator->translate('End date'); ?></label>
+                <div>
+                    <input type="text" name="end" class="date-picker">
+                </div>
+            </div>
+            <div class="span7">
+                <label><?php echo $translator->translate('Export') ?></label>
+                <input type="checkbox" name="excel" value="true">
+            </div>
+            <!-- -->
+        </div>
+
+
+        <button class="btn btn-danger"  type="submit" ><?php echo $translator->translate('Find'); ?></button>
+        </form>
+        <div class='text-center'>
+            <hr class='hr-normal' />
+
+        </div>
+    </div>
+</div>
+<?php if(isset($result) && !empty($result)): ?>
+    <div class="row-fluid">
+        <h3><?php echo $title; ?></h3>
+        <?php if($linkDownload){ ?>
+            <a href="<?php echo $linkDownload; ?>"><?php echo $translator->translate('Download excel link'); ?></a>
+        <?php } ?>
+        <table class="table dataTable">
+            <thead>
+            <th><?php echo $translator->translate('Id') ?></th>
+            <th><?php echo $translator->translate('Title') ?></th>
+            <th><?php echo $translator->translate('Value') ?></th>
+            <th><?php echo $translator->translate('Reason') ?></th>
+            <th><?php echo $translator->translate('Time') ?></th>
+            <th><?php echo $translator->translate('Category') ?></th>
+
+            </thead>
+            <tbody>
+            <?php
+            $totals  = 0;
+            foreach($result as $report): ?>
+                <tr>
+                    <td><?php echo $report['id']; ?></td>
+                    <td><?php echo $report['title']; ?></td>
+                    <td> VND <?php echo number_format($report['value']); ?></td>
+                    <td><?php echo $report['reason']; ?></td>
+                    <td><?php if(isset($report['time']) && $report['time']!=''){ echo date('d,M Y',$report['time']); } ?></td>
+                    <td><?php echo $report['categoryId']; ?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+    <script>
+        $(document).ready(function(){
+
+            $('.dataTable').dataTable({
+                "bProcessing": false,
+                "bServerSide": false
+            }) ;
+
+        })  ;
+    </script>
+<?php endif ?>
+

@@ -1,0 +1,79 @@
+<?php
+$reports = $this->report;
+$end = $this->end;
+$start = $this->start;
+$totalQuantity = $this->totalQuantity;
+$totalCost = $this->totalCost;
+$reportTitle= $this->reportTitle;
+$translate = \Velacolib\Utility\Utility::translate();
+?>
+<div class='controls'>
+    <div class='caret'></div>
+    <div class='form-wrapper'>
+        <h1 class='text-center'><?php echo $translate->translate('Report detail menu'); ?></h1>
+        <form accept-charset="UTF-8" action="<?php echo $this->url('admin/child',array('controller'=>'report','action'=>'reportmenudaterange')); ?>" method="post" /><div style="margin:0;padding:0;display:inline"></div>
+        <div class='row-fluid'>
+            <div class='span12 icon-over-input'>
+                <label><?php echo $translate->translate('Start date'); ?></label>
+                <div>
+                    <input type="text" name="start" class="date-picker">
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <!-- -->
+            <div class='span12 icon-over-input'>
+                <label><?php echo $translate->translate('End date'); ?></label>
+                <div>
+                    <input type="text" name="end" class="date-picker">
+                </div>
+            </div>
+            <!-- -->
+        </div>
+
+        <button class="btn btn-danger"  type="submit" ><?php echo $translate->translate('Find'); ?></button>
+        </form>
+        <div class='text-center'>
+            <hr class='hr-normal' />
+
+        </div>
+    </div>
+</div>
+<?php if(isset($reports)): ?>
+
+    <div class="row-fluid">
+        <h3><?php echo $reportTitle ?></h3>
+        <?php if($linkDownload){ ?>
+            <a href="<?php echo $linkDownload; ?>"><?php echo $translate->translate('Download excel link'); ?></a>
+        <?php } ?>
+        <table class="table">
+            <thead>
+            <th><?php echo $translate->translate('Menu id'); ?></th>
+            <th><?php echo $translate->translate('Name'); ?></th>
+            <th><?php echo $translate->translate('Quantity'); ?></th>
+            <th><?php echo $translate->translate('Real cost'); ?></th>
+            </thead>
+            <tbody>
+            <?php
+            $totals  = 0;
+            foreach($reports as $report): ?>
+                <tr>
+                    <td><?php echo $report['menu_id'] ?></td>
+                    <td><?php echo $report['name'] ?></td>
+                    <td><?php echo $report['quantity'] ?></td>
+                    <td><?php echo number_format($report['realCost']) ?></td>
+
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="2"><?php echo $translate->translate('Summary'); ?></td>
+                <td ><?php echo $totalQuantity; ?></td>
+                <td ><?php echo number_format($totalCost); ?></td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+<?php endif ?>
+

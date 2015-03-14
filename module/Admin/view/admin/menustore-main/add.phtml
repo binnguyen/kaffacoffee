@@ -1,0 +1,283 @@
+<?php
+$title = array();
+$title['title'] = $this->title;
+$this->titleHelper($title);
+$data = $this->data;
+$translator = \Velacolib\Utility\Utility::translate();
+
+?>
+<div class="row-fluid">
+    <div class="span12 box">
+        <div class="box-header blue-background">
+            <div class="title">
+                <div class="icon-edit"></div>
+                <?php echo $this->title; ?>
+            </div>
+            <div class="actions">
+                <a href="#" class="btn box-remove btn-mini btn-link"><i class="icon-remove"></i>
+                </a>
+                <a href="#" class="btn box-collapse btn-mini btn-link"><i></i>
+                </a>
+            </div>
+        </div>
+        <div class="box-content">
+            <form accept-charset="UTF-8" action="<?php
+            $url = $this->url('admin/child',array('controller'=>'menustoremain','action'=>'add'));
+            if($data){
+                $url = $this->url('admin/child',array('controller'=>'menustoremain','action'=>'add','id'=>$data->getId()));
+            }
+            echo $url; ?>" class="form form-horizontal" method="post"
+                  style="margin-bottom: 0;">
+                <input type="hidden" name="id" value="<?php if($data){ echo $data->getId();} ?>">
+
+                <div class="control-group">
+                    <label class="control-label" for="inputText1"><?php echo $translator->translate('Name'); ?></label>
+                    <div class="controls">
+<!--                        <input id="" placeholder="Name" name="name" type="text" value="--><?php //if($data){echo $data->getName();} ?><!--">-->
+
+                        <?php
+                            $menuStore = \Velacolib\Utility\Utility::getMenuStoreArrayAutoComplete(true);
+                        ?>
+                        <input  name="name" data-items='4' data-provide='typeahead' data-source='<?php echo json_encode($menuStore) ?>'
+                               placeholder='Tên nguyên liệu'
+                               style='margin: 0 auto;'
+                               type='text'
+                               value="<?php if($data){echo $data->getName();} ?>"/>
+                    </div>
+                </div>
+
+
+                <!-- Quantity -->
+                <div class="control-group">
+                    <label class="control-label" for="inputText1"><?php echo $translator->translate('Quantity'); ?></label>
+                    <div class="controls">
+                        <input id="number_before" class="" placeholder="Quantity"   name="" type="text" value="<?php if($data){echo $data->getCost();} ?>">
+                        <select name="unit" id="unit_input">
+                            <?php
+                            $unitArray = Velacolib\Utility\Utility::getUnitArray();
+
+                            if($data){$cUnit = $data->getUnit();}
+
+
+                            ?>
+
+                            <?php
+                            $selected = '';
+                            foreach($unitArray as $k => $unit){
+                                $selected = '';
+                                if( isset($cUnit) && $cUnit == $k ){
+                                    $selected = 'selected';
+                                }
+                                ?>
+                                <option id="input_<?=$k?>"  <?php echo $selected ?> value="<?php echo $k; ?>" >                                     <?php echo $unit; ?>
+                                </option>
+                            <?php
+                            }
+                            ?>
+
+                        </select>
+
+                    </div>
+                </div>
+
+                <!-- Quantity -->
+                <div class="control-group">
+                    <label class="control-label" for="inputText1"><?php echo $translator->translate('Quantity after convert'); ?></label>
+                    <div class="controls">
+                        <input readonly class=""  id="number_after" placeholder="Quantity" name="quantity" type="text"  value="">
+
+                        <select name="unit" id="unit_store" >
+                            <?php
+                            $unitArray = Velacolib\Utility\Utility::getUnitArray();
+                            if($data){$cUnit = $data->getUnit();}
+                            ?>
+
+                            <?php
+                            $selected = '';
+                            if(!$data){
+                            foreach($unitArray as $k => $unit){
+                                $selected = '';
+                                if( isset($cUnit) && $cUnit == $k ){
+                                    $selected = 'selected';
+                                }
+                                ?>
+                                <option <?php echo $selected ?> value="<?php echo $k; ?>" >                                     <?php echo $unit; ?>
+                                </option>
+                            <?php
+                            }
+                            }else{
+                                ?>
+                                <option <?php echo 'selected' ?> value="<?php echo $cUnit ?>" >                                     <?php echo $cUnit; ?>
+                                </option>
+                            <?php
+                            }
+                            ?>
+
+                        </select>
+                    </div>
+                </div>
+
+
+
+                <!-- --->
+                <div class="control-group">
+                    <label class="control-label" for="inputText1"><?php echo $translator->translate('Cost'); ?></label>
+                    <div class="controls">
+                        <input id="" placeholder="Cost" name="cost" type="text" value="<?php if($data){echo $data->getCost();} ?>">
+                    </div>
+                </div>
+
+                <!--- -->
+
+
+                <!-- loai san pham cung cap -->
+                <div class="control-group">
+                    <label class="control-label" for="inputText1"><?php echo $translator->translate('Supply item type'); ?></label>
+                    <div class="controls">
+
+                        <?php
+                        $suppliers =   \Velacolib\Utility\Utility::getAllSuplyItemsArray();
+                        ?>
+                        <select name="supplyType"  id="supplyType">
+                            <?php
+                            foreach($suppliers as $k => $supplier){
+                                $slected = '';
+                                if($data){
+                                    if($k == $data->getSupplyItem())
+                                    {
+                                        $slected = 'selected';
+                                    }
+                                }
+                                ?>
+                                <option <?php echo $slected; ?> value="<?php echo $k; ?>"><?php echo $supplier ?></option>
+                            <?php
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+
+
+
+                <!-- -->
+                <div class="control-group">
+                    <label class="control-label" for="inputText1"><?php
+
+                        echo $translator->translate('Supplier'); ?></label>
+                    <div class="controls">
+
+                        <?php
+                        $suppliers =   \Velacolib\Utility\Utility::getSupplierArray();
+                        ?>
+                        <select name="supplier"  id="supplier">
+                            <?php
+
+                                foreach($suppliers as $supplier ){
+                                $slected = '';
+                                    if($data){
+                                        if( $supplier['id'] ==  $data->getSupplier())
+                                        {
+                                            $slected = 'selected';
+                                        }
+
+                                    }
+                                    ?>
+
+                                    <option <?php echo $slected ?> value="<?php echo $supplier['id'] ?>"><?php echo $supplier['company'].' - '.$supplier['for'] ?></option>
+                                <?php
+                                }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+                <!-- -->
+
+
+
+                <!-- -->
+
+
+                <!-- -->
+                <div class="control-group">
+                    <label class="control-label" for="inputText1"><?php echo $translator->translate('Out of stock'); ?></label>
+                    <div class="controls">
+                        <input id="" placeholder="Quantity" name="OutOfStock" type="text" value="<?php if($data){echo $data->getOutOfStock();} ?>">
+                    </div>
+                </div>
+
+
+                <div class="control-group">
+                    <label class="control-label" for="inputText1"><?php echo $translator->translate('Description'); ?></label>
+                    <div class="controls">
+                        <textarea name="des"><?php if($data){echo $data->getDes();} ?></textarea>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="inputText1"><?php echo $translator->translate('Import in menu store'); ?></label>
+                    <div class="controls">
+                       <input type="checkbox" name="import-menustore" value="1">
+                    </div>
+                </div>
+
+
+                <div class="form-actions">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="icon-save"></i>
+                        <?php echo $translator->translate('Save'); ?>
+                    </button>
+                    <button class="btn" type="submit"><?php echo $translator->translate('Cancel'); ?></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<?php if($data){     ?>
+    <script>
+        $(document).ready(function(){
+            var supplyTypeId = $("#supplyType").find("option:selected").val();
+            var url = 'http://'+window.location.host+'/admin/supplier/getsuplier';
+            if(supplyTypeId != 0 && supplyTypeId != ''){
+                $.ajax({
+                    type : 'POST',
+                    url : url,
+                    async : false,
+                    data : {suplier_item_id: supplyTypeId},
+                    beforeSend : function (){
+                        $(".loading").show();
+                    },
+                    success : function (returnData) {
+                        //stuff
+                        var data = JSON.parse(returnData);
+                        var html = '';
+                        if(data.status){
+
+                            $.each( data.result , function( key, value ) {
+
+                                html += '<option value="'+key+'">'+value+'</option>';
+
+                            } );
+                            $("#supplier").html(html);
+                            enableSubmit();
+                            $(".loading").hide();
+
+                        }else{
+                            alert('<?php echo $translator->translate('No supplier for this item'); ?>!') ;
+                            disableSubmit();
+                            $("#supplier").html('');
+                            $(".loading").hide();
+                        }
+                        $(".loading").hide();
+
+                    },
+                    error : function (xhr, textStatus, errorThrown) {
+                        //other stuff
+                    },
+                    complete : function (){
+
+                    }
+                });
+            }
+        })
+
+    </script>
+<?php } ?>

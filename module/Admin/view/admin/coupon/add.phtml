@@ -1,0 +1,120 @@
+<?php
+$title = array();
+$title['title'] = $this->title;
+$this->titleHelper($title);
+$data = $this->data;
+$translator = \Velacolib\Utility\Utility::translate();
+?>
+<div class="row-fluid">
+    <div class="span12 box">
+        <div class="box-header blue-background">
+            <div class="title">
+                <div class="icon-edit"></div>
+                <?php echo $this->title; ?>
+            </div>
+            <div class="actions">
+                <a href="#" class="btn box-remove btn-mini btn-link"><i class="icon-remove"></i>
+                </a>
+                <a href="#" class="btn box-collapse btn-mini btn-link"><i></i>
+                </a>
+            </div>
+        </div>
+        <div class="box-content">
+            <form accept-charset="UTF-8" action="<?php
+            $url = $this->url('admin/child',array('controller'=>'coupon','action'=>'add'));
+            if($data){
+                $url = $this->url('admin/child',array('controller'=>'coupon','action'=>'add','id'=>$data->getId()));
+            }
+            echo $url; ?>" class="form form-horizontal" method="post"
+                  style="margin-bottom: 0;">
+                <input type="hidden" name="id" value="<?php if($data){ echo $data->getId();} ?>">
+                <!-- coupon code -->
+                        <input id="" placeholder="Code" name="code" type="hidden" value="<?php if($data){echo $data->getCode();} ?>">
+
+
+                <div class="control-group">
+                    <label class="control-label" for="inputText1"><?php echo $translator->translate('Value'); ?></label>
+                    <div class="controls">
+                        <input id="" placeholder="Value" name="Value" type="text" value="<?php if($data){echo $data->getValue();} ?>">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="inputText1"><?php echo $translator->translate('Type'); ?></label>
+                    <div class="controls">
+                     <?php
+                        $selected = '';
+
+                        $arrayType = Velacolib\Utility\Utility::getCouponType();
+                        echo '<select  name="type">';
+                        foreach($arrayType as $k => $type){
+                            if($data){ if($data->getType() == $k){
+                                $selected = 'Selected';
+                            }
+
+                            }
+                            echo '<option '.$selected.' value="'.$k.'">'.$translator->translate($type).'</option>';
+                        }
+                     echo '</select>';
+                     ?>
+                    </div>
+                </div>
+
+
+                <div class="control-group">
+                    <label class="control-label" for="inputText1"><?php echo $translator->translate('reUse'); ?></label>
+                    <div class="controls">
+                        <?php
+                        $selected = '';
+
+                        $arrayType = array(0=>'No re use',1 => 're use');
+                        echo '<select  name="reuse">';
+                        foreach($arrayType as $k => $reuse){
+                            if($data){ if($data->getReuse() == $k){
+                                $selected = 'Selected';
+                            }
+
+                            }
+                            echo '<option '.$selected.' value="'.$k.'">'.$translator->translate($reuse).'</option>';
+                        }
+                        echo '</select>';
+                        ?>
+                    </div>
+                </div>
+
+
+                <div class="control-group">
+                    <label class="control-label" for="inputTextArea1"><?php echo $translator->translate('Description'); ?></label>
+
+                    <div class="controls">
+                        <textarea id="" name="description" placeholder="Description" rows="3"><?php if($data){echo $data->getDescription();} ?></textarea>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label"><?php echo $translator->translate('From date'); ?></label>
+                    <div class="controls">
+                        <input type="hidden" name="id" value="<?php if($data){ echo $data->getId();} ?>">
+                        <input class="date-picker"  type="text" name="fromdate"  placeholder="From Date" value="<?php if($data){ echo date('d-m-Y',$data->getFromDate());} ?>">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label"><?php echo $translator->translate('To date'); ?></label>
+                    <div class="controls">
+
+                        <input class="date-picker" type="text" name="todate" placeholder="To Date" value="<?php if($data){ echo date('d-m-Y',$data->getToDate());} ?>">
+                    </div>
+                </div>
+
+
+                <div class="form-actions">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="icon-save"></i>
+                        <?php echo $translator->translate('Save'); ?>
+                    </button>
+                    <button class="btn" type="submit"><?php echo $translator->translate('Cancel'); ?></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

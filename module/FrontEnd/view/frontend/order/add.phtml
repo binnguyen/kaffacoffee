@@ -1,0 +1,22 @@
+<?php
+$title = array();
+$title['title'] = $this->title;
+$title['link']  =   $this->url('frontend/child', array('controller'=>'order','action' => 'add'));
+$this->titleHelper($title);
+
+$data = $this->data;
+$orderDetails = $this->orderDetails;
+$tables = $this->tables;
+$this->manageTableHelper(array(
+    'data'=>$tables,
+    'hide'=>true
+));
+
+$this->addorderHelper(array(
+    'data'=>$data,
+    'title'=>$this->title ,
+    'orderDetails'=>$orderDetails,
+    'dataObject'=>$dataObject,
+));
+
+

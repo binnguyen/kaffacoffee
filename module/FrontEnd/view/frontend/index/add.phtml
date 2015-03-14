@@ -1,0 +1,93 @@
+<?php
+$title = $this->title;
+$this->titleHelper($title);
+$data = $this->data;
+?>
+<div class="row-fluid">
+    <div class="span12 box">
+        <div class="box-header blue-background">
+            <div class="title">
+                <div class="icon-edit"></div>
+                <?php echo $title; ?>
+            </div>
+            <div class="actions">
+                <a href="#" class="btn box-remove btn-mini btn-link"><i class="icon-remove"></i>
+                </a>
+                <a href="#" class="btn box-collapse btn-mini btn-link"><i></i>
+                </a>
+            </div>
+        </div>
+        <div class="box-content">
+            <form accept-charset="UTF-8" action="<?php
+            $url = $this->url('admin/child',array('controller'=>'index','action'=>'add'));
+            if($data){
+                $url = $this->url('admin/child',array('controller'=>'index','action'=>'add','id'=>$data->getId()));
+            }
+            echo $url; ?>" class="form form-horizontal" method="post"
+                  style="margin-bottom: 0;">
+                <input type="hidden" name="id" value="<?php if($data){ echo $data->getId();} ?>">
+                <div class="control-group">
+                    <label class="control-label" for="inputText1">Sku</label>
+                    <div class="controls">
+                        <input id="" placeholder="Sku" name="sku" type="text" value="<?php if($data){echo $data->getSku();} ?>">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="inputText1">Name</label>
+                    <div class="controls">
+                        <input id="" placeholder="Name" name="name" type="text" value="<?php if($data){echo $data->getName();} ?>">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="inputText1">Cost</label>
+                    <div class="controls">
+                        <input id="" placeholder="Cost" name="cost" type="text" value="<?php if($data){echo $data->getCost();} ?>">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="inputTextArea1">Description</label>
+
+                    <div class="controls">
+                        <textarea id="" name="desc" placeholder="Textarea" rows="3"><?php if($data){echo $data->getdescription();} ?></textarea>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Category</label>
+                    <div class="controls">
+                        <?php
+                        $categories = Velacolib\Utility\Utility::getCategories();
+//                        print_r($categories);
+                        ?>
+                        <select name="cat_id" id="inputSelect">
+                            <?php
+                                foreach($categories as $cat){
+                                    $selected = '';
+                                    if($data){
+                                        $catID = $data->getCatId();
+                                        if($catID == $cat->getId())
+                                            $selected = 'selected';
+
+                                    }
+
+                                    echo ' <option value="'.$cat->getId().'"'.$selected.' >'.$cat->getName().'</option>';
+                                }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="form-actions">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="icon-save"></i>
+                        Save
+                    </button>
+                    <button class="btn" type="submit">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

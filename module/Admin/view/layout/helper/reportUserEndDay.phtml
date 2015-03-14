@@ -1,0 +1,41 @@
+<?php
+$translate = \Velacolib\Utility\Utility::translate();
+?>
+<div class="row-fluid">
+    <div class="span12 box bordered-box orange-border" style="margin-bottom:0;">
+        <div class="box-header orange-background">
+            <div class="title"><?php echo $translate->translate('Total cost'); ?></div>
+            <div class="actions">
+                <a href="#" class="btn box-remove btn-mini btn-link">
+                    <i class="icon-remove"></i>
+                </a>
+                <a href="#" class="btn box-collapse btn-mini btn-link">
+                    <i></i>
+                </a>
+            </div>
+        </div>
+        <div class="box-content box-no-padding">
+
+            <?php
+           foreach($data as $datas=>$cost){
+               $totalCost = number_format($cost['tCost'])    ;
+               $realCost = number_format($cost['tRCost']);
+           }
+
+            ?>
+            <div class="box-content box-statistic">
+                <h3 class="title text-error"><?=$totalCost?></h3>
+                <small><?php echo $translate->translate('Total cost'); ?></small>
+                <div class="text-error icon-inbox align-right"></div>
+            </div>
+            <div class="box-content box-statistic">
+                <h3 class="title text-error"><?=$realCost?></h3>
+                <small><?php echo $translate->translate('Total real cost'); ?></small>
+                <div class="text-warning icon-book align-right"></div>
+            </div>
+
+
+        </div>
+
+        </div>
+    </div>

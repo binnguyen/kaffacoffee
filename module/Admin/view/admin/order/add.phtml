@@ -1,0 +1,16 @@
+<?php
+$title = array();
+$title['title'] = $this->title;
+$title['link'] =   $this->url('admin/child', array('controller'=>'order','action' => 'add'));
+$this->titleHelper($title);
+
+$data = $this->data;
+$orderDetails = $this->orderDetails;
+$this->addorderHelper(array(
+    'data'=>$data,
+    'title'=>$this->title,
+    'orderDetails'=>$orderDetails,
+     'dataObject'=>$dataObject,
+));
+
+

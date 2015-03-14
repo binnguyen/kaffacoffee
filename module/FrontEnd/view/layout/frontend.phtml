@@ -1,0 +1,58 @@
+<?php
+$translator = \Velacolib\Utility\Utility::translate();
+$config = Velacolib\Utility\Utility::getConfig();
+
+
+?>
+<!DOCTYPE html>
+<html lang="vi-VN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <title><?php echo $config['sitename']; ?></title>
+    <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'/>
+
+    <!--[if lt IE 9]>
+    <script src='js/backend/html5shiv.js' type='text/javascript'></script>
+    <![endif]-->
+    <!-- hepler style here -->
+    <?php $this->styleHelper(); ?>
+    <!--end helper style -->
+    <!--- script helper -->
+    <?php $this->scriptHelper(); ?>
+    <!-- end script helper -->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+</head>
+<body class='contrast-red '>
+<!-- header -->
+<?php $this->headerHelper(); ?>
+<!-- end header -->
+<!--menu here -->
+<?php $this->leftMenuFeHelper(); ?>
+<!--end menu -->
+</div>
+</nav>
+<section id='content'>
+    <div class='container-fluid'>
+        <div class='row-fluid' id='content-wrapper'>
+            <div class='span12'>
+                <div class="row-fluid">
+                    <div class="span12">
+                        <noscript>
+                            For full functionality of this site it is necessary to enable JavaScript.
+                            Here are the <a href="http://google.com" target="_blank">
+                                instructions how to enable JavaScript in your web browser</a>.
+                        </noscript>
+                        <?php echo $this->content; ?>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+</div>
+
+</body>
+</html>

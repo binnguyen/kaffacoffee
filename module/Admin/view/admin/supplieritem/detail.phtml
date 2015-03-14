@@ -1,0 +1,21 @@
+<?php
+$dataOrder = $this->data;
+$dataRow = $dataOrder['data'];
+$heading = $dataOrder['heading'];
+$link = $dataOrder['link'];
+
+$dataOrderDetail = $this->dataOrderDetail;
+$title = array();
+$title['title'] = $dataOrder['title'];
+$title['link'] =   $this->url('admin/child', array('controller'=>'menustore','action' => 'add'));
+$this->titleHelper($title);
+
+?>
+<div class="row-fluid">
+       <div class="span12">
+        <?php $this->detailHelper($dataOrder); ?>
+       </div>
+</div>
+
+
+

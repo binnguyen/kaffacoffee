@@ -1,0 +1,346 @@
+<?php
+$title = array();
+$title['title'] = $this->title;
+$title['link'] =   $this->url('admin/child', array('controller'=>'index','action' => 'add'));
+
+$this->titleHelper($title);
+$data = $this->data;
+$combos = $this->combos;
+$translator = \Velacolib\Utility\Utility::translate();
+$menuItems = $this->menuItems;
+?>
+<div class="row-fluid">
+    <div class="span12 box">
+        <div class="box-header blue-background">
+            <div class="title">
+                <div class="icon-edit"></div>
+                <?php echo $this->title; ?>
+            </div>
+            <div class="actions">
+                <a href="#" class="btn box-remove btn-mini btn-link"><i class="icon-remove"></i>
+                </a>
+                <a href="#" class="btn box-collapse btn-mini btn-link"><i></i>
+                </a>
+            </div>
+        </div>
+        <div class="box-content">
+            <form accept-charset="UTF-8" action="<?php
+            $url = $this->url('admin/child',array('controller'=>'index','action'=>'add'));
+            if($data){
+                $url = $this->url('admin/child',array('controller'=>'index','action'=>'add','id'=>$data->getId()));
+            }
+            echo $url; ?>" class="form form-horizontal" method="post"
+                  style="margin-bottom: 0;">
+                <input type="hidden" name="id" value="<?php if($data){ echo $data->getId();} ?>">
+
+
+                <div class="control-group">
+                    <label class="control-label" for="inputText1"><?php echo $translator->translate('Name'); ?></label>
+                    <div class="controls">
+                        <input id="" placeholder="Name" name="name" type="text" value="<?php if($data){echo $data->getName();} ?>">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="inputText1"><?php echo $translator->translate('Cost'); ?></label>
+                    <div class="controls">
+                        <input id="totalCost" placeholder="Cost" name="cost" type="text" value="<?php if($data){echo $data->getCost();} ?>">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="inputText1"><?php echo $translator->translate('Take away cost'); ?></label>
+                    <div class="controls">
+                        <input id="totalTaCost" placeholder="<?php echo $translator->translate('Take away cost'); ?>" name="tacost" type="text" value="<?php if($data){echo $data->getTakeAwayCost();} ?>">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="inputTextArea1"><?php echo $translator->translate('Description'); ?></label>
+
+                    <div class="controls">
+                        <textarea id="" name="desc" placeholder="<?php echo $translator->translate('Description'); ?>" rows="3"><?php if($data){echo $data->getdescription();} ?></textarea>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label"><?php echo $translator->translate('Category'); ?></label>
+                    <div class="controls">
+                        <?php
+                        $categories = Velacolib\Utility\Utility::getCategories();
+//                        print_r($categories);
+                        ?>
+                        <select name="cat_id" id="inputSelect">
+                            <?php
+                                foreach($categories as $cat){
+                                    $selected = '';
+                                    if($data){
+                                        $catID = $data->getCatId();
+                                        if($catID == $cat->getId())
+                                            $selected = 'selected';
+
+                                    }
+
+                                    echo ' <option value="'.$cat->getId().'"'.$selected.' >'.$cat->getName().'</option>';
+                                }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="inputTextArea1"><?php echo $translator->translate('Is combo'); ?></label>
+
+                    <div class="controls">
+                        <input type="radio" id="" name="is_combo" value="1" <?php if($data){
+                            if($data->getIsCombo() == 1) echo 'checked';
+                        } ?> > <?php echo $translator->translate('Yes'); ?> <br/>
+                        <input type="radio" id="" name="is_combo" value="0" <?php if($data){
+                            if($data->getIsCombo() == 0) echo 'checked';
+                        } ?> > <?php echo $translator->translate('No'); ?> <br/>
+                    </div>
+                </div>
+
+
+
+                <?php include'menu_item.phtml'; ?>
+
+                <br/>
+                <div class="clear-both"></div>
+                <!-- add combo -->
+                <div class="row-fluid">
+                    <div class="span12 box bordered-box blue-border" style="margin-bottom:0;">
+                        <div class="box-header blue-background">
+                            <div class="title"><?php echo $translator->translate('Combo'); ?></div>
+                            <div class="actions">
+                                <a href="#" class="btn box-remove btn-mini btn-link"><i class="icon-remove"></i>
+                                </a>
+                                <a href="#" class="btn box-collapse btn-mini btn-link"><i></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="box-content box-no-padding">
+                            <div class="responsive-table">
+                                <div class="scrollable-area">
+                                    <table class="table" style="margin-bottom:0;">
+                                        <thead>
+                                        <tr>
+                                            <th>
+                                                <?php echo $translator->translate('Menu'); ?>
+                                            </th>
+                                            <th>
+                                                <?php echo $translator->translate('Cost'); ?>
+                                            </th>
+                                            <th>
+                                              <?php echo $translator->translate('Take away cost'); ?>
+                                            </th>
+                                            <th>
+                                                <?php echo $translator->translate('Quantity'); ?>
+                                            </th>
+                                            <th>
+                                                <?php echo $translator->translate('Total cost'); ?>
+                                            </th>
+                                            <th>
+                                                <?php echo $translator->translate('Total take away cost'); ?>
+                                            </th>
+                                            <th>
+
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody class="tableOrderDetail" data-child="<?php echo count($combos); ?>" id="tableOrderDetail">
+                                        <input type="hidden" id="countChild" name="countChild" value="<?php echo count($combos); ?>">
+                                        <?php
+                                        if($combos){
+                                            $i = 1;
+                                            foreach($combos as $combo){
+                                                $menuCombo = \Velacolib\Utility\Utility::getMenuInfo($combo->getMenuChildId());
+
+                                                ?>
+                                            <tr id="detailRow-<?php echo $i; ?>">
+                                                <td>
+                                                    <select id="" data-parent="<?php echo $i; ?>" name="detail[data<?php echo $i; ?>][menuid]" class="input-block-level menu_select select2-icon" data-parent-id="">
+                                                        <option value="-1" data-cost="0">Select Menu</option>
+                                                    <?php
+                                                    $menusArray =    \Velacolib\Utility\Utility::getMenu();
+                                                    foreach($menusArray as $menuItem){
+                                                        $selected = '';
+                                                        if($menuCombo->getId() == $menuItem->getId()){
+                                                            $selected = 'selected';
+                                                        }
+                                                        //echo $selected;
+                                                        echo '<option '.$selected.' data-ta-cost="'.$menuItem->getTakeAwayCost().'" data-cost="'.$menuItem->getCost().'" value="'.$menuItem->getId().'" >'.$menuItem->getName().'</option>';
+                                                    }
+                                                    ?>
+                                                    </select>
+
+                                                </td>
+                                                <td><label class="menuCost"><?php echo number_format($menuCombo->getCost());  ?></label></td>
+                                                <td><label class="menuTaCost"><?php  echo number_format($menuCombo->getTakeAwayCost()); ?></label></td></td>
+
+                                                <td>
+
+                                                    <input type="text" name="detail[data<?php echo $i; ?>][menuQuantity]" class="quantityMenu" data-parent="<?php echo $i; ?>" value="<?php echo $combo->getMenuQuantity();  ?>" >
+                                                </td>
+                                                <td>
+                                                    <span class="totalCost"><?php echo  number_format($menuCombo->getCost()*$combo->getMenuQuantity())  ?></span>
+                                                </td>
+                                                <td>
+                                                    <span class="totalTaCost"><?php echo number_format($menuCombo->getTakeAwayCost()*$combo->getMenuQuantity())  ?></span>
+                                                </td>
+                                                <td>
+                                                    <div class="text-right">
+                                                        <a class="btn btn-danger btn-mini btn-remove-detail" data-parent="detailRow-<?php echo $i; ?>">
+                                                            <i class="icon-remove"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        <?php
+                                                $i ++;
+                                            }
+
+                                        }
+                                        ?>
+
+                                        </tbody>
+                                        <tbody class="tableOrderDetailAction" id="tableOrderDetailAction">
+                                        <tr>
+                                            <td>
+                                                <input type="button" class="btn btn-success  btn-default" value="<?php echo $translator->translate('Add new combo'); ?>" id="newOrderDetailRow">
+                                            </td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td> </td>
+                                            <td></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--end add combo -->
+
+                <div class="form-actions">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="icon-save"></i>
+                        <?php echo $translator->translate('Save'); ?>
+                    </button>
+                    <button class="btn" type="submit"><?php echo $translator->translate('Cancel'); ?></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).on('click','#newOrderDetailRow',function(){
+        var child = $('#tableOrderDetail').attr('data-child');
+        child = parseInt(child) + 1;
+        $('#tableOrderDetail').attr('data-child',child);
+        var row = '<tr id="detailRow-'+child+'">' +
+            '<td>' +
+            '<div class="row-fluid">\
+            <div class="span12">\
+        <select id="" data-parent="'+child+'" name="detail[data'+child+'][menuid]" \
+class="input-block-level menu_select select2-icon-ajax" data-parent-id="">\
+        <option value="-1" data-cost="0">Select Menu</option>'+
+        '<?php
+        $menus =    \Velacolib\Utility\Utility::getMenu();
+        foreach($menus as $menu){
+         echo '<option data-ta-cost="'.$menu->getTakeAwayCost().'" data-cost="'.$menu->getCost().'" value="'.$menu->getId().'" >'.$menu->getName().'</option>';
+       }
+         ?>'
+        +'</select>\
+        </div>\
+        </div>' +
+            '</td>'+
+            '<td><label class="menuCost">0</label>' +
+            '</td>'+
+            '<td><label class="menuTaCost">0</label></td>'+
+            '<td><input type="text" data-parent="'+child+'" name="detail[data'+child+'][menuQuantity]" class="quantityMenu" value="1"></td>'+
+            '<td><span class="totalCost">0</span></td>\
+            <td><span class="totalTaCost">0</span></td>\
+            <td><div class="text-right">\
+                <a class="btn btn-danger btn-mini btn-remove-detail" data-parent="detailRow-'+child+'">\
+                    <i class="icon-remove"></i>\
+                </a>\
+                </div>\
+            </td>'+
+            '</tr>';
+        $('#tableOrderDetail').append(row);
+        select2icon = function(e) {
+            return "<i class='" + e.text + "'></i>" + e.text;
+        };
+        $(".select2-icon-ajax").select2({
+            formatResult: select2icon,
+            formatSelection: select2icon,
+            escapeMarkup: function(e) {
+                return e;
+            }
+        });
+    });
+
+    $(document).on('click','.btn-remove-detail',function(){
+        var parentId = $(this).attr('data-parent');
+
+        $('#'+parentId).remove();
+        updateParentCode();
+    });
+
+    $(document).on('change','.menu_select',function(){
+        var cost = $(this).find(":selected").attr('data-cost');
+        var taCost = $(this).find(":selected").attr('data-ta-cost');
+        var dataParent = $(this).attr('data-parent');
+        var menuQuantity = $('#detailRow-'+dataParent+' .quantityMenu').val();
+
+        $('#detailRow-'+dataParent+' .menuCost').text(cost);
+        $('#detailRow-'+dataParent+' .menuTaCost').text(taCost);
+
+        $('#detailRow-'+dataParent+' .totalCost').text(cost*menuQuantity);
+        $('#detailRow-'+dataParent+' .totalTaCost').text(taCost*menuQuantity);
+
+
+        updateParentCode();
+//        var parent = $(this).attr('data-parent');
+//        var quantity = $('.quatity').val();
+//        $('#detailRow-'+parent+' .menucost').text(cost);
+//        $('#detailRow-'+parent+' .menucostInput').val(cost);
+//        $('#detailRow-'+parent+'  .realcost').text(cost*quantity);
+//        $('#detailRow-'+parent+'  .realcostInput').val(cost*quantity);
+//        totalRealCost();
+    });
+
+    $(document).on('change','.quantityMenu',function(){
+        var dataParent   = $(this).attr('data-parent');
+        var menuQuantity = $('#detailRow-'+dataParent+' .quantityMenu').val();
+        var cost = $('#detailRow-'+dataParent+' .menu_select').find(":selected").attr('data-cost');
+        var taCost = $('#detailRow-'+dataParent+' .menu_select').find(":selected").attr('data-ta-cost');
+
+        $('#detailRow-'+dataParent+' .menuCost').text(cost);
+        $('#detailRow-'+dataParent+' .menuTaCost').text(taCost);
+
+        $('#detailRow-'+dataParent+' .totalCost').text(cost*menuQuantity);
+        $('#detailRow-'+dataParent+' .totalTaCost').text(taCost*menuQuantity);
+
+        updateParentCode();
+    });
+
+    function updateParentCode(){
+        var costTotal = 0;
+        $('.totalCost').each(function(){
+            var cost = parseFloat($(this).text());
+            costTotal += cost;
+        })
+        $('#totalCost').val(costTotal);
+
+        var costTaTotal = 0;
+        $('.totalTaCost').each(function(){
+            var cost = parseFloat($(this).text());
+            costTaTotal += cost;
+        })
+        $('#totalTaCost').val(costTaTotal);
+
+    }
+</script>

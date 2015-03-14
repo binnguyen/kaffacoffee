@@ -1,0 +1,105 @@
+<?php
+
+if ( !isset($this->columns) || empty($this->columns) ) {
+    return '';
+}
+
+$searchables = array();
+$unsortables = array();
+$primaryKey = null;
+$action = null;
+$rowCallback = true;
+foreach ( $this->columns as $i => $c ) {
+    if ( isset($c['searchable']) && $c['searchable'] ) {
+        $searchables[] = $i;
+    }
+    if ( !isset($c['sortable']) || !$c['sortable'] ) {
+        $unsortables[] = $i;
+    }
+    if ( is_null($primaryKey) && isset($c['primaryKey']) && $c['primaryKey'] ) {
+        $primaryKey = $c;
+        $primaryKey['index'] = $i;
+    }
+}
+
+?>
+
+<table cellpadding="0" cellspacing="0" border="0" class="table table-bordered table-striped table-hover" id="listing">
+    <thead>
+    <tr>
+        <th width="20">
+            <?php if ( !is_null($primaryKey) ): ?>
+            <input type="checkbox" id="dtFullTableSelectAll" />
+            <?php endif; ?>
+        </th>
+        <?php foreach ( $this->columns as $i => $c ): ?>
+            <?php if ( $i != $primaryKey['index'] ): ?>
+            <th><?=$this->translate(isset($c['label']) ? $c['label'] : $c['field']); ?></th>
+            <?php endif; ?>
+        <?php endforeach; ?>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+    <tfoot>
+    <?php if ( !empty($this->actions) ): ?>
+    <tr>
+        <th colspan="<?php echo count($this->columns); ?>">
+            <div class="form-inline">
+                <? // TODO translate ?>
+                <label for="bulkAction">Select action</label>
+                <select name="bulkAction" id="bulkAction" style="width: auto; height: auto"  disabled="disabled">
+                    <option value="">---</option>
+                    <?php foreach ( $this->actions as $a ): ?>
+                    <option value="<?=$a['action']; ?>"><?=$this->translate($a['label']); ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <input type="submit" class="btn btn-small btn-primary" value="<?=$this->translate('Bulk action submit value'); ?>" id="bulkActionSubmit" disabled="disabled">
+            </div>
+        </th>
+    </tr>
+    <?php endif; ?>
+    </tfoot>
+</table>
+
+<script type="text/javascript">
+    /* Table initialisation */
+    $(document).ready(function() {
+        $("#listing").dataTable( {
+            "bAutoWidth": false,
+            "sAjaxSource": "<?=$this->ajaxUrl; ?>",
+            "oLanguage": {
+                // TODO handle language from config
+                "sUrl": "<?=$this->basePath(); ?>/js/datatables/locales/dataTables.vn.txt"
+            },
+            "aoColumnDefs": [
+                <?php if ( !empty($unsortables) ): ?>
+                { "bSortable": false, "aTargets": [ <?=implode(', ', $unsortables); ?> ] },
+                <?php endif; ?>
+
+                <?php if ( !is_null($primaryKey) ): ?>
+                {
+                    "mRender": function ( data, type, full ) {
+                        retVal = '<span type="text" class="idSelectCheckbox" id="idSelect' + full["<?=$primaryKey['field']; ?>"] + '" data-id="' + full["<?=$primaryKey['field']; ?>"] + '"  >' + full["<?=$primaryKey['field']; ?>"] + '</span>';
+                        return retVal;
+                    },
+                    "aTargets": [ <?=$primaryKey['index']; ?>]
+                },
+                <?php endif; ?>
+
+                <?php if ( !empty($searchables) ): ?>
+                { "bSearchable": true, "aTargets": [ <?=implode(', ', $searchables); ?> ] },
+                <?php endif; ?>
+
+                <?php foreach ( $this->columns as $i => $c ): ?>
+                { "mData": "<?=$c['field']; ?>", "aTargets": [<?=$i; ?>] }<?php if($i<(count($this->columns)-1)) echo ','; ?>
+                <?php endforeach; ?>      ,
+
+            ]
+
+
+        });
+
+        dataTableButtonsEvents();
+    });
+</script>

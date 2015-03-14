@@ -1,0 +1,19 @@
+<?php
+$title = array();
+$title['title'] = $this->title;
+$title['link'] =   $this->url('admin/child', array('controller'=>'category','action' => 'add'));
+
+$data = $this->data;
+$this->titleHelper($title);
+$partialData = array(
+    'ajaxUrl' => $this->url('admin/child', array('controller'=>'category','action' => 'ajax-list')),
+
+    'columns' => array(
+        0 => array('field' => 'id',  'searchable' => false,  'primaryKey' => true),
+        1 => array('field' => 'name',    'label' => 'Name',    'searchable' => true,   'sortable' => true),
+        2 => array('field' => 'action',    'label' => 'Action',    'searchable' => false,   'sortable' => false),
+         )
+
+);
+
+echo $this->partial('partial/listing.phtml', $partialData);

@@ -1,0 +1,153 @@
+<?php
+$heading = $this->heading;
+$data = $this->data;
+$callbackLink = $this->link;
+$hideDeleteButton = isset($this->hideDeleteButton) ? $this->hideDeleteButton : 0;
+$hideDetailButton = isset($this->hideDetailButton) ? $this->hideDetailButton : 0;
+$hideEditButton = isset($this->hideEditButton) ? $this->hideEditButton : 0;
+$hideFilter = isset($this->hideFilter) ? $this->hideFilter : 0;
+
+?>
+<div class="row-fluid">
+    <div class="span12 box bordered-box orange-border" style="margin-bottom:0;">
+        <div class="box-header orange-background">
+            <div class="title"><?php echo $this->tableTitle; ?></div>
+            <div class="actions">
+                <a href="#" class="btn box-remove btn-mini btn-link">
+                    <i class="icon-remove"></i>
+                </a>
+                <a href="#" class="btn box-collapse btn-mini btn-link">
+                    <i></i>
+                </a>
+            </div>
+        </div>
+        <div class="box-content box-no-padding">
+            <div class="responsive-table">
+                <div class="">
+                    <div class="dataTables_wrapper form-inline" role="grid">
+                        <div class="responsive-table">
+                            <div class="scrollable-area">
+                                <table class="data-table-column-filter table table-bordered table-striped dataTable"
+                                       style="margin-bottom:0;" id="DataTables_Table_<?php echo uniqid(); ?>"
+                                       aria-describedby="DataTables_Table_0_info">
+                                    <thead>
+                                    <tr role="row">
+                                        <?php
+                                        foreach ($heading as $k => $value) {
+                                            ?>
+                                            <th class="" role="columnheader" tabindex="0"
+                                                aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-sort=""
+                                                aria-label="Name : activate to sort column " style="width: 305px;">
+                                                <?php echo $value ?>
+                                            </th>
+                                        <?php
+                                        }
+                                        ?>
+                                        <?php
+                                        if ($hideDeleteButton == 0 || $hideDetailButton == 0 || $hideEditButton == 0) {
+
+                                            ?>
+                                            <th class="sorting" role="columnheader" tabindex="0"
+                                                aria-controls="DataTables_Table_0" rowspan="1" colspan="1"
+                                                aria-label=": activate to sort column " style="width: 138px;">
+
+                                            </th>
+                                        <?php } ?>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody role="alert" aria-live="polite" aria-relevant="all">
+                                    <!--loop -->
+
+                                    <?php
+                                    foreach ($data as $key => $value) {
+                                        ?>
+                                        <tr class="odd" id="table-row-<?php echo $value['id'] ?>">
+                                            <?php
+                                            foreach ($heading as $k1 => $v1) {
+                                                ?>
+                                                <td class=" sorting_1">
+                                                    <?php echo $value[$k1]; ?>
+                                                </td>
+                                            <?php
+                                            }
+                                            if ($hideDeleteButton == 0 || $hideDetailButton == 0 || $hideEditButton == 0) {
+
+                                                ?>
+                                                <td class=" ">
+                                                    <div class="text-right">
+                                                        <?php
+                                                        if ($hideDetailButton == 0) {
+                                                            ?>
+                                                            <a href="<?php echo '/' . $callbackLink . '/detail/' . $value['id']; ?>"
+                                                               title="Detail" class="btn btn-default btn-primary">
+                                                                <i class="icon-external-link "></i>
+                                                            </a>
+                                                        <?php } ?>
+
+
+
+                                                        <?php
+
+                                                        if ($hideEditButton == 0) {
+                                                            ?>
+                                                            <a title="Edit" class="btn btn-success btn-default"
+                                                               href="<?php echo '/' . $callbackLink . '/add/' . $value['id']; ?>">
+                                                                <i class="icon-edit"></i>
+                                                            </a>
+                                                        <?php
+                                                        }
+                                                        if ($hideDeleteButton == 0) {
+
+                                                            ?>
+                                                            <a title="Delete"
+                                                               class="btn btn-danger btn-default btn-delete"
+                                                               data-link="<?php echo '/' . $callbackLink; ?>"
+                                                               data-id="<?php echo $value['id'] ?>">
+                                                                <i class="icon-remove"></i>
+                                                            </a>
+                                                        <?php } ?>
+                                                    </div>
+                                                </td>
+                                            <?php } ?>
+                                        </tr>
+                                    <?php
+                                    }
+                                    ?>
+
+                                    <!---end loop -->
+                                    </tbody>
+                                    <?php if ($hideFilter == 0) { ?>
+                                        <tfoot>
+                                        <tr>
+                                            <?php
+
+                                            $n = count($heading);
+                                            $i = 0;
+                                            foreach ($heading as $key => $tfoots) {
+                                                $i++;
+                                                $i == $n ? $colspan = 2 : $colspan = 0;
+                                                ?>
+                                                <th colspan="<?= $colspan ?>"><?= $tfoots ?></th>
+                                            <?php
+                                            }
+                                            ?>
+
+                                        </tr>
+                                        </tfoot>
+                                    <?php } ?>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+//    $('.dataTable').dataTable({
+//        "bProcessing": false,
+//        "bServerSide": false
+//    }) ;
+</script>

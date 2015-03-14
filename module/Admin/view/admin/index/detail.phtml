@@ -1,0 +1,11 @@
+<?php
+$data = $this->data;
+$dataRow = $data['data'];
+$heading = $data['heading'];
+$title = array();
+$title['title'] = $this->title;
+$title['link'] =   $this->url('admin/child', array('controller'=>'index','action' => 'add'));
+$this->titleHelper($title);
+
+$this->detailHelper($data);
+$this->tableHelper($this->dataChild);

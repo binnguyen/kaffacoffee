@@ -1,0 +1,16 @@
+<?php
+$button = $this->button;
+
+?>
+<div class="container" style="margin: 20px 0px">
+    <div class="row-fluid">
+        <div class="span12">
+            <button id="print" class="btn btn-primary" onclick="return print();" type="button"><?php echo $button['ButtonName'] ?></button>
+        </div>
+    </div>
+</div>
+<script>
+    function print(){
+        window.open('<?php echo $this->url('frontend/child',array('controller'=>'order','action'=>'print','id'=>$button['id'])); ?>', '<?php echo $button['windowName'] ?>', 'height=1000,width=<?php echo $button['width'] ?> ')
+    }
+</script>

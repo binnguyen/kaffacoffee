@@ -1,0 +1,145 @@
+<?php
+$title = array();
+$title['title'] = $this->title;
+$title['link'] =   $this->url('admin/child', array('controller'=>'menustore','action' => 'add'));
+$this->titleHelper($title);
+$data = $this->data;
+$translator = \Velacolib\Utility\Utility::translate();
+$menus  = \Velacolib\Utility\Utility::getMenuStoreArrayAutoComplete(false);
+?>
+<form action="<?php echo $this->url('admin/child',array('controller'=>'menustore', 'action'=>'addmulti')) ?>" method="POST" >
+<div class="row-fluid">
+    <div class="span12 box bordered-box blue-border" style="margin-bottom:0;">
+        <div class="box-content box-no-padding">
+            <div class="responsive-table">
+                <div class="scrollable-area">
+                    <table class="table" style="margin-bottom:0;">
+
+                        <thead>
+                            <tr>
+                            <th>
+                                Tên
+                            </th>
+                            <th>
+                                Số lượng
+                            </th>
+                            <th>
+                               Đơn vị
+                            </th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody id="new-row" data-child="0">
+
+
+                        </tbody>
+                        <tbody class="tableOrderDetailAction" id="tableOrderDetailAction">
+                        <tr>
+                            <td>
+                                <input type="button" class="btn btn-success  btn-default" value="Thêm chi tiết thực đơn" id="addMenuItem">
+                                <input type="submit" class="btn btn-primary btn-save-order" value="Lưu" id="">
+                            </td>
+                            <td>
+
+                            </td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+<?php if($data){     ?>
+
+<?php } ?>
+
+<script>
+    //function
+    function render(child){
+        var html = '<tr id="row-'+child+'">'+
+            '<td data-parent="'+child+'">'
+            +'<select name="item['+child+'][name]"  class="select2-icon-ajax input-block-level select-menu-main">'
+            +'<?php
+                        echo '<option></option>';
+                        foreach($menus as $menu){
+                            echo    '<option data-unit="'.$menu['unit'].'" data-id="'.$menu['id'].'"data-quantityInStock="'.$menu['quantityInStock'].'" data-outOfStock="'.$menu['outOfStock'].'"data-supplyType="'.$menu['supplyType'].'" value="'.$menu['name'].'">'.$menu['name'].' </option>';
+                    }
+
+            ?></select>'+
+            '</td>\
+            <td><input value="0" name="item['+child+'][quantity]" style="float: left; width: 40%; margin-right: 10px" type="text" class="quantity" data-parent="'+child+'"><input type="hidden" class="maximun"><label class="label-max"></label></td>\
+            <td>\
+                <span class="label unit label-important"></span>\
+                <input name="item['+child+'][unit]" type="hidden" class="label unit label-important"></span>\
+                <input name="item['+child+'][supplyType]" type="hidden" class="data-supply type label-important"></span>\
+                <input name="item['+child+'][id]" type="hidden" class="data-id type label-important"></span>\
+            </td>\
+            <td>\
+                <div class="text-right">\
+                <a class="btn btn-danger btn-mini btn-delete-row" data-parent="'+child+'">\
+                <i class="icon-remove"></i>\
+                </a>\
+                </div>\
+            </td>\
+            </tr>';
+        return html;
+    }
+    //end function
+
+    //event
+    ///click
+    $(document).on('click','#addMenuItem',function(){
+        var child = $('#new-row').attr('data-child');
+        child = parseInt(child) + 1;
+        var row = render(child);
+        $('#new-row').append(row);
+        select2icon = function(e) {
+            return "<i class='" + e.text + "'></i>" + e.text;
+        };
+        $(".select2-icon-ajax").select2({
+            formatResult: select2icon,
+            formatSelection: select2icon,
+            escapeMarkup: function(e) {
+                return e;
+            }
+        });
+        var child = $('#new-row').attr('data-child', child);
+    });
+    $(document).on('click','.btn-delete-row',function(){
+        var parent = $(this).attr('data-parent');
+        $('#row-'+parent).remove();
+    });
+
+    //change
+    $(document).on('change','.select-menu-main',function(){
+       var unit = $(this).find(':selected').attr('data-unit');
+       var parent = $(this).parent().attr('data-parent');
+       var maximun = $(this).find(':selected').attr('data-quantityinstock');
+        if(maximun == '')
+        {
+            maximun = 0;
+        }
+       var data_supplytype = $(this).find(':selected').attr('data-supplytype');
+       var id = $(this).find(':selected').attr('data-id');
+       $('#row-'+parent+' .unit ').text(unit);
+       $('#row-'+parent+' .unit ').val(unit);
+       $('#row-'+parent+' .maximun').val(maximun);
+       $('#row-'+parent+' .label-max').text(maximun);
+       $('#row-'+parent+' .data-supply').val(data_supplytype);
+       $('#row-'+parent+' .data-id').val(id);
+    });
+    $(document).on('change','.quantity',function(){
+       var parent = $(this).attr('data-parent');
+       var val = $(this).val();
+        var max = $('#row-'+parent+' .maximun').val();
+        if(val >= parseFloat(max) ){
+            $(this).val(max);
+        }
+    });
+
+    //end event
+</script>

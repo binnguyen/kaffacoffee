@@ -1,0 +1,102 @@
+<?php
+$menuStore = Velacolib\Utility\Utility::getMenuStore() ;
+$translator = Velacolib\Utility\Utility::translate();
+?>
+<div class='controls'>
+    <div class='caret'></div>
+    <div class='form-wrapper'>
+        <h1 class='text-center'><?php echo $translator->translate('Report Total menu store'); ?></h1>
+        <form accept-charset="UTF-8" action="<?php echo $this->url('admin/child',array('controller'=>'report','action'=>'menu')); ?>" method="post" /><div style="margin:0;padding:0;display:inline"></div>
+        <div class='row-fluid'>
+
+            <div class='span6 icon-over-input'>
+                <label><?php echo $translator->translate('Start date'); ?></label>
+                <div>
+                    <input type="text" name="start" class="date-picker">
+                </div>
+            </div>
+            <!-- -->
+            <div class='span6 icon-over-input'>
+                <label><?php echo $translator->translate('End date'); ?> </label>
+                <div>
+                    <input type="text" name="end" class="date-picker">
+                </div>
+            </div>
+            <!-- -->
+            </div>
+        <div class="row-fluid">
+            <div class='span7 icon-over-input'>
+                <select name="menu" class="span5" onchange="this.form.submit()">
+                    <option value="0"><?php echo $translator->translate('Select menu store'); ?></option>
+                    <?php
+                    foreach($menuStore as $menu):   ?>
+                        <option value="<?=$menu->getId()?>"><?=$menu->getName();?></option>
+                    <?php
+                    endforeach;
+                    ?>
+                </select>
+            </div>
+            <div class="span3">
+                <input type="checkbox" name="export" value="true"> <?php echo $translator->translate('Export'); ?>
+            </div>
+        </div>
+              <button class="btn btn-danger"  type="submit" ><?php echo $translator->translate('Find'); ?></button>
+        </form>
+        <div class='text-center'>
+            <hr class='hr-normal' />
+
+        </div>
+    </div>
+</div>
+<?php if(isset($menuItem)): ?>
+<div class="row-fluid">
+    <h3>Find by : <?php $menustoreInfo = Velacolib\Utility\Utility::getMenuStoreInfo($menuId); echo $menustoreInfo->getName() ?></h3>
+    <table class="table">
+        <thead>
+
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Unit</th>
+            <th>Order</th>
+            <th>Sum</th>
+
+        </thead>
+        <tbody>
+
+        <?php
+        $totals  = 0;
+        foreach($menuItem as $item): ?>
+        <tr>
+            <td>
+                <?php $menuInfo =  Velacolib\Utility\Utility::getMenuInfo($item->getMenuId()); ?>
+                <?php echo $menuInfo->getName().$item->getMenuId() ?>
+            </td>
+            <td><?php echo $item->getQuantity();  ?></td>
+            <td><?php echo $item->getUnit();  ?></td>
+            <td><?php $orderDetail = Velacolib\Utility\Utility::countOrderDetail($item->getMenuId(),$start,$end);
+
+                $sum =  $orderDetail[0][1];
+                echo $sum;
+                ?>
+            </td>
+            <td>
+                <?php
+                $total =  $sum * $item->getQuantity();
+                echo $total;
+                $totals += $total;
+                ?>
+            </td>
+
+        </tr>
+        <?php endforeach; ?>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="4">Summary</td>
+            <td ><?php echo $totals; ?></td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+<?php endif ?>
+

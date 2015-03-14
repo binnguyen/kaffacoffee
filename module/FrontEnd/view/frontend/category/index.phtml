@@ -1,0 +1,11 @@
+<?php
+$data = $this->data;
+$this->titleHelper('Category');
+$this->tableHelper($data);
+?>
+<script>
+    $('.dataTable').dataTable({
+        "bProcessing": false,
+        "bServerSide": false
+    }) ;
+</script>

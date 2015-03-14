@@ -1,0 +1,23 @@
+<?php
+$title = array();
+$title['title'] = $this->title;
+$title['link'] =   $this->url('admin/child', array('controller'=>'tracking-tore','action' => 'add'));
+$this->titleHelper($title);
+$partialData = array(
+    'ajaxUrl' => $this->url('admin/child', array('controller'=>'tracking-tore','action' => 'ajax-list')),
+    'actions' => array(
+        'edit' => array('action' => 'edit', 'label' => 'Edit'),
+        'delete' => array('action' => 'delete', 'label' => 'Delete')
+    ),
+    'columns' => array(
+        0 => array('field' => 'id',                                    'searchable' => false,  'primaryKey' => true),
+        1 => array('field' => 'name',    'label' => 'Name',    'searchable' => true,   'sortable' => true),
+        2 => array('field' => 'quantity',    'label' => 'Quantity',    'searchable' => true,   'sortable' => true),
+        3 => array('field' => 'supplierItemName',    'label' => 'Name',    'searchable' => true,   'sortable' => true),
+        4 => array('field' => 'note',    'label' => 'Note',    'searchable' => true,   'sortable' => true),
+        5 => array('field' => 'time',    'label' => 'Time',    'searchable' => true,   'sortable' => true),
+        6 => array('field' => 'action',    'label' => 'Action',    'searchable' => true, 'action'=>true ,  'sortable' => false),
+    )
+);
+
+echo $this->partial('partial/listing.phtml',$partialData);

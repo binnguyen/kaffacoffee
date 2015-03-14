@@ -1,0 +1,14 @@
+<?php
+$heading = $this->heading;
+$data = $this->data;
+$callbackLink = $this->link;
+$list = array();
+    foreach($data as $item) {
+        $listItem = array();
+        foreach ($heading as $k => $head) {
+            $listItem[$k] = strip_tags($item[$k]);
+        }
+        $list[] = $listItem;
+    }
+echo json_encode(array('data'=>$list));
+

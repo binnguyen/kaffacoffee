@@ -1,0 +1,150 @@
+<?php
+$title = array();
+$title['title'] = $this->title;
+$title['link'] =   $this->url('admin/child', array('controller'=>'transaction','action' => 'inserttransaction'));
+$this->titleHelper($title);
+$data = $this->data;
+$translator = \Velacolib\Utility\Utility::translate();
+$menStoreId = $this->menuStoreId;
+$menuStore = $this->menuStore;
+?>
+<div class="row-fluid">
+    <div class="span12 box">
+        <div class="box-header blue-background">
+            <div class="title">
+                <div class="icon-edit"></div>
+                <?php echo $this->title; ?>
+            </div>
+            <div class="actions">
+                <a href="#" class="btn box-remove btn-mini btn-link"><i class="icon-remove"></i>
+                </a>
+                <a href="#" class="btn box-collapse btn-mini btn-link"><i></i>
+                </a>
+            </div>
+        </div>
+        <div class="box-content">
+            <form accept-charset="UTF-8" action="<?php
+            $url = $this->url('admin/child',array('controller'=>'transaction','action'=>'inserttransaction'));
+
+            echo $url; ?>" class="form form-horizontal" method="post"
+                  style="margin-bottom: 0;">
+
+                <input type="hidden" name="id" value="<?php if($data){ echo $data->getId();} ?>">
+
+                <div class="control-group">
+                    <label class="control-label" for="inputText1"><?php echo $translator->translate('Name'); ?></label>
+                    <div class="controls">
+                        <input type="text" value="<?php echo $menuStore->getName(); ?>">
+                        <!--                        <input id="" placeholder="Name" name="name" type="text" value="--><?php //if($data){echo $data->getName();} ?><!--">-->
+
+                        <?php
+                        $menuStoreMains = \Velacolib\Utility\Utility::getMenuInMenuStore($this->menuStoreId);
+
+                        ?>
+
+                        <input type="hidden" name="mainMenuStoreId" id="mainMenuStoreId" value="<?php echo $menStoreId; ?>">
+
+
+                    </div>
+                </div>
+
+
+                <!-- Quantity -->
+                <div class="control-group">
+                    <label class="control-label" for="inputText1"><?php echo $translator->translate('Quantity'); ?></label>
+                    <div class="controls">
+                        <input  class=""  id="number_after_new" placeholder="Quantity" name="quantity" type="text"  value="">
+
+                        <input readonly type="text" name="unit" id="unit_store_new" value="<?php echo $menuStore->getUnit();?>">
+                    </div>
+                </div>
+                <!-- Quantity -->
+                <div class="control-group">
+                    <label class="control-label" for="inputText1"><?php echo $translator->translate('Create date'); ?></label>
+                    <div class="controls">
+                        <div class="datepicker input-append" id="datepicker">
+                            <input class="input-medium" name="toDate" data-format="yyyy-MM-dd" placeholder="<?php echo $translator->translate('Create date');?>" type="text" value="">
+                <span class="add-on">
+                  <i data-date-icon="icon-calendar" data-time-icon="icon-time" class="icon-calendar"></i>
+                </span>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+                <!-- --->
+                <!--                <div class="control-group">-->
+                <!--                    <label class="control-label" for="inputText1">--><?php //echo $translator->translate('Cost'); ?><!--</label>-->
+                <!--                    <div class="controls">-->
+                <!--                        <input id="" placeholder="Cost" name="cost" type="text" value="--><?php //if($data){echo $data->getCost();} ?><!--">-->
+                <!--                    </div>-->
+                <!--                </div>-->
+
+                <!--- -->
+
+
+
+                <div class="control-group">
+                    <label class="control-label" for="inputText1"><?php echo $translator->translate('Transaction type'); ?></label>
+                    <div class="controls">
+                        <select name="action" >
+                            <option value="N"><?php echo $translator->translate('Input'); ?></option>
+                            <option value="X"><?php echo $translator->translate('Output'); ?></option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="inputText1"><?php echo $translator->translate('Cost'); ?></label>
+                    <div class="controls">
+                        <input class="input-medium" name="cost" placeholder="<?php echo $translator->translate('Cost');?>" type="text" value="">
+                    </div>
+                </div>
+
+
+                <div class="control-group">
+                    <label class="control-label" for="inputText1"><?php echo $translator->translate('Description'); ?></label>
+                    <div class="controls">
+                        <textarea name="des"><?php if($data){echo $data->getDes();} ?></textarea>
+                    </div>
+                </div>
+
+
+                <div class="form-actions">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="icon-save"></i>
+                        <?php echo $translator->translate('Save'); ?>
+                    </button>
+                    <button class="btn" type="submit"><?php echo $translator->translate('Cancel'); ?></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<?php if($data){     ?>
+
+<?php } ?>
+
+<script>
+    $(document).on('change','#select_menu_store_main',function(){
+
+        var unit = $(this).find(':selected').attr('data-unit');
+        var id = $(this).find(':selected').attr('data-id');
+        var quantityInStock = $(this).find(':selected').attr('data-quantityInStock');
+        var outOfStock = $(this).find(':selected').attr('data-outOfStock');
+        var supplyType = $(this).find(':selected').attr('data-supplyType');
+        if(unit == 0){
+            $('#unit_store_new').val(0);
+            $('#labelOutOfStock').text('');
+        }
+        $('#mainMenuStoreId').val(id);
+        $('#unit_store_new').val(unit);
+        $('#outOfStock').val(outOfStock);
+        $('#labelOutOfStock').text(quantityInStock);
+        $('#supplyType').val(supplyType);
+        $('#number_after_new').attr('in_stock',quantityInStock);
+    });
+
+</script>
