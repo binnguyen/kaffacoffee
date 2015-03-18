@@ -7,122 +7,80 @@
  */
 namespace Admin\Controller;
 use Admin\Entity\Categories;
-use Admin\Entity\Table;
+use Admin\Form;
+use Admin\Form\categoryForm;
+use Velacolib\Utility\Table;
+use Velacolib\Utility\Table\AjaxTable;
+use Velacolib\Utility\Table\Detail;
 use Admin\Model\categoryModel;
-use Velacolib\Utility\Utility;
 use Zend\View\Model\ViewModel;
 use Zend\Mvc\Controller\AbstractActionController;
 
 
 
-class CategoryController extends BaseController
+class CategoryController extends AdminGlobalController
 {
-    protected   $modelCategories;
+    protected   $catModel;
     protected  $translator;
 
-    public function onDispatch(\Zend\Mvc\MvcEvent $e){
 
-        $service_locator_str = 'doctrine';
-        $this->sm = $this->getServiceLocator();
-        $CategoriesTable = $this->sm->get($service_locator_str);
-        $this->modelCategories = new categoryModel($CategoriesTable);
-        $this->translator = Utility::translate();
-        //check login
-        $user = Utility::checkLogin($this);
-        if(! is_object($user) && $user == 0){
-            $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }else{
-            $isPermission = Utility::checkRole($user->userType,ROLE_ADMIN);
-            if( $isPermission == false)
-                $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }
-        //end check login
 
-        return parent::onDispatch($e);
+    public function init(){
+        parent::init();
+        $this->catModel = new categoryModel($this->doctrineService);
     }
 
 
     public function indexAction()
     {
-//        $categories = $this->modelCategories->findBy(array('isdelete'=>'0'));
-//        //tableTitle = table heading
-//        //datarow row of table... render by heading key
-//        //heading key = table column name
-//        $dataRow = $this->modelCategories->convertToArray($categories);
-//        $data =  array(
-//            'tableTitle'=> $this->translator->translate('Manage categories'),
-//            'link' => 'admin/category',
-//            'data' =>$dataRow,
-//            'heading' => array(
-//                'id' => 'Id',
-//                'name' => $this->translator->translate('Name')
-//            ),
-//            'hideDetailButton' => 1
-//        );
-        return new ViewModel(array('title'=> $this->translator->translate('Category')));
+
+        //config table
+        /////column for table
+        $columns = array(
+            array('title' =>'Id', 'db' => 'id', 'dt' => 0, 'search'=>true, 'type' => 'number','name'=>'id' ),
+            array('title' =>'Name', 'db' => 'name','dt' => 1, 'search'=>true, 'type' => 'text','name'=>'name' ),
+            array('title' =>'Action', 'db' => 'id','dt' => 2, 'search'=>true, 'type' => 'number',
+                'formatter' => function( $d, $row ) {
+                    $actionUrl = '/admin/category';
+                    return '
+
+                        <a class="btn-xs action action-detail btn btn-success btn-default" href="'.$actionUrl.'/add/'.$d.'"><i class="icon-edit"></i></a>
+                         <a data-id="'.$d.'" id="'.$d.'" data-link="'.$actionUrl.'" class="btn-xs action action-detail btn btn-danger  btn-delete " href="javascript:void(0)"><i class="icon-remove"></i></a>
+                    ';
+                }
+            )
+
+        );
+        /////end column for table
+        $table = new AjaxTable($columns, array(), 'admin/category');
+        $table->setTablePrefix('cat');
+        $table->setExtendSQl(array(
+            array('AND','cat.isdelete','=','0'),
+        ));
+        $table->setAjaxCall('/admin/category');
+        $table->setActionDeleteAll('deleteall');
+        $this->tableAjaxRequest($table,$columns,$this->catModel);
+        //end config table
+        return new ViewModel(array('table' => $table,
+            'title' => $this->translator->translate('Category'))
+        );
     }
 
 
-
-    public function ajaxListAction()
+    public function detailAction()
     {
 
-        $fields = array(
-            'id',
-            'name',
+        $id = $this->params()->fromRoute('id');
+        $menuInfo = $this->catModel->findOneBy(array('id'=>$id));
+        $dataRow = $this->catModel->convertSingleToArray($menuInfo);
+
+        $column = array(
+            array('title'=>'id','data'=>'id'),
+            array('title'=>'name','data'=>'name'),
         );
-
-        $offset = $this->getDataTableQueryOffset();
-        $limit = $this->getDataTableQueryLimit();
-        $sortCol = $this->getDataTableQuerySortingColumn();
-        $sortDirection = $this->getDataTableQuerySortingDirection();
-        $search = $this->getDataTableQuerySearch();
-        $customWhere  = ' c.isdelete = 0 ';
-        // WHERE conditions
-
-        $customQuery = $this->customWhereSql($customWhere);
-
-
-        $dqlWhere = $this->getDataTableWhereDql('c', $fields, $search,$customWhere);
-
-        if ( !empty($dqlWhere) ) {
-            $customQuery = '';
-        }
-
-        $dqlOrder = $this->getDataTableOrderDql('c', $fields, $sortCol, $sortDirection);
-
-        // DQL
-        $dql = "SELECT c FROM Admin\Entity\Categories c";
-        // RESULTS
-        $query = $this->getEntityManager()->createQuery($dql . $customQuery .$dqlWhere . $dqlOrder);
-        if ( !empty($dqlWhere) ) {
-            $query->setParameter(':search', '%' . $search . '%');
-        }
-        $results = $query->setMaxResults($limit)
-            ->setFirstResult($offset)
-            ->getResult();
-
-        // TOTAL RESULTS COUNT
-        $countDql = "SELECT COUNT(c.id) FROM Admin\Entity\Categories c";
-        $count = $this->getEntityManager()->createQuery($countDql)->getSingleScalarResult();
-
-        $ret = array_map(function($item) {
-
-            $linkEdit =   '/admin/category/add/'.$item->getId() ;
-            $linkDelete =  '/admin/category/delete/'.$item->getId() ;
-            $linkDetail =   '/admin/category/detail/'.$item->getId() ;
-
-            return array(
-                'DT_RowId'=> 'rowID_'.$item->getId(),
-                'id' => $item->getId(),
-                'name' => $item->getName() ,
-                'action'=> '
-                <a class="btn btn-primary" href="'.$linkEdit.'"><i class="icon-edit-sign"></i></a>
-                <a id="'.$item->getId().'"  data-link="'.$linkDelete.'" data-id="'.$item->getId().'" href="#" class="btn btn-danger btn-delete"><i class="icon-trash"></i></a>'
-            );
-        }, $results);
-
-        return $this->getDataTableJsonResponse($ret, $count, $dqlWhere);
+        $detailTable = new Detail($column,$dataRow , 'admin/category');
+        $detailTable->setDetailTitle($dataRow['name']);
+        return new ViewModel(array('detailTable' => $detailTable,'title'=> $dataRow['name'] ));
 
     }
 
@@ -138,7 +96,7 @@ class CategoryController extends BaseController
                 $cat = new Categories();
                 $cat->setName($this->params()->fromPost('name'));
                 $cat->setIsdelete(0);
-                $catInserted = $this->modelCategories->insert($cat);
+                $catInserted = $this->catModel->insert($cat);
             }
             //insert new user
             //$this->redirect()->toRoute('admin/child',array('controller'=>'category'));
@@ -146,13 +104,13 @@ class CategoryController extends BaseController
         }
         else{
 
-            $cat = $this->modelCategories->findOneBy(array('id'=>$id));
+            $cat = $this->catModel->findOneBy(array('id'=>$id));
             if($request->isPost()){
                 $idFormPost = $this->params()->fromPost('id');
-                $cat = $this->modelCategories->findOneBy(array('id'=>$idFormPost));
+                $cat = $this->catModel->findOneBy(array('id'=>$idFormPost));
                 $cat->setName($this->params()->fromPost('name'));
                 $cat->setIsdelete(0);
-                $this->modelCategories->edit($cat);
+                $this->catModel->edit($cat);
             }
             return new ViewModel(array(
                 'data' =>$cat,
@@ -166,9 +124,9 @@ class CategoryController extends BaseController
         $request = $this->getRequest();
         if($request->isPost()){
             $id = $this->params()->fromPost('id');
-            $menu = $this->modelCategories->findOneBy(array('id'=>$id));
+            $menu = $this->catModel->findOneBy(array('id'=>$id));
             $menu->setIsdelete(1);
-            $this->modelCategories->edit($menu);
+            $this->catModel->edit($menu);
             //$this->model->delete(array('id'=>$id));
             echo 1;
         }

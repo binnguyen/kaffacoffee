@@ -11,23 +11,19 @@ use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 use Zend\Paginator\Paginator;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
 use Doctrine\ORM\Query;
-use Doctrine\DBAL\DriverManager;
 
 
 abstract class   globalModel {
     protected $entityName;
     protected $objectManager;
-    protected $hydrator;
+    protected $hydratorService ;
+    protected $querybuilder;
 
     function __construct($controller)
     {
         $this->objectManager = $controller;
-//            ->getServiceLocator()
-//            ->get('Doctrine\ORM\EntityManager');
-        $this->hydrator = new DoctrineObject(
-            $this->objectManager,
-            $this->entityName
-        );
+        $this->hydratorService  = new DoctrineObject($this->objectManager,$this->entityName);
+        $this->querybuilder = $this->objectManager->getRepository($this->entityName);
     }
     /**
      * @return mixed
@@ -59,6 +55,38 @@ abstract class   globalModel {
     public function setObjectManager($objectManager)
     {
         $this->objectManager = $objectManager;
+    }
+
+    /**
+     * @return DoctrineObject
+     */
+    public function getHydratorService()
+    {
+        return $this->hydratorService;
+    }
+
+    /**
+     * @param DoctrineObject $hydratorService
+     */
+    public function setHydratorService($hydratorService)
+    {
+        $this->hydratorService = $hydratorService;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getQuerybuilder()
+    {
+        return $this->querybuilder;
+    }
+
+    /**
+     * @param mixed $querybuilder
+     */
+    public function setQuerybuilder($querybuilder)
+    {
+        $this->querybuilder = $querybuilder;
     }
 
 
@@ -101,12 +129,15 @@ abstract class   globalModel {
 
     public function findAll(){
 
-        $resault = $this->objectManager->getRepository($this->entityName)->findAll();
+        $resault = $this->objectManager->
+        getRepository($this->entityName)
+            ->findAll();
         return $resault;
     }
 
-    public function findBy($array,$sort = array()){
-        $resault = $this->objectManager->getRepository($this->entityName)->findBy($array,$sort);
+    public function findBy($array, $oderArray = array(), $limit = null, $offet = null){
+        $resault = $this->objectManager->getRepository($this->entityName)
+            ->findBy($array,$oderArray,$limit,$offet);
         return $resault;
     }
 
@@ -144,51 +175,26 @@ abstract class   globalModel {
         $this->objectManager->flush();
     }
 
-    public function paginator($where_array =  array(),$order = array(),$current_page , $postPerPage){
+    public function paginator($whereArray =  array(),$currentPage , $perPage){
         $str = 'SELECT  obj FROM '.$this->entityName.' obj ';
         $where_str = '';
-        foreach($where_array as  $where){
+        foreach($whereArray as  $where){
+
             if($where_str == '')
                 $where_str .= 'WHERE '.$where;
             else
-                $where_str .= ' AND '.$where;
+                $where_str .= ''.$where;
         }
         $str .=  $where_str;
-
-
-                //get total
-        $querybuilder = $this->objectManager->getRepository($this->entityName)->createQueryBuilder('obj');
-        $rs = $querybuilder
-            ->select(' count(obj) as count_table')
-            ->where(str_replace('WHERE','',$where_str))
-            ->getQuery()
-            ->getResult();
-       //end get total
-
-
-        if($order['orderBy']){
-            $where_str .= $order['orderBy'].' '.$order['order'];
-        }
         $query = $this->objectManager->createQuery($str);
         // Create the paginator itself
-        $paginator = new Paginator(new DoctrinePaginator(new ORMPaginator($query)));
-
-
-
-
-
-        $totalItems = $rs[0]['count_table'];
-        $pagesCount = ceil($totalItems / $postPerPage);
-
-        $paginator
-            ->setCurrentPageNumber($current_page)
-            ->setItemCountPerPage($postPerPage);
-
-        return array(
-            'paginator' => $paginator,
-            'itemPerPage'=> $postPerPage,
-            'pageCount' => $pagesCount
+        $paginator = new Paginator(
+            new DoctrinePaginator(new ORMPaginator($query))
         );
+        $paginator
+            ->setCurrentPageNumber($currentPage)
+            ->setItemCountPerPage($perPage);
+        return $paginator;
     }
 
     /**
@@ -208,24 +214,36 @@ abstract class   globalModel {
         return $return;
     }
     public  function convertSingleToArray($datas){
-            $array = array();
-            $array['id'] = $datas->getId();
-            $array['name'] = $datas->getName();
+        $array = array();
+        $array['id'] = $datas->getId();
+        $array['name'] = $datas->getName();
         return $array;
     }
 
 
     //use when create builder sql str
-    public function createQuery($strQuery){
-        $querybuilder = $this->objectManager->getRepository($this->entityName)->createQueryBuilder('c');
-                $test = $querybuilder->select('c')
-                    ->where('c.userName like \'user1\' and c.isdelete = 0')
-                    ->groupBy('c.userName')
-                    ->orderBy('c.id', 'ASC')
-                    ->getQuery()
-                    ->getResult();
-                echo '<pre>';
-                print_r($test);
-                echo '<pre>';
+    public function createQuery($strQuery,$limit = null, $offset = null){
+        $query = $this->querybuilder->createQueryBuilder('c');
+        $return = $query->select('c')
+            ->where($strQuery)
+            ->setMaxResults($limit)
+            ->setFirstResult($offset)
+            ->getQuery()
+            ->getResult();
+        return $return;
+    }
+
+    public function createQueryTest($strQuery,$limit = null, $offset = null){
+        $query = $this->querybuilder->createQueryBuilder('c');
+        $return = $query->select('c')
+//            ->where('c.isdelete = :isdelete  AND c.name = :name ')
+            ->where('c.isdelete = :isdelete ')
+            ->setMaxResults($limit)
+            ->setFirstResult($offset)
+            ->orderBy('c.id','DESC')
+            ->setParameter(':isdelete','0')
+            ->getQuery()
+            ->getResult();
+        return $return;
     }
 }
