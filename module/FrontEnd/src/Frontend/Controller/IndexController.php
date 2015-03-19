@@ -36,9 +36,8 @@ class IndexController extends FrontEndController
             array('title' =>'Category', 'db' => 'catId','dt' => 2, 'search'=>false, 'type' => 'number',
                 'dataSelect' => Utility::getCategoryForSelect()
             ),
-            array('title' =>'cost', 'db' => 'Cost','dt' => 3, 'search'=>false, 'type' => 'number' ),
-            array('title' =>'Take Away cost', 'db' => 'Take Away Cost','dt' => 4, 'search'=>false, 'type' => 'number' ),
-
+            array('title' =>'Cost', 'db' => 'cost','dt' => 3, 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Take Away cost', 'db' => 'taCost','dt' => 4, 'search'=>false, 'type' => 'number' ),
 
         );
 

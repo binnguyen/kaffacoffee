@@ -8,6 +8,7 @@
 namespace Frontend\Controller;
 use Admin\Entity\Categories;
 use Admin\Entity\Table;
+use Velacolib\Utility\Table\AjaxTable;
 use Admin\Model\categoryModel;
 use Admin\Model\comboModel;
 use Admin\Model\menuModel;
@@ -28,31 +29,31 @@ class ComController extends FrontEndController
     }
     public function indexAction()
     {
-        $combos = $this->modelMenu->findBy(array('isdelete'=>'0','isCombo'=>1));
-        //tableTitle = table heading
-        //datarow row of table... render by heading key
-        //heading key = table column name
-        $dataRow = $this->modelMenu->convertToArray($combos);
-        $data =  array(
-            'tableTitle'=> $this->translator->translate('Manage combo'),
-            'link' => 'frontend/index',
-            'data' =>$dataRow,
-            'heading' => array(
-                'id' => 'Id',
-                'name' => $this->translator->translate('Name'),
-                'cost' => $this->translator->translate('Cost'),
-                'taCost' => $this->translator->translate('Take away'),
-                'catId' => $this->translator->translate('Category'),
-                'isCombo' => $this->translator->translate('Combo'),
-                'desc' => $this->translator->translate('Desc'),
-//                'image' => 'Image',
+        $columns = array(
+            array('title' =>'Id', 'db' => 'id', 'dt' => 0, 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Name', 'db' => 'name','dt' => 1, 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Category', 'db' => 'catId','dt' => 2, 'search'=>false, 'type' => 'number',
+                'dataSelect' => Utility::getCategoryForSelect()
             ),
-            'hideDeleteButton' => 1,
-            'hideDetailButton' => 0,
-            'hideEditButton' => 1
-        );
+            array('title' =>'Cost', 'db' => 'cost','dt' => 3, 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Take Away cost', 'db' => 'taCost','dt' => 4, 'search'=>false, 'type' => 'number' ),
 
-        return new ViewModel(array('data'=>$data ,'title'=> $this->translator->translate('Manage combo')));
+        );
+        /////end column for table
+        $table = new AjaxTable($columns, array(), 'frontend/com');
+        $table->setTablePrefix('m');
+        $table->setExtendSQl(
+            array(
+                array('AND','m.isdelete','=','0'),
+                array('AND','m.isCombo','=','1'),
+            )
+        );
+        $table->setAjaxCall('/frontend/com');
+        $table->setActionDeleteAll('deleteall');
+        $this->tableAjaxRequest($table,$columns,$this->modelMenu);
+        //end config table
+        return new ViewModel(array('table' => $table,
+            'title' => $this->translator->translate('Combo')));
     }
     public function addAction()
     {
