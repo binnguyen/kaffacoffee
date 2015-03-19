@@ -8,10 +8,12 @@
 namespace Frontend\Controller;
 
 use Admin\Model\transactionModel;
+use Velacolib\Utility\Table\AjaxTableSum;
 use Velacolib\Utility\Utility;
 use Admin\Entity\OrderDetail;
 use Admin\Entity\Orders;
 use Admin\Entity\Table;
+use Velacolib\Utility\Table\AjaxTable;
 use Admin\Model\orderdetailModel;
 use Admin\Model\orderModel;
 use Zend\View\Model\ViewModel;
@@ -20,7 +22,7 @@ use Velacolib\Utility\TransactionUtility;
 use Zend\Authentication\AuthenticationService;
 
 
-class OrderController extends AbstractActionController
+class OrderController extends FrontEndController
 {
     protected $modelOrder;
     protected $modelOrderDetail;
@@ -28,69 +30,84 @@ class OrderController extends AbstractActionController
     protected $translator;
     protected $userLogin;
 
-    public function onDispatch(\Zend\Mvc\MvcEvent $e)
+    public function init()
     {
 
-        $service_locator_str = 'doctrine';
-        $this->sm = $this->getServiceLocator();
-        $doctrineService = $this->sm->get($service_locator_str);
-        $this->modelOrder = new orderModel($doctrineService);
-        $this->modelOrderDetail = new orderdetailModel($doctrineService);
-        $this->modelTransaction = new transactionModel($doctrineService);
+        $this->modelOrder = new orderModel($this->doctrineService);
+        $this->modelOrderDetail = new orderdetailModel($this->doctrineService);
 
-        $this->translator = Utility::translate();
-        //check login
-        $this->userLogin = Utility::checkLogin($this);
-        if (!is_object($this->userLogin) && $this->userLogin == 0) {
-            $this->redirect()->toRoute('admin/child', array('controller' => 'login'));
-        }
-
-        return parent::onDispatch($e);
     }
 
     public function indexAction()
     {
+        $currentUser =   Utility::checkLogin();
 
-        $strSQl = 'table.userId = ' . $this->userLogin->userId . ' and
-                    table.isdelete = 0
-                    and table.createDate >=' . strtotime(date('Y-m-d 0:0:0')) . '
-                    and table.createDate <= ' . strtotime(date('Y-m-d 23:59:0'));
-        $oders = $this->modelOrder->createQueryFindAll($strSQl);
-
-        $total = $this->modelOrder->sumTotalCostByUserPerDay($strSQl);
-//       echo '<pre>';
-//        print_r($total);
-        //tableTitle = table heading
-        //datarow row of table... render by heading key
-        //heading key = table column name
-        $dataRow = $this->modelOrder->convertToArray($oders);
-        $data = array(
-            'tableTitle' => $this->translator->translate('Manage order'),
-            'link' => 'frontend/order',
-            'data' => $dataRow,
-            'heading' => array(
-                'id' => $this->translator->translate('Order Id'),
-                'tableId' => $this->translator->translate('Table'),
-                'userid' => $this->translator->translate('User create'),
-                'createDate' => $this->translator->translate('Create date'),
-                'totalCost' => $this->translator->translate('Total cost'),
-                'coupon' => $this->translator->translate('Coupon'),
-                'surtax' => $this->translator->translate('Surtax'),
-                'totalRealCost' => $this->translator->translate('Total real cost'),
+        //config table
+        /////column for table
+        $columns = array(
+            array('title' =>'Id', 'db' => 'id', 'dt' => 0,'select'=>'id','prefix'=>'o', 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Table', 'db' => 'name','dt' => 1,'select'=>'name','prefix'=>'t', 'search'=>true, 'type' => 'text' ,
+                'dataSelect'=> Utility::getTableForSelect()
             ),
-            'hideDeleteButton' => 1,
-            'hideEditButton' => 1
+            array('title' =>'User Name', 'db' => 'userName','dt' => 2,'select'=>'userName','prefix'=>'u', 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Create date', 'db' => 'createDate','dt' => 3,'select'=>'createDate','prefix'=>'o', 'search'=>true, 'type' => 'text','formatter'=>function($d,$row){
+                return date('d-m-Y h:i:s',$d);
+            } ),
+
+            array('title' =>'Coupon', 'db' => 'code','dt' => 4,'select'=>'code','prefix'=>'c', 'search'=>true, 'type' => 'text' ),
+
+
+            array('title' =>'Total cost', 'db' => 'totalCost','dt' => 5,'select'=>'totalCost','prefix'=>'o', 'search'=>true, 'type' => 'text',
+                'formatter' => function($d,$row){
+                    return Utility::formatCost($d);
+                }
+            ),
+            array('title' =>'Total real cost', 'db' => 'totalRealCost','select'=>'totalRealCost','prefix'=>'o','dt' => 6, 'search'=>true, 'type' => 'text',
+                'formatter' => function($d,$row){
+                    return Utility::formatCost($d);
+                }
+            ),
+
+            array('title' =>'Action', 'db' => 'orderId','dt' => 7, 'select'=>'id','prefix'=>'o', 'search'=>false, 'type' => 'number',
+                'formatter' => function( $d, $row ) {
+                    $actionUrl = '/admin/order';
+                    return '
+
+
+                        <a class="btn-xs action action-detail btn btn-default btn-primary " href="'.$actionUrl.'/detail/'.$d.'"><i class="icon-external-link "></i></a>
+                    ';
+                }
+            )
+
         );
-        return new ViewModel(
+        /////end column for table
+        $table = new AjaxTableSum(array(), array(), 'frontend/order');
+        $table->setTableColumns($columns);
+        $table->setTablePrefix('o');
+        $table->setExtendJoin(
             array(
-                'data' => $data,
-                'title' => $this->translator->translate('Order'),
-                'total' => $total
+                array("Admin\\Entity\\User", "u", "WITH", "u.id = o.userId"),
+                array("Admin\\Entity\\Managetable", "t", "WITH", "t.id = o.tableId"),
+                array("Admin\\Entity\\Coupon", "c", "WITH", "c.id = o.couponId"),
             )
         );
+        $table->setExtendSQl(
+            array(
+                array('AND','o.isdelete','=','0'),
+                array('AND','o.userId','=',$currentUser->userId)
+            )
+        );
+        $table->setSumColumn(array('5','6'));
+        $table->setAjaxCall('/frontend/order');
+        $table->setActionDeleteAll('deleteall');
+
+
+        $this->tableAjaxRequest($table,$columns,$this->modelOrder);
+        //end config table
+        return new ViewModel(
+            array('table' => $table,
+            'title' => $this->translator->translate('Order')));
     }
-
-
 
     public function addAction()
     {
@@ -103,7 +120,6 @@ class OrderController extends AbstractActionController
 
     }
 
-
     public function deleteAction()
     {
         //get user by id
@@ -113,7 +129,6 @@ class OrderController extends AbstractActionController
             $menu = $this->modelOrder->findOneBy(array('id' => $id));
             $menu->setIsdelete(1);
             $this->modelOrder->edit($menu);
-            Utility::insertHistory('Delete Order ID:'.$id);
             //$this->model->delete(array('id'=>$id));
             echo 1;
         }
@@ -141,7 +156,6 @@ class OrderController extends AbstractActionController
                 'coupon' => $this->translator->translate('Coupon code'),
                 'couponValue' => $this->translator->translate('Coupon value'),
                 'couponDesc' => $this->translator->translate('Coupon description'),
-                'surtax' => $this->translator->translate('Surtax'),
                 'totalRealCost' => $this->translator->translate('Total real cost (after coupon)'),
             )
         );
@@ -202,7 +216,6 @@ class OrderController extends AbstractActionController
         ));
 
     }
-
 
     public function mailAction()
     {
@@ -356,8 +369,6 @@ class OrderController extends AbstractActionController
 
     }
 
-
-
     function splitAction()
     {
 
@@ -470,7 +481,7 @@ class OrderController extends AbstractActionController
 
                     } else {
 
-                          $newRealCost = $orderDetailModel->getRealCost();
+                        $newRealCost = $orderDetailModel->getRealCost();
 
                     }
 

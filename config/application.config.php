@@ -8,7 +8,8 @@ return array(
         'Admin',
         'Velacolib',
         'FrontEnd',
-        'Api'
+        'Api',
+        'Install'
     ),
 
     // These are various options for the listeners attached to the ModuleManager

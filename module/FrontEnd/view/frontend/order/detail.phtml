@@ -2,14 +2,10 @@
 $dataOrder = $this->data;
 $dataRow = $dataOrder['data'];
 $heading = $dataOrder['heading'];
-//$link = $dataOrder['link'];
-//$title = $dataOrder['title'];
- $button = $this->printButton;
+$link = $dataOrder['link'];
+$title = $dataOrder['title'];
+$button = $this->printButton;
 $dataOrderDetail = $this->dataOrderDetail;
-
-$title = array();
-$title['title'] = $dataOrder['title'];
-$title['link']  =   $this->url('frontend/child', array('controller'=>'order','action' => 'add'));
 $this->titleHelper($title);
 
 ?>
@@ -18,7 +14,7 @@ $this->titleHelper($title);
             <?php $this->detailHelper($dataOrder); ?>
         </div>
         <div class="span9">
-          <?php $this->tableHelper($dataOrderDetail); ?>
+            <?php $this->tableHelper($dataOrderDetail); ?>
         </div>
     </div>
 <?php

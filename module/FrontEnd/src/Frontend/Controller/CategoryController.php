@@ -14,23 +14,12 @@ use Zend\View\Model\ViewModel;
 use Zend\Mvc\Controller\AbstractActionController;
 
 
-class CategoryController extends AbstractActionController
+class CategoryController extends FrontEndController
 {
     protected   $modelCategories;
     protected   $translator;
-    public function onDispatch(\Zend\Mvc\MvcEvent $e){
-
-        $service_locator_str = 'doctrine';
-        $this->sm = $this->getServiceLocator();
-        $CategoriesTable = $this->sm->get($service_locator_str);
-        $this->modelCategories = new categoryModel($CategoriesTable);
-        $this->translator = Utility::translate();
-        //check login
-        $user = Utility::checkLogin($this);
-        if(! is_object($user) && $user == 0){
-            $this->redirect()->toRoute('frontend/child',array('controller'=>'login'));
-        }
-        return parent::onDispatch($e);
+    public function init(){
+        $this->modelCategories = new categoryModel($this->doctrineService);
     }
     public function indexAction()
     {

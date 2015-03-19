@@ -1,18 +1,8 @@
 <?php
 $data = $this->data;
-$title = array();
-$title['title'] = $this->title;
+$title = $this->title;
+
+$table = $this->table;
 $this->titleHelper($title);
+$table->render();
 
-$this->tableHelper($data);
-
-$total = $this->total;
-$this->reportHelper($total);
-
-?>
-<script>
-    $('.dataTable').dataTable({
-        "bProcessing": false,
-        "bServerSide": false
-    }) ;
-</script>

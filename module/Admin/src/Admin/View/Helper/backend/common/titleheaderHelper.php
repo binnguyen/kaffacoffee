@@ -15,7 +15,7 @@ use Zend\View\Helper\AbstractHelper;
 //config in module getViewHelperConfig
 class titleheaderHelper extends AbstractHelper {
 
-    public function __invoke($text = array())
+    public function __invoke($text = '')
     {
         echo $this->getView()->render('layout/helper/backend/common/titleheaderHelper.phtml',array('title'=>$text));
     }

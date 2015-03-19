@@ -18,29 +18,18 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Velacolib\Utility\TransactionUtility;
 
 
-class TableController extends AbstractActionController
+class TableController extends FrontEndController
 {
     protected   $modelOrder;
     protected   $modelOrderDetail;
     protected   $tableModel;
     protected   $translator;
     protected  $userLogin;
-    public function onDispatch(\Zend\Mvc\MvcEvent $e){
+    public function init(){
 
-        $service_locator_str = 'doctrine';
-        $this->sm = $this->getServiceLocator();
-        $doctrineService = $this->sm->get($service_locator_str);
-        $this->modelOrder = new orderModel($doctrineService);
-        $this->modelOrderDetail = new orderdetailModel($doctrineService);
-        $this->tableModel = new tableModel($doctrineService);
-        $this->translator = Utility::translate();
-        //check login
-        $this->userLogin = Utility::checkLogin($this);
-        if(! is_object( $this->userLogin) &&  $this->userLogin == 0){
-            $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }
-
-        return parent::onDispatch($e);
+        $this->modelOrder = new orderModel($this->doctrineService);
+        $this->modelOrderDetail = new orderdetailModel($this->doctrineService);
+        $this->tableModel = new tableModel($this->doctrineService);
     }
     public function indexAction()
     {

@@ -16,28 +16,15 @@ use Zend\View\Model\ViewModel;
 use Zend\Mvc\Controller\AbstractActionController;
 
 
-class ComController extends AbstractActionController
+class ComController extends FrontEndController
 {
     protected   $modelCombo;
     protected   $modelMenu;
     protected   $translator;
-    public function onDispatch(\Zend\Mvc\MvcEvent $e){
+    public function init(){
 
-        $service_locator_str = 'doctrine';
-        $this->sm = $this->getServiceLocator();
-        $doctrine = $this->sm->get($service_locator_str);
-        $this->modelCombo = new comboModel($doctrine);
-        $this->modelMenu = new menuModel($doctrine);
-        $this->translator = Utility::translate();
-
-        //check login
-        $user = Utility::checkLogin($this);
-        if(! is_object($user) && $user == 0){
-            $this->redirect()->toRoute('frontend/child',array('controller'=>'login'));
-        }
-        //end check login
-
-        return parent::onDispatch($e);
+        $this->modelCombo = new comboModel($this->doctrineService);
+        $this->modelMenu = new menuModel($this->doctrineService);
     }
     public function indexAction()
     {

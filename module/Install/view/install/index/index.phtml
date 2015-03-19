@@ -1,0 +1,22 @@
+<?php
+$title = $this->title;
+$form = $this->form;
+$writeable = $this->writeable;
+
+echo '<div class="row-fluid">';
+echo '<div class="span12 box">';
+echo '<div class="box-content">';
+foreach($writeable as $k => $value){
+    $class = "text-success";
+    $message = 'yes';
+    if(!$value){
+        $class = "text-error";
+        $message = 'no';
+    }
+    echo '<h4 class="'.$class.'"> Make '.$k.' writeable ( '.$message.' ) </h4>';
+}
+echo '</div>';
+echo '</div>';
+echo '</div>';
+echo $this->flashHelper();
+echo $this->formHelper($form,$title);
