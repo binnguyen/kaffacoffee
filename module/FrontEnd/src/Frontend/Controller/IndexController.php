@@ -12,58 +12,47 @@ use Admin\Model\comboModel;
 use Velacolib\Utility\Utility;
 use Admin\Model\menuModel;
 use Zend\View\Model\ViewModel;
+use Velacolib\Utility\Table\AjaxTable;
 use Zend\Mvc\Controller\AbstractActionController;
 
 
-class IndexController extends AbstractActionController
+class IndexController extends FrontEndController
 {
     protected   $modelMenu;
     protected   $modelCombo;
     protected   $translator;
-    public function onDispatch(\Zend\Mvc\MvcEvent $e){
+    public function init(){
 
-        $service_locator_str = 'doctrine';
-        $this->sm = $this->getServiceLocator();
-        $CategoriesTable = $this->sm->get($service_locator_str);
-        $this->modelMenu = new menuModel($CategoriesTable);
-        $this->modelCombo = new comboModel($CategoriesTable);
+        $this->modelMenu = new menuModel($this->doctrineService);
         $this->translator = Utility::translate();
-
-        //check login
-        $user = Utility::checkLogin($this);
-        if(! is_object($user) && $user == 0){
-            $this->redirect()->toRoute('frontend/child',array('controller'=>'login'));
-        }
-
-        return parent::onDispatch($e);
+        parent::init();
     }
+
     public function indexAction()
     {
-        $menus = $this->modelMenu->findBy(array('isdelete'=>'0'));
-
-
-        //tableTitle = table heading
-        //datarow row of table... render by heading key
-        //heading key = table column name
-        $dataRow = $this->modelMenu->convertToArray($menus);
-        $data =  array(
-            'tableTitle'=> $this->translator->translate('Manage menu'),
-            'link' => 'frontend/index',
-            'data' =>$dataRow,
-            'heading' => array(
-                'id' => 'Id',
-                'cost' => $this->translator->translate('Cost'),
-                'name' => $this->translator->translate('Name'),
-                'isCombo' => $this->translator->translate('Combo'),
-                'catId' => $this->translator->translate('Category'),
-                'desc' => $this->translator->translate('Desc'),
-//                'image' => 'Image',
+        $columns = array(
+            array('title' =>'Id', 'db' => 'id', 'dt' => 0, 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Name', 'db' => 'name','dt' => 1, 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Category', 'db' => 'catId','dt' => 2, 'search'=>false, 'type' => 'number',
+                'dataSelect' => Utility::getCategoryForSelect()
             ),
-            'hideDeleteButton' => 1,
-            'hideDetailButton' => 0,
-            'hideEditButton' => 1,
+            array('title' =>'Cost', 'db' => 'cost','dt' => 3, 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Take Away cost', 'db' => 'taCost','dt' => 4, 'search'=>false, 'type' => 'number' ),
+
         );
-        return new ViewModel(array('data'=>$data, 'title' => $this->translator->translate('Menu')));
+
+        /////end column for table
+        $table = new AjaxTable($columns, array(), 'admin/index');
+        $table->setTablePrefix('m');
+        $table->setExtendSQl(array(
+            array('AND','m.isdelete','=','0'),
+        ));
+        $table->setAjaxCall('/admin/index');
+        $table->setActionDeleteAll('deleteall');
+        $this->tableAjaxRequest($table,$columns,$this->modelMenu);
+        //end config table
+        return new ViewModel(array('table' => $table,
+            'title' => $this->translator->translate('Menu')));
     }
 
     public function detailAction(){
@@ -86,31 +75,7 @@ class IndexController extends AbstractActionController
             )
         );
 
-        $menusCombo = $this->modelCombo->findBy(array('isdelete'=>'0','menuParentId'=> $id));
 
-        //tableTitle = table heading
-        //datarow row of table... render by heading key
-        //heading key = table column name
-        $dataRow = $this->modelCombo->convertToArray($menusCombo);
-        $dataChild =  array(
-            'tableTitle'=> $this->translator->translate('Manage child combo'),
-            'link' => 'admin/combo',
-            'data' =>$dataRow,
-            'heading' => array(
-                'id' => 'Id',
-                'menu_parent_id' => $this->translator->translate('Menu parent id'),
-                'menu_child_id' => $this->translator->translate('Menu child id'),
-                'menu_cost' => $this->translator->translate('Cost'),
-                'menu_ta_cost' => $this->translator->translate('Take away'),
-                'menu_quantity' => $this->translator->translate('Quantity'),
-                'menu_total_cost' => $this->translator->translate('Total cost'),
-                'menu_total_ta_cost' => $this->translator->translate('Total take away cost'),
-            ),
-            'hideDetailButton' => 1,
-            'hideDeleteButton' => 1,
-            'hideEditButton' => 1,
-        );
-
-        return new ViewModel(array('data' => $dataDetail,'dataChild'=>$dataChild));
+        return new ViewModel(array('data' => $dataDetail));
     }
 }
