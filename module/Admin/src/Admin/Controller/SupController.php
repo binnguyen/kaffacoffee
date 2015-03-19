@@ -6,10 +6,15 @@
  * Time: 1:17 PM
  */
 namespace Admin\Controller;
+
+use Velacolib\Utility\Table;
+use Velacolib\Utility\Table\AjaxTable;
+use Velacolib\Utility\Table\Detail;
+
 use Admin\Entity\Supplier;
 use Admin\Entity\SupplierFor;
 use Admin\Entity\SupplierItem;
-use Admin\Entity\Table;
+use Admin\Entity\Managetable;
 
 use Admin\Form\eventForm;
 use Admin\Form\supplierForm;
@@ -25,116 +30,68 @@ use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 use Zend\Paginator\Paginator;
 
 
-class SupController extends BaseController
+class SupController extends AdminGlobalController
 {
     protected   $modelSupplier;
     protected   $modelSupplyFor;
     protected  $translator;
-    public function onDispatch(\Zend\Mvc\MvcEvent $e){
-
-        $service_locator_str = 'doctrine';
-        $this->sm = $this->getServiceLocator();
-        $doctrine = $this->sm->get($service_locator_str);
-        $this->modelSupplier = new supplierModel($doctrine);
-        $this->modelSupplyFor = new supplyForModel($doctrine);
 
 
-        $this->translator =  Utility::translate();
-
-        //check login
-        $user = Utility::checkLogin($this);
-        if(! is_object($user) && $user == 0){
-            $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }else{
-            $isPermission = Utility::checkRole($user->userType,ROLE_ADMIN);
-            if( $isPermission == false)
-                $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }
-
-        return parent::onDispatch($e);
+    public function init(){
+        parent::init();
+        $this->modelSupplier = new supplierModel($this->doctrineService);
+        $this->modelSupplyFor = new supplyForModel($this->doctrineService);
     }
 
-    public function ajaxListAction()
-    {
-
-        $fields = array(
-            'id',
-            'phone',
-            'mobile',
-            'addr',
-            'contactName',
-            'email',
-            'suplierFor',
-        );
-
-
-        $offset = $this->getDataTableQueryOffset();
-        $limit = $this->getDataTableQueryLimit();
-        $sortCol = $this->getDataTableQuerySortingColumn();
-        $sortDirection = $this->getDataTableQuerySortingDirection();
-        $search = $this->getDataTableQuerySearch();
-        $customWhere  = ' c.isdelete = 0';
-        // WHERE conditions
-
-        $customQuery = $this->customWhereSql($customWhere);
-
-
-        $dqlWhere = $this->getDataTableWhereDql('c', $fields, $search,$customWhere);
-
-        if ( !empty($dqlWhere) ) {
-            $customQuery = '';
-        }
-
-        // ORDERING
-        $dqlOrder = $this->getDataTableOrderDql('c', $fields, $sortCol, $sortDirection);
-
-        // DQL
-        $dql = "SELECT c FROM Admin\Entity\Supplier c ";
-
-        // RESULTS
-        $query = $this->getEntityManager()->createQuery($dql .$customQuery. $dqlWhere . $dqlOrder);
-        if ( !empty($dqlWhere) ) {
-            $query->setParameter(':search', '%' . $search . '%');
-        }
-
-        $results = $query->setMaxResults($limit)
-            ->setFirstResult($offset)
-            ->getResult();
-
-        // TOTAL RESULTS COUNT
-        $countDql = "SELECT COUNT(c.id) FROM Admin\Entity\Supplier c WHERE c.isdelete =0";
-        $count = $this->getEntityManager()->createQuery($countDql)->getSingleScalarResult();
-
-        $ret = array_map(function($item) {
-
-            $linkEdit =   '/admin/supplier/add/'.$item->getId() ;
-            $linkDelete =  '/admin/supplier/delete/'.$item->getId() ;
-            $linkDetail =   '/admin/supplier/detail/'.$item->getId() ;
-
-            return array(
-                'id' => $item->getId(),
-                'phone' => $item->getPhone(),
-                'mobile'=>$item->getMobile(),
-                'addr'=>$item->getAddr(),
-                'contact_name'=>$item->getContactName(),
-                'email'=>$item->getEmail(),
-                'suplier_for'=>$item->getSuplierFor(),
-                'action' => '
-
-                 <a href="'.$linkEdit.'" class="btn btn-primary"><i class="icon-edit-sign"></i></a>
-                 <a  id="'.$item->getId().'"  data-link="'.$linkDelete.'" data-id="'.$item->getId().'" href="javascript:void(0)" class="btn btn-danger btn-delete"><i class="icon-trash"></i></a>'
-            );
-        }, $results);
-
-        return $this->getDataTableJsonResponse($ret, $count, $dqlWhere);
-
-    }
 
     public function indexAction()
     {
+
+        $columns = array(
+
+            array('title' =>'ID', 'db' => 'id', 'dt' => 0,'search'=>false, 'type' => 'number' ),
+            array('title' =>'Contact Name', 'db' => 'contact','dt' => 1, 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Compay Name', 'db' => 'company','dt' => 2, 'search'=>true, 'type' => 'number','formatter'=>function($d,$row){
+              return $d;
+            }),
+            array('title' =>'Phone', 'db' => 'phone','dt' => 3, 'search'=>true, 'type' => 'number'            ),
+            array('title' =>'Mobile', 'db' => 'mobile','dt' => 4, 'search'=>true, 'type' => 'number'                 ),
+
+            array('title' =>'Address', 'db' => 'addr','dt' => 5,'search'=>false, 'type' => 'text' ),
+
+            array('title' =>'Email', 'db' => 'email','dt' => 6, 'search'=>true, 'type' => 'text'),
+
+            array('title' =>'Action','db'=>'id','dt' => 7 , 'search'=>false, 'type' => 'number',
+                'formatter' => function( $d, $row ) {
+                    $actionUrl = '/admin/supplier';
+                    return '
+                        <a class="btn-xs action action-detail btn btn-success btn-default" href="'.$actionUrl.'/add/'.$d.'"><i class="icon-edit"></i></a>
+                        <a data-id="'.$d.'" id="'.$d.'" data-link="'.$actionUrl.'" class="btn-xs action action-detail btn btn-danger  btn-delete " href="javascript:void(0)"><i class="icon-remove"></i></a>
+                    ';
+
+                }
+            ),
+
+
+        );
+
+
+        /////end column for table
+        $table = new AjaxTable($columns, array(), 'admin/supplier');
+        $table->setTablePrefix('m');
+        $table->setExtendSQl(array(
+            array('AND','m.isdelete','=','0'),
+        ));
+
+        $table->setAjaxCall('/admin/supplier');
+        $table->setActionDeleteAll('deleteall');
+        $this->tableAjaxRequest($table,$columns,$this->modelSupplier);
+        //end config table
+
+
         return new ViewModel(array(
-            'title'=>$this->translator->translate('Supplier'
-            )));
+            'table' => $table,
+            'title' => $this->translator->translate('Supplier')));
     }
     public function addAction()
     {

@@ -1,25 +1,9 @@
 <?php
-$data = $this->data;
+
 $title = array();
 $title['title'] = $this->title;
-$title['link'] =   $this->url('admin/child', array('controller'=>'sup','action' => 'add'));
+$title['link'] =   $this->url('admin/child', array('controller'=>'supplier','action' => 'add'));
 $this->titleHelper($title);
-$partialData = array(
-    'ajaxUrl' => $this->url('admin/child', array('controller'=>'supplier','action' => 'ajax-list')),
-    'actions' => array(
-        'edit' => array('action' => 'edit', 'label' => 'Edit'),
-        'delete' => array('action' => 'delete', 'label' => 'Delete')
-    ),
-    'columns' => array(
-        0 => array('field' => 'id',                                    'searchable' => false,  'primaryKey' => true),
-        1 => array('field' => 'phone',    'label' => 'Phone',    'searchable' => true,   'sortable' => true),
-        2 => array('field' => 'mobile',    'label' => 'Mobile',    'searchable' => true,   'sortable' => true),
-        3 => array('field' => 'addr',    'label' => 'Address',    'searchable' => true,   'sortable' => true),
-        4 => array('field' => 'contact_name',    'label' => 'Contact name',    'searchable' => true,   'sortable' => true),
-        5 => array('field' => 'email',    'label' => 'Email',    'searchable' => true,   'sortable' => true),
-        6 => array('field' => 'suplier_for',    'label' => 'Supplier for',    'searchable' => true,   'sortable' => true),
-        7 => array('field' => 'action',    'label' => 'Action',    'searchable' => false,   'sortable' => false),
-        )
-);
-
-echo $this->partial('partial/listing.phtml', $partialData);
+$data = $this->data;
+$table = $this->table;
+$table->render();

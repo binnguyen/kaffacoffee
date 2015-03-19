@@ -319,37 +319,45 @@ class MenustoreController extends AdminGlobalController
 
 
     public function managerInOutAction(){
-        $filter = $this->params()->fromRoute('filter_action');
-        $fromDate = $this->params()->fromRoute('fromdate');
-        $toDate = $this->params()->fromRoute('todate');
-        $dataStore = $this->transactionModel->findBy(array('store'=>SUB_STORE));
-        if($filter != ''){
-            $dataStore = $this->transactionModel->findBy(array('action'=>$filter,'store'=>SUB_STORE));
-        }
-        $dataRow = $this->transactionModel->convertToArray($dataStore);
-        $data = array(
-            'tableTitle' => $this->translator->translate('Manager In out'),
-            'link' => 'admin/menustore',
-            'data' => $dataRow,
-            'heading' => array(
-                'id' => 'Id',
-                'menuStoreId' => $this->translator->translate('Name'),
-                'quantity' => $this->translator->translate('Quantity'),
-                'unit' => $this->translator->translate('Unit'),
-                'cost' => $this->translator->translate('Cost'),
-                'unit' => $this->translator->translate('Unit'),
-                'action' => $this->translator->translate('Action'),
-                'date' => $this->translator->translate('Date'),
-                'note' => $this->translator->translate('Note'),
-            ),
-            'hideDetailButton' => 1,
-            'hideDeleteButton' => 1,
-            'hideEditButton' => 1,
+        $columns = array(
+
+            array('title' =>'ID', 'db' => 'id', 'dt' => 0, 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Name', 'db' => 'menuStoreId','dt' => 1, 'search'=>true, 'type' => 'number','formatter'=>function($d,$row){
+                //$storeInfo = Utility::getStoreInfo( $d);
+                return $d;
+            } ),
+            array('title' =>'Quantity', 'db' => 'quantity','dt' => 2, 'search'=>true, 'type' => 'number'),
+            array('title' =>'Unit', 'db' => 'unit','dt' => 3, 'search'=>false, 'type' => 'text' ),
+            array('title' =>'Cost', 'db' => 'cost','dt' => 4, 'search'=>true, 'type' => 'number'),
+
+            array('title' =>'Action', 'db' => 'action','dt' => 5 ,'search'=>false, 'type' => 'text' ),
+
+            array('title' =>'Time', 'db' => 'date','dt' => 6, 'search'=>true, 'type' => 'number','formatter'=>function($d,$row){
+                return $d;
+            }),
+
+            array('title' =>'Note', 'db' => 'note','dt' => 7, 'search'=>false, 'type' => 'text','formatter'=>function($d,$row){
+                return $d;
+            }),
+
+
         );
 
-        return new ViewModel(
-            array('data' => $data,
-                'title' => $this->translator->translate('Manager in out')));
+
+        /////end column for table
+        $table = new AjaxTable($columns, array(), 'admin/menustore');
+        $table->setTablePrefix('m');
+
+
+        $table->setAjaxCall('/admin/menustore/managerinout');
+        $table->setActionDeleteAll('deleteall');
+        $this->tableAjaxRequest($table,$columns,$this->transactionModel);
+        //end config table
+
+
+        return new ViewModel(array(
+            'table' => $table,
+            'title' => $this->translator->translate('Manager Import/Export')));
     }
 
     public function unitcalcAction(){

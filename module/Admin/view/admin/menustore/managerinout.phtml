@@ -1,41 +1,9 @@
 <?php
-$traslate = \Velacolib\Utility\Utility::translate();
-$data = $this->data;
+
 $title = array();
 $title['title'] = $this->title;
+$title['link'] =   $this->url('admin/child', array('controller'=>'menustoremain','action' => 'add'));
 $this->titleHelper($title);
-?>
-<div class="row-fluid">
-    <div class="span12 box">
-        <div class="box-content">
-            <a href="<?php echo $this->url('admin/child', array(
-                'controller' => 'menustore',
-                'action' => 'managerinout',
-            )) ?>" class="btn btn-primary"><?php echo $traslate->translate('All'); ?></a>
-            <a href="
-            <?php echo $this->url('admin/child', array(
-                'controller' => 'menustore',
-                'action' => 'managerinout',
-                'filter_action' => 'N'
-            )) ?>
-            " class="btn btn-primary"><?php echo $traslate->translate('Input'); ?></a>
-            <a href="<?php echo $this->url('admin/child', array(
-                'controller' => 'menustore',
-                'action' => 'managerinout',
-                'filter_action' => 'X'
-            )) ?>" class="btn btn-primary"><?php echo $traslate->translate('Output'); ?></a>
-            </a>
-        </div>
-    </div>
-</div>
-
-<?php
-$this->tableHelper($data);
-
-?>
-<script>
-    $('.dataTable').dataTable({
-        "bProcessing": false,
-        "bServerSide": false
-    }) ;
-</script>
+$data = $this->data;
+$table = $this->table;
+$table->render();

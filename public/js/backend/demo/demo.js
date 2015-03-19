@@ -518,9 +518,13 @@ $(document).on('click','.btn-delete',function(){
             data : {id: id},
             type :'POST'
         }).done(function(data){
-            $("#"+id).parent().parent().remove();
+            if(data == 1){
+                $("#"+id).parent().parent().remove();
+            }else{
+                alert('Delete fail!');
+            }
 
-           // $('#table-row-'+id).remove();
+
         });
     }
 
