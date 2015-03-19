@@ -15,7 +15,7 @@ use Zend\View\Model\ViewModel;
 use Zend\Mvc\Controller\AbstractActionController;
 
 
-class ConfigController extends BaseController
+class ConfigController extends AbstractActionController
 {
     protected   $modelConfig;
     protected  $translator;
@@ -39,80 +39,31 @@ class ConfigController extends BaseController
 
         return parent::onDispatch($e);
     }
-
-
     public function indexAction()
     {
+        $combos = $this->modelConfig->findAll();
+        //tableTitle = table heading
+        //datarow row of table... render by heading key
+        //heading key = table column name
+        $dataRow = $this->modelConfig->convertToArray($combos);
+        $data =  array(
+            'tableTitle'=> $this->translator->translate('Config'),
+            'link' => 'admin/config',
+            'data' =>$dataRow,
+            'heading' => array(
+                'id' => 'Id',
+                'name' => $this->translator->translate('Name'),
+                'value' => $this->translator->translate('Value'),
 
-        return new ViewModel(array(
-            'title'=>$this->translator->translate('Config'))
+            ),
+            'hideDeleteButton' => 1,
+            'hideDetailButton' => 1
+
         );
+
+        return new ViewModel(array('data'=>$data,
+            'title'=>$this->translator->translate('Config')));
     }
-
-    public function ajaxListAction()
-    {
-
-        $fields = array(
-            'id',
-            'name',
-            'value',
-            'type',
-        );
-
-        $offset = $this->getDataTableQueryOffset();
-        $limit = $this->getDataTableQueryLimit();
-        $sortCol = $this->getDataTableQuerySortingColumn();
-        $sortDirection = $this->getDataTableQuerySortingDirection();
-        $search = $this->getDataTableQuerySearch();
-        $customWhere  = '';
-        // WHERE conditions
-
-        $customQuery = $this->customWhereSql($customWhere);
-
-
-        $dqlWhere = $this->getDataTableWhereDql('c', $fields, $search,$customWhere);
-
-        if ( !empty($dqlWhere) ) {
-            $customQuery = '';
-        }
-        // ORDERING
-        $dqlOrder = $this->getDataTableOrderDql('c', $fields, $sortCol, $sortDirection);
-
-        // DQL
-        $dql = "SELECT c FROM Admin\Entity\Config c";
-
-        // RESULTS
-        $query = $this->getEntityManager()->createQuery($dql . $customQuery . $dqlWhere . $dqlOrder);
-        if ( !empty($dqlWhere) ) {
-            $query->setParameter(':search', '%' . $search . '%');
-        }
-        $results = $query->setMaxResults($limit)
-            ->setFirstResult($offset)
-            ->getResult();
-
-        // TOTAL RESULTS COUNT
-        $countDql = "SELECT COUNT(c.id) FROM Admin\Entity\Config c";
-        $count = $this->getEntityManager()->createQuery($countDql)->getSingleScalarResult();
-
-        $ret = array_map(function($item) {
-            $linkEdit =   '/admin/config/add/'.$item->getId() ;
-            $linkDelete =  '/admin/config/delete/'.$item->getId() ;
-            $linkDetail =   '/admin/config/detail/'.$item->getId() ;
-            return array(
-                'id' => $item->getId(),
-                'name' => $item->getName() ,
-                'value' => $item->getValue() ,
-                'type' => $item->getType() ,
-                'action'=> '<a href="'.$linkDetail.'" class="btn btn-info"><i class="icon-edit-sign"></i></a><a class="btn btn-primary" href="'.$linkEdit.'"><i class="icon-edit-sign"></i></a><a href="'.$linkDelete.'" class="btn btn-danger"><i class="icon-trash"></i></a>'
-            );
-        }, $results);
-
-        return $this->getDataTableJsonResponse($ret, $count, $dqlWhere);
-
-    }
-
-
-
     public function addAction()
     {
         $request = $this->getRequest();
@@ -128,6 +79,12 @@ class ConfigController extends BaseController
             $configForm->get('name')->setValue($config->getName());
             $configForm->get('value')->setValue($config->getValue());
             $configForm->get('type')->setValue($config->getType());
+
+            $configType = $config->getType();
+            $configValueImg = '';
+            if($configType == 'file'){
+                $configValueImg = '<img style="width:100px" src="'.$config->getValue().'">';
+            }
 
             $configForm->add(
                 array(
@@ -153,32 +110,41 @@ class ConfigController extends BaseController
                     $fileSize = $file['value']['size'];
                     $fileError = $file['value']['error'];
                     $fileType = $file['value']['type'];
-
+                    $filePatch = './public/img/upload/config/';
                     if($fileName != ''){
-                        move_uploaded_file($fileTmp, "./public/img/upload/config/".$fileName);
-                        $value = "/img/upload/config/".$fileName;
+                       // chmod($filePatch,0777);
+                        $SimpleImage = new \SimpleImage();
+                        $SimpleImage->load($fileTmp);
+                        $SimpleImage->resize(80,60);
+                       $move = $SimpleImage->save($filePatch.$fileName);
+                     //   $move = move_uploaded_file($fileTmp, "./public/img/upload/config/".$fileName);
+//                       if($move){
+                           $value = "/img/upload/config/".$fileName;
+//                       }else{
+//                           $error = error_get_last();
+//                           $this->flashMessenger()->addErrorMessage($error);
+//                           $this->redirect()->toRoute('admin/child',array('controller'=>'config'));
+//                       }
+
                     }
 
                 }else{
                     $value = $data['value'];
                 }
-//                echo '<pre>';
-//                print_r($file);
-//                print_r($data);
-//                echo '</pre>';
                 $idFormPost = $this->params()->fromPost('id');
                 $cat = $this->modelConfig->findOneBy(array('id'=>$idFormPost));
                 $cat->setValue($value);
                 $this->modelConfig->edit($cat);
 
-                //flash
+//                //flash
                 $this->flashMessenger()->addSuccessMessage("Update success");
                 $this->redirect()->toRoute('admin/child',array('controller'=>'config'));
             }
             return new ViewModel(array(
                 'data' =>$config,
                 'title' => 'Edit Config: '.$config->getName(),
-                'form' => $configForm
+                'form' => $configForm,
+                'configValueImg' => $configValueImg
             ));
         }
     }

@@ -7,170 +7,92 @@
  */
 namespace Admin\Controller;
 use Velacolib\Utility\Utility;
-use Velacolib\Utility\TransactionUtility;
 use Admin\Entity\OrderDetail;
 use Admin\Entity\Orders;
 use Admin\Entity\Table;
 use Admin\Model\orderdetailModel;
 use Admin\Model\orderModel;
 use Zend\View\Model\ViewModel;
+use Velacolib\Utility\Table\AjaxTable;
 use Zend\Mvc\Controller\AbstractActionController;
 
-use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
-use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
-use Zend\Paginator\Paginator;
 
-
-class OrderController extends BaseController
+class OrderController extends AdminGlobalController
 {
     protected   $modelOrder;
     protected   $modelOrderDetail;
     protected   $translator;
 
 
-    public function onDispatch(\Zend\Mvc\MvcEvent $e){
+      public function init(){
+          $this->modelOrder = new orderModel($this->doctrineService);
+          $this->modelOrderDetail = new orderdetailModel($this->doctrineService);
+      }
 
-        $service_locator_str = 'doctrine';
-        $this->sm = $this->getServiceLocator();
-        $doctrineService = $this->sm->get($service_locator_str);
-        $this->modelOrder = new orderModel($doctrineService);
-        $this->modelOrderDetail = new orderdetailModel($doctrineService);
-        $this->translator = Utility::translate();
-
-        //check login
-        //check login
-        $user = Utility::checkLogin($this);
-        if(! is_object($user) && $user == 0){
-            $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }
-        else{
-            $isPermission = Utility::checkRole($user->userType,ROLE_ADMIN);
-            if( $isPermission == false)
-                $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }
-        //end check login
-
-        return parent::onDispatch($e);
-
-    }
-
-
-    public function ajaxListAction(){
-
-        $fields = array(
-            'id',
-            'tableId',
-            'userId',
-            'newDate',
-            'totalCost',
-            'totalRealCost',
-            'couponId',
-        );
-
-        $offset = $this->getDataTableQueryOffset();
-        $limit = $this->getDataTableQueryLimit();
-        $sortCol = $this->getDataTableQuerySortingColumn(3);
-        $sortDirection = $this->getDataTableQuerySortingDirection();
-        $search = $this->getDataTableQuerySearch();
-        $customWhere  = ' c.isdelete = 0 ';
-        // WHERE conditions
-
-        $customQuery = $this->customWhereSql($customWhere);
-
-
-        $dqlWhere = $this->getDataTableWhereDql('c', $fields, $search,$customWhere);
-
-        if ( !empty($dqlWhere) ) {
-            $customQuery = '';
-        }
-        // ORDERING
-        $dqlOrder = $this->getDataTableOrderDql('c', $fields, $sortCol, $sortDirection);
-
-        // DQL
-        $dql = "SELECT c FROM Admin\Entity\Orders c ";
-
-        // RESULTS
-        $query = $this->getEntityManager()->createQuery($dql . $customQuery . $dqlWhere . $dqlOrder);
-        if ( !empty($dqlWhere) ) {
-            $query->setParameter(':search', '%' . $search . '%');
-        }
-        $results = $query->setMaxResults($limit)
-            ->setFirstResult($offset)
-            ->getResult();
-
-        // TOTAL RESULTS COUNT
-        $countDql = "SELECT COUNT(c.id) FROM Admin\Entity\Orders c";
-        $count = $this->getEntityManager()->createQuery($countDql)->getSingleScalarResult();
-
-        // map data
-        $ret = array_map(function($item) {
-            $tableInfo = Utility::getTableInfo( $item->getTableid());
-            $userInfo = Utility::getUserInfo($item->getUserId());
-            $surtax = Utility::getSurTaxInfo($item->getSurtaxId());
-
-            // surtax
-            $surtax = Utility::getSurTaxInfo($item->getSurtaxId());
-            $surtaxType = $surtax->getType();
-            $taxType =  Utility::convertSurtaxType($surtaxType);
-
-            // coupon
-            $coupon = Utility::getCouponInfo($item->getCouponId());
-
-            $couponValue = $coupon->getValue();
-            $type = '';
-            $couponType  = $coupon->getType();
-            if($couponType == 0){
-                $type = '';
-            }elseif($couponType == 1){
-                $type = '%' ;
-            }
-
-
-
-            // create link
-            $linkEdit =   '/admin/Order/add/'.$item->getId() ;
-            $linkDelete =  '/admin/Order/delete/'.$item->getId() ;
-            $linkDetail =   '/admin/Order/detail/'.$item->getId() ;
-
-
-
-            return array(
-                'id' => $item->getId(),
-                'tableId' => $tableInfo->getName() ,
-                'userId' => $userInfo->getUserName() ,
-                'newDate' =>$item->getNewDate(),
-                'totalCost' => ($item->getTotalCost() ),
-                'totalRealCost' =>  ($item->getTotalRealCost() ),
-                'couponId' => $couponValue. ''.$type,
-                'surtax' =>  ($surtax->getValue()) .' '.$taxType,
-                'action'=> '
-                <a href="'.$linkDetail.'" class="btn btn-info"><i class="icon-info-sign"></i></a>
-                <a class="btn btn-primary" href="'.$linkEdit.'"><i class="icon-edit-sign"></i></a>
-                <a id="'.$item->getId().'"  data-link="'.$linkDelete.'" data-id="'.$item->getId().'" href="javascript:void(0)" class="btn btn-danger btn-delete"><i class="icon-trash"></i></a>'
-            );
-
-        }, $results);
-
-        return $this->getDataTableJsonResponse($ret, $count, $dqlWhere);
-
-    }
 
     public function indexAction()
     {
-
-        return new ViewModel(array('title'=>$this->translator->translate('Order')));
-
+        //config table
+        /////column for table
+        $columns = array(
+            array('title' =>'Id', 'db' => 'id', 'dt' => 0,'select'=>'id','prefix'=>'o', 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Table', 'db' => 'name','dt' => 1,'select'=>'name','prefix'=>'t', 'search'=>true, 'type' => 'text' ),
+            array('title' =>'User Name', 'db' => 'userName','dt' => 2,'select'=>'userName','prefix'=>'u', 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Create date', 'db' => 'createDate','dt' => 3,'select'=>'createDate','prefix'=>'o', 'search'=>true, 'type' => 'text','formatter'=>function($d,$row){
+                return date('d-m-Y h:i:s',$d);
+            } ),
+            array('title' =>'Total cost', 'db' => 'totalCost','dt' => 4,'select'=>'totalCost','prefix'=>'o', 'search'=>true, 'type' => 'text',
+             'formatter' => function($d,$row){
+        return Utility::formatCost($d);
     }
+            ),
+            array('title' =>'Total real cost', 'db' => 'totalRealCost','select'=>'totalRealCost','prefix'=>'o','dt' => 5, 'search'=>true, 'type' => 'text' ,
+            'formatter' => function($d,$row){
+                    return Utility::formatCost($d);
+              }
+            ),
+            array('title' =>'Coupon', 'db' => 'code','dt' => 6,'select'=>'code','prefix'=>'c', 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Action', 'db' => 'orderId','dt' => 7, 'select'=>'id','prefix'=>'o', 'search'=>false, 'type' => 'number',
+                'formatter' => function( $d, $row ) {
+                    $actionUrl = '/admin/order';
+                    return '
+
+                        <a class="btn-xs action action-detail btn btn-success btn-default" href="'.$actionUrl.'/add/'.$d.'"><i class="icon-edit"></i></a>
+                        <a data-id="'.$d.'" id="'.$d.'" data-link="'.$actionUrl.'" class="btn-xs action action-detail btn btn-danger  btn-delete " href="javascript:void(0)"><i class="icon-remove"></i></a>
+                    ';
+                }
+            )
+
+        );
+        /////end column for table
+        $table = new AjaxTable(array(), array(), 'admin/order');
+        $table->setTableColumns($columns);
+        $table->setTablePrefix('o');
+        $table->setExtendJoin(
+            array(
+                array(" Admin\\Entity\\User", "u", "WITH", "u.id = o.userId "),
+                array(" Admin\\Entity\\Managetable", "t", "WITH", "t.id = o.tableId "),
+                array(" Admin\\Entity\\Coupon", "c", "WITH", "c.id = o.couponId "),
+            )
+        );
+        $table->setExtendSQl(array(
+            array('AND','o.isdelete','=','0'),
+        ));
+        $table->setAjaxCall('/admin/order');
+        $table->setActionDeleteAll('deleteall');
 
 
+        $this->tableAjaxRequest($table,$columns,$this->modelOrder);
+        //end config table
+        return new ViewModel(array('table' => $table,
+            'title' => $this->translator->translate('Order')));
+    }
 
     public function addAction()
     {
         $viewData =  Utility::addNewOrder($this->params(),$this->getRequest());
         return new ViewModel($viewData);
     }
-
-
     public function deleteAction()
     {
         //get user by id
@@ -180,7 +102,6 @@ class OrderController extends BaseController
             $menu = $this->modelOrder->findOneBy(array('id'=>$id));
             $menu->setIsdelete(1);
             $this->modelOrder->edit($menu);
-            TransactionUtility::rollbackTransaction($id);
             //$this->model->delete(array('id'=>$id));
             echo 1;
         }
@@ -250,7 +171,6 @@ class OrderController extends BaseController
             'printButton'=>$printButton,
         ));
     }
-
     public  function statistic(){
 
         if($this->getRequest()->isPost()){
@@ -260,13 +180,11 @@ class OrderController extends BaseController
 
 
     }
-
     public function ajaxDeleteOrderAction(){
         if($this->getRequest()->isPost()){
             $orderId = $this->params()->fromPost('orderId');
             $orderModel = $this->modelOrder;
             $orderModel->delete(array('id'=>$orderId));
-            TransactionUtility::rollbackTransaction($orderId);
             echo 1;
             die;
         }

@@ -1190,6 +1190,18 @@ class Utility extends AbstractActionController
         return new PaymentCategory();
     }
 
+    public static  function getCategoryForSelect(){
+        $doctrineService = self::$servicelocator->get('doctrine');
+        $categoryModel = new categoryModel($doctrineService);
+        $cat = $categoryModel->findBy(array('isdelete'=>0));
+        $return = array();
+        foreach($cat as $item){
+            $return[$item->getId()] = $item->getName();
+        }
+        return $return;
+    }
+
+
 
 }
 

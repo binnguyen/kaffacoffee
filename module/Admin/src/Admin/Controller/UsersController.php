@@ -12,106 +12,58 @@ use Admin\Entity\User;
 use Velacolib\Utility\Utility;
 use Admin\Model\userModel;
 use Zend\View\Model\ViewModel;
+use Velacolib\Utility\Table\AjaxTable;
 use Zend\Mvc\Controller\AbstractActionController;
 
 use Zend\Authentication\AuthenticationService;
 
-class UsersController extends BaseController
+class UsersController extends AdminGlobalController
 {
     protected   $modelUsers;
     protected   $translator;
-    public function onDispatch(\Zend\Mvc\MvcEvent $e){
+    public function init(){
+        $this->modelUsers = new userModel($this->doctrineService);
 
-        $service_locator_str = 'doctrine';
-        $this->sm = $this->getServiceLocator();
-        $CategoriesTable = $this->sm->get($service_locator_str);
-        $this->modelUsers = new userModel($CategoriesTable);
-        $this->translator = Utility::translate();
-
-        //check login
-        $user = Utility::checkLogin($this);
-        if(! is_object($user) && $user == 0){
-            $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }else{
-            $isPermission = Utility::checkRole($user->userType,ROLE_ADMIN);
-            if( $isPermission == false)
-                $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }
-        //end check login
-
-        return parent::onDispatch($e);
     }
     public function indexAction()
     {
+        //config table
+        /////column for table
+        $menuTableColumn  =  $columns = array(
+            array('title' =>'Id', 'db' => 'id', 'dt' => 0, 'search'=>true, 'type' => 'number' ),
+            array('title' =>'Name', 'db' => 'userName','dt' => 1, 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Full name', 'db' => 'fullName','dt' => 2, 'search'=>true, 'type' => 'number' ),
+            array('title' =>'User type', 'db' => 'type','dt' => 3, 'search'=>true, 'type' => 'number',
+                'dataSelect' => Utility::getUserRole()
+            ),
+            array('title' =>'Action', 'db' => 'id','dt' => 4, 'search'=>false, 'type' => 'number',
+                'formatter' => function( $d, $row ) {
+                    $actionUrl = '/admin/users';
+                    return '
+                        <a class="btn-xs action action-detail btn btn-success btn-default" href="'.$actionUrl.'/add/'.$d.'"><i class="icon-edit"></i></a>
+                         <a data-id="'.$d.'" id="'.$d.'" data-link="'.$actionUrl.'" class="btn-xs action action-detail btn btn-danger  btn-delete " href="javascript:void(0)"><i class="icon-remove"></i></a>
+                    ';
+                }
+            )
 
-        return new ViewModel(array('title'=>$this->translator->translate('Users')));
-    }
-
-    public function ajaxListAction(){
-        $fields = array(
-            'id',
-            'userName',
-            'fullName',
-            'type',
-            'apiKey',
         );
+        /////end column for table
+        $table = new AjaxTable($menuTableColumn, 'admin/users');
+        $table->setTablePrefix('u');
+        $table->setExtendSQl(
+            array(
+                array('AND','u.isdelete','=','0')
+            )
+        );
+        $table->setAjaxCall('/admin/users');
+        $table->setActionLink('admin/users');
+        $table->setActionDeleteAll('deleteall');
+        $this->tableAjaxRequest($table,$columns,$this->modelUsers);
+        //end config table
 
-        $offset = $this->getDataTableQueryOffset();
-        $limit = $this->getDataTableQueryLimit();
-        $sortCol = $this->getDataTableQuerySortingColumn();
-        $sortDirection = $this->getDataTableQuerySortingDirection();
-        $search = $this->getDataTableQuerySearch();
-        $customWhere  = ' c.isdelete = 0';
-        // WHERE conditions
-
-        $customQuery = $this->customWhereSql($customWhere);
-
-
-        $dqlWhere = $this->getDataTableWhereDql('c', $fields, $search,$customWhere);
-
-        if ( !empty($dqlWhere) ) {
-            $customQuery = '';
-        }
-        // ORDERING
-        $dqlOrder = $this->getDataTableOrderDql('c', $fields, $sortCol, $sortDirection);
-
-        // DQL
-        $dql = "SELECT c FROM Admin\Entity\User c ";
-
-        // RESULTS
-        $query = $this->getEntityManager()->createQuery($dql . $customQuery . $dqlWhere . $dqlOrder);
-        if ( !empty($dqlWhere) ) {
-            $query->setParameter(':search', '%' . $search . '%');
-        }
-        $results = $query->setMaxResults($limit)
-            ->setFirstResult($offset)
-            ->getResult();
-
-        // TOTAL RESULTS COUNT
-        $countDql = "SELECT COUNT(c.id) FROM Admin\Entity\User c ";
-        $count = $this->getEntityManager()->createQuery($countDql)->getSingleScalarResult();
-        // map data
-        $ret = array_map(function($item) {
-            // create link
-            $linkEdit =   '/admin/users/add/'.$item->getId() ;
-            $linkDelete =  '/admin/users/delete/'.$item->getId() ;
-            $linkDetail =   '/admin/users/detail/'.$item->getId() ;
-            return array(
-                'id' => $item->getId(),
-                'userName' => $item->getUserName(),
-                'fullName' => $item->getFullName(),
-                'type' => Utility::getUserRole($item->getType()),
-                'apiKey' => $item->getApiKey(),
-                'action'=> '
-                <a class="btn btn-primary" href="'.$linkEdit.'"><i class="icon-edit-sign"></i></a>
-                <a id="'.$item->getId().'"  data-link="'.$linkDelete.'" data-id="'.$item->getId().'" href="javascript:void(0)" class="btn btn-danger btn-delete" ><i class="icon-trash"></i></a>'
-            );
-        }, $results);
-
-        return $this->getDataTableJsonResponse($ret, $count, $dqlWhere);
-
+        return new ViewModel(array('table' => $table,
+            'title' => $this->translator->translate('Users')));
     }
-
     public function addAction()
     {
         $request = $this->getRequest();
@@ -119,18 +71,23 @@ class UsersController extends BaseController
         //insert
         if($id == ''){
             if($request->isPost()) {
+                $checkExist = Utility::checkUserExist($this->params()->fromPost('userName'));
+                if($checkExist==true)
+                {
+                    $this->flashMessenger()->addSuccessMessage("User existed");
+                    return    $this->redirect()->toRoute('admin/child',array('controller'=>'users','action'=>'add'));
+                }
                 $cat = new User();
                 $cat->setUserName($this->params()->fromPost('userName'));
                 $cat->setFullName($this->params()->fromPost('fullName'));
                 $cat->setPassword(sha1($this->params()->fromPost('password')));
                 $cat->setIsdelete(0);
-                $cat->setType(0);
-                $cat->setApiKey(md5($this->params()->fromPost('userName').API_STRING));
+                $cat->setType($this->params()->fromPost('usertype'));
                 $userInserted = $this->modelUsers->insert($cat);
 
                 //flash
                 $this->flashMessenger()->addSuccessMessage("Insert success");
-                $this->redirect()->toRoute('admin/child',array('controller'=>'users'));
+                return  $this->redirect()->toRoute('admin/child',array('controller'=>'users'));
             }
             //insert new user
             //$this->redirect()->toRoute('admin/child',array('controller'=>'category'));
@@ -141,10 +98,18 @@ class UsersController extends BaseController
 
             $cat = $this->modelUsers->findOneBy(array('id'=>$id));
             if($request->isPost()){
+                //check exist
+                $checkExist = Utility::checkUserExist($this->params()->fromPost('userName'));
+                if($checkExist==true)
+                {
+                    $this->flashMessenger()->addSuccessMessage("User existed");
+                    return    $this->redirect()->toRoute('admin/child',array('controller'=>'users','action'=>'add','id'=>$cat->getId()));
+                }
                 $idFormPost = $this->params()->fromPost('id');
                 $cat = $this->modelUsers->findOneBy(array('id'=>$idFormPost));
                 $cat->setUserName($this->params()->fromPost('userName'));
                 $cat->setFullName($this->params()->fromPost('fullName'));
+                $cat->setType($this->params()->fromPost('usertype'));
                 if($this->params()->fromPost('password') != ''){
                     $cat->setPassword(sha1($this->params()->fromPost('password')));
                 }
@@ -153,7 +118,7 @@ class UsersController extends BaseController
 
                 //flash
                 $this->flashMessenger()->addSuccessMessage("Update success");
-                $this->redirect()->toRoute('admin/child',array('controller'=>'users'));
+                return $this->redirect()->toRoute('admin/child',array('controller'=>'users'));
             }
             return new ViewModel(array(
                 'data' =>$cat,
@@ -187,4 +152,5 @@ class UsersController extends BaseController
         echo '<pre>';
         print_r($auth);die;
     }
+
 }

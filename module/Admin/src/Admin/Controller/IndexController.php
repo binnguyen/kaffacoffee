@@ -7,10 +7,15 @@
  */
 namespace Admin\Controller;
 
+use Velacolib\Utility\Table;
+use Velacolib\Utility\Table\AjaxTable;
+use Velacolib\Utility\Table\Detail;
+
 use Admin\Entity\Menu;
 use Admin\Entity\MenuCombo;
 use Admin\Entity\MenuItem;
-use Admin\Entity\Table;
+use Admin\Entity\Managetable;
+
 use Admin\Model\comboModel;
 use Admin\Model\couponModel;
 use Velacolib\Utility\Utility;
@@ -25,42 +30,63 @@ use Zend\Paginator\Paginator;
 
 
 
-class IndexController extends BaseController
+class IndexController extends AdminGlobalController
 {
     protected $modelMenu;
     protected $modelCombo;
     protected $translator;
     protected $modelMenuItem;
 
-    public function onDispatch(\Zend\Mvc\MvcEvent $e)
-    {
+//
 
-        $service_locator_str = 'doctrine';
-        $this->sm = $this->getServiceLocator();
-        $CategoriesTable = $this->sm->get($service_locator_str);
-        $this->modelMenu = new menuModel($CategoriesTable);
-        $this->modelCombo = new comboModel($CategoriesTable);
-        $this->modelMenuItem = new  menuItemModel($CategoriesTable);
-        $this->translator = Utility::translate();
-        //check login
-        $user = Utility::checkLogin();
-        if (!is_object($user) && $user == 0) {
-            $this->redirect()->toRoute('admin/child', array('controller' => 'login'));
-        } else {
-            $isPermission = Utility::checkRole($user->userType, ROLE_ADMIN);
-            if ($isPermission == false)
-                $this->redirect()->toRoute('admin/child', array('controller' => 'login'));
-        }
-
-
-        //end check login
-
-        return parent::onDispatch($e);
+    public function init(){
+        parent::init();
+        $this->modelMenu = new menuModel($this->doctrineService);
+        $this->modelCombo = new comboModel($this->doctrineService);
+        $this->modelMenuItem = new  menuItemModel($this->doctrineService);
     }
 
     public function indexAction()
     {
-        return new ViewModel(array('title' => $this->translator->translate('Menu')));
+
+        //config table
+        /////column for table
+        $columns = array(
+
+            array('title' =>'Id', 'db' => 'id', 'dt' => 0, 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Name', 'db' => 'name','dt' => 1, 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Category', 'db' => 'catId','dt' => 2, 'search'=>false, 'type' => 'number',
+                'dataSelect' => Utility::getCategoryForSelect()
+            ),
+            array('title' =>'Cost', 'db' => 'cost','dt' => 3, 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Take Away cost', 'db' => 'taCost','dt' => 4, 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Action','db'=>'id','dt' => 5, 'search'=>false, 'type' => 'number',
+                'formatter' => function( $d, $row ) {
+                    $actionUrl = '/admin/index';
+                    return '
+                        <a class="btn-xs action action-detail btn btn-success btn-default" href="'.$actionUrl.'/add/'.$d.'"><i class="icon-edit"></i></a>
+                        <a data-id="'.$d.'" id="'.$d.'" data-link="'.$actionUrl.'" class="btn-xs action action-detail btn btn-danger  btn-delete " href="javascript:void(0)"><i class="icon-remove"></i></a>
+                    ';
+
+                }
+            ),
+
+
+        );
+
+
+        /////end column for table
+        $table = new AjaxTable($columns, array(), 'admin/index');
+        $table->setTablePrefix('m');
+        $table->setExtendSQl(array(
+            array('AND','m.isdelete','=','0'),
+        ));
+        $table->setAjaxCall('/admin/index');
+        $table->setActionDeleteAll('deleteall');
+        $this->tableAjaxRequest($table,$columns,$this->modelMenu);
+        //end config table
+        return new ViewModel(array('table' => $table,
+            'title' => $this->translator->translate('Menu')));
     }
 
     public function ajaxListAction()

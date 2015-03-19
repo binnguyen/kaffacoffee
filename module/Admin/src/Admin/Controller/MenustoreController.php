@@ -8,6 +8,10 @@
 
 namespace Admin\Controller;
 
+use Velacolib\Utility\Table;
+use Velacolib\Utility\Table\AjaxTable;
+use Velacolib\Utility\Table\Detail;
+
 use Admin\Entity\MenuStore;
 use Admin\Model\transactionModel;
 use Velacolib\Utility\TransactionUtility;
@@ -22,7 +26,7 @@ use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 use Zend\Paginator\Paginator;
 
-class MenustoreController extends BaseController
+class MenustoreController extends AdminGlobalController
 {
 
     protected $menuStoreModel;
@@ -30,129 +34,78 @@ class MenustoreController extends BaseController
     protected $translator;
     protected $config;
 
-    public function onDispatch(\Zend\Mvc\MvcEvent $e)
-    {
-
-        $service_locator_str = 'doctrine';
-        $this->sm = $this->getServiceLocator();
-        $doctrine = $this->sm->get($service_locator_str);
-        $this->menuStoreModel = new menuStoreModel($doctrine);
-        $this->transactionModel = new transactionModel($doctrine);
-        $this->config = Utility::getConfig();
-        $this->translator = Utility::translate();
-        //check login
-        $user = Utility::checkLogin();
-        if (!is_object($user) && $user == 0) {
-            $this->redirect()->toRoute('admin/child', array('controller' => 'login'));
-        } else {
-            $isPermission = Utility::checkRole($user->userType, ROLE_ADMIN);
-            if ($isPermission == false)
-                $this->redirect()->toRoute('admin/child', array('controller' => 'login'));
-        }
 
 
-        //end check login
+    public function init(){
 
-        return parent::onDispatch($e);
-    }
-
-    public function ajaxListAction()
-    {
-
-        $fields = array(
-            'id',
-            'name',
-            'unit',
-            'des',
-            'cost',
-            'supplier',
-        );
-
-        $offset = $this->getDataTableQueryOffset();
-        $limit = $this->getDataTableQueryLimit();
-        $sortCol = $this->getDataTableQuerySortingColumn();
-        $sortDirection = $this->getDataTableQuerySortingDirection();
-        $search = $this->getDataTableQuerySearch();
-        $customWhere  = ' c.isdelete = 0';
-        // WHERE conditions
-
-        $customQuery = $this->customWhereSql($customWhere);
-
-
-        $dqlWhere = $this->getDataTableWhereDql('c', $fields, $search,$customWhere);
-
-        if ( !empty($dqlWhere) ) {
-            $customQuery = '';
-        }
-
-        // ORDERING
-        $dqlOrder = $this->getDataTableOrderDql('c', $fields, $sortCol, $sortDirection);
-
-        // DQL
-        $dql = "SELECT c FROM Admin\Entity\MenuStore c";
-
-
-
-        // RESULTS
-        $query = $this->getEntityManager()->createQuery($dql .$customQuery  . $dqlWhere . $dqlOrder);
-        if ( !empty($dqlWhere) ) {
-            $query->setParameter(':search', '%' . $search . '%');
-        }
-        $results = $query->setMaxResults($limit)
-            ->setFirstResult($offset)
-            ->getResult();
-
-        // TOTAL RESULTS COUNT
-        $countDql = "SELECT COUNT(c.id) FROM Admin\Entity\MenuStore c";
-        $count = $this->getEntityManager()->createQuery($countDql)->getSingleScalarResult();
-
-        // map data
-        $ret = array_map(function($item) {
-            $quantityInput = TransactionUtility::checkStore($item->getId(),INSERT_STORE_ACRION);
-            if(isset($quantityInput[0])){
-                $input = $quantityInput[0]['sum_store'];
-            }else{ $input = 0; }
-
-
-            $quantityOut = TransactionUtility::checkStore($item->getId(),ADD_ORDER_ACTION);
-            if(isset($quantityOut[0])){ $output = $quantityOut[0]['sum_store'];  }else{$output = 0;}
-
-            $linkEdit =   '/admin/menustore/add/'.$item->getId() ;
-            $linkDelete =  '/admin/menustore/delete/'.$item->getId() ;
-            $linkDetail =   '/admin/menustore/detail/'.$item->getId() ;
-            $linkEditTransaction =   '/admin/transaction/inserttransaction/'.$item->getId() ;
-
-            return array(
-                'id' => $item->getId(),
-                'name' => $item->getName() ,
-                'unit' => $item->getUnit(),
-                'des' =>$item->getDes(),
-                'quantity_in_stock'=>  number_format(TransactionUtility::getMenuItemQuantityInStore( $item->getId())),
-                'cost'=>$item->getCost(),
-                'supplier'=>$item->getSupplier(),
-                'supply_item'=>$item->getSupplyItem(),
-                'quantityInput'=>$input,
-                'quantityOut'=>$output,
-                'inMenu'=>Utility::getMenuInMenuStore($item->getId())  ,
-                'action'=> '
-                <a target="_blank" href="'.$linkDetail.'" class="btn btn-info"><i class="icon-edit-sign"></i>
-                </a>
-                <a class="btn btn-primary" href="'.$linkEdit.'"><i class="icon-edit-sign"></i></a>
-                <a  id="'.$item->getId().'"  data-link="'.$linkDelete.'" data-id="'.$item->getId().'" href="javascript:void(0)" class="btn btn-danger btn-delete"><i class="icon-trash"></i></a>
-                <a href="'.$linkEditTransaction.'" class="btn btn-danger"><i class="icon-edit"></i></a>
-                '
-            );
-        }, $results);
-
-        return $this->getDataTableJsonResponse($ret, $count, $dqlWhere);
-
+        parent::init();
+        $this->menuStoreModel = new menuStoreModel($this->doctrineService);
+        $this->transactionModel = new transactionModel($this->doctrineService);
     }
 
     public function indexAction()
     {
+
+        $columns = array(
+
+            array('title' =>'ID', 'db' => 'id', 'dt' => 0, 'select'=>'id','prefix'=>'m','search'=>false, 'type' => 'number' ),
+            array('title' =>'Name', 'db' => 'name','dt' => 1,'select'=>'name','prefix'=>'m', 'search'=>true, 'type' => 'text' ),
+            array('title' =>'In', 'db' => 'id','dt' => 2, 'search'=>false, 'type' => 'number','formatter'=>function($d,$row){
+                $quantityInput = TransactionUtility::checkStore($d,INSERT_STORE_ACRION);
+                if(isset($quantityInput[0])){
+                    $input = $quantityInput[0]['sum_store'];
+                }else{ $input = 0; }
+                return $input;
+            }),
+            array('title' =>'Out', 'db' => 'id','dt' => 3, 'search'=>true, 'type' => 'number','formatter'=>
+                function($d,$row){
+                    $quantityOut = TransactionUtility::checkStore($d,ADD_ORDER_ACTION);
+                    if(isset($quantityOut[0])){ $output = $quantityOut[0]['sum_store'];  }else{$output = 0;}
+                    return $output;
+                }
+            ),
+            array('title' =>'In Stock', 'db' => 'id','dt' => 4, 'search'=>true, 'type' => 'number','formatter'=>
+                function($d,$row){
+
+                 return     TransactionUtility::getMenuItemQuantityInStore($d);
+
+                } ),
+
+            array('title' =>'Unit', 'db' => 'unit','dt' => 5 , 'select'=>'unit','prefix'=>'m','search'=>false, 'type' => 'text' ),
+
+            array('title' =>'Supply item', 'db' => 'id','dt' => 6, 'search'=>true, 'type' => 'text'),
+
+            array('title' =>'Action','db'=>'id','dt' => 7 , 'search'=>false, 'type' => 'number',
+                'formatter' => function( $d, $row ) {
+                    $actionUrl = '/admin/index';
+                    return '
+                        <a class="btn-xs action action-detail btn btn-success btn-default" href="'.$actionUrl.'/add/'.$d.'"><i class="icon-edit"></i></a>
+                        <a data-id="'.$d.'" id="'.$d.'" data-link="'.$actionUrl.'" class="btn-xs action action-detail btn btn-danger  btn-delete " href="javascript:void(0)"><i class="icon-remove"></i></a>
+                    ';
+
+                }
+            ),
+
+
+        );
+
+
+        /////end column for table
+        $table = new AjaxTable($columns, array(), 'admin/menustore');
+        $table->setTablePrefix('m');
+
+
+        $table->setAjaxCall('/admin/menustore/index');
+        $table->setActionDeleteAll('deleteall');
+        $this->tableAjaxRequest($table,$columns,$this->menuStoreModel);
+        //end config table
+
+
         return new ViewModel(array(
-            'title' => $this->translator->translate('Menu store')
-        ));
+            'table' => $table,
+            'title' => $this->translator->translate('Menu store')));
+
+
     }
 
     public function addAction()

@@ -1,4 +1,7 @@
+body{
+    font-family: "Arial,sans-serif", Tahoma, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
 
+}
 .zf-green {
     color: #68b604;
 }
@@ -236,4 +239,16 @@ table tr td{
     text-align: center;
     position: absolute;
     top: 50%;
+}
+.column_filter{
+    width: 150px !important;
+}
+h1, h2, h3, h4, h5, h6{
+    font-family: "Arial,sans-serif", Tahoma, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+input.column_filter {
+    max-width: 100px;
+}
+.table-responsive{
+    overflow-x: auto;
 }

@@ -12,111 +12,59 @@ use Admin\Entity\Table;
 use Velacolib\Utility\Utility;
 use Admin\Model\couponModel;
 use Zend\View\Model\ViewModel;
+use Velacolib\Utility\Table\AjaxTable;
 use Zend\Mvc\Controller\AbstractActionController;
 
 
-class CouponController extends BaseController
+class CouponController extends AdminGlobalController
 {
     protected   $modelCoupon;
     protected   $translator;
-    public function onDispatch(\Zend\Mvc\MvcEvent $e){
+    public function init(){
 
-        $service_locator_str = 'doctrine';
-        $this->sm = $this->getServiceLocator();
-        $doctrineService = $this->sm->get($service_locator_str);
-        $this->modelCoupon = new couponModel($doctrineService);
-        $this->translator = Utility::translate();
-
-        //check login
-        $user = Utility::checkLogin($this);
-        if(! is_object($user) && $user == 0){
-            $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }else{
-            $isPermission = Utility::checkRole($user->userType,ROLE_ADMIN);
-            if( $isPermission == false)
-                $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }
-
-        return parent::onDispatch($e);
+        $this->modelCoupon = new couponModel($this->doctrineService);
     }
 
 
     public function indexAction()
     {
+        //config table
+        /////column for table
+        $columns = array(
+            array('title' =>'Id', 'db' => 'id', 'dt' => 0, 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Code', 'db' => 'code','dt' => 1, 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Value', 'db' => 'value','dt' => 2, 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Type', 'db' => 'type','dt' => 3, 'search'=>true, 'type' => 'text',   'dataSelect' => Utility::getCouponType() ),
+            array('title' =>'From date', 'db' => 'fromdate','dt' => 4, 'search'=>true, 'type' => 'text' ),
+            array('title' =>'To date', 'db' => 'todate','dt' => 5, 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Action', 'db' => 'id','dt' => 6, 'search'=>false, 'type' => 'number',
+                'formatter' => function( $d, $row ) {
+                    $actionUrl = '/admin/coupon';
+                    return '
 
-        return new ViewModel(array('title'=>$this->translator->translate('Coupon')));
-    }
+                        <a class="btn-xs action action-detail btn btn-success btn-default" href="'.$actionUrl.'/add/'.$d.'"><i class="icon-edit"></i></a>
+                        <a class="btn-xs action action-detail btn btn-danger  " href="'.$actionUrl.'/delete/'.$d.'"><i class="icon-remove"></i></a>
+                    ';
+                }
+            )
 
-
-    public function ajaxListAction(){
-
-        $fields = array(
-            'id',
-            'code',
-            'value',
-            'fromdate',
-            'todate',
-            'type',
-            'description',
         );
 
-        $offset = $this->getDataTableQueryOffset();
-        $limit = $this->getDataTableQueryLimit();
-        $sortCol = $this->getDataTableQuerySortingColumn();
-        $sortDirection = $this->getDataTableQuerySortingDirection();
-        $search = $this->getDataTableQuerySearch();
-        $customWhere  = ' c.isdelete = 0';
-        // WHERE conditions
-
-        $customQuery = $this->customWhereSql($customWhere);
-
-
-        $dqlWhere = $this->getDataTableWhereDql('c', $fields, $search,$customWhere);
-
-        if ( !empty($dqlWhere) ) {
-            $customQuery = '';
-        }
-        // ORDERING
-        $dqlOrder = $this->getDataTableOrderDql('c', $fields, $sortCol, $sortDirection);
-
-        // DQL
-        $dql = "SELECT c FROM Admin\Entity\Coupon c ";
-
-        // RESULTS
-        $query = $this->getEntityManager()->createQuery($dql . $customQuery . $dqlWhere . $dqlOrder);
-        if ( !empty($dqlWhere) ) {
-            $query->setParameter(':search', '%' . $search . '%');
-        }
-        $results = $query->setMaxResults($limit)
-            ->setFirstResult($offset)
-            ->getResult();
-
-        // TOTAL RESULTS COUNT
-        $countDql = "SELECT COUNT(c.id) FROM Admin\Entity\Coupon c ";
-        $count = $this->getEntityManager()->createQuery($countDql)->getSingleScalarResult();
-        // map data
-        $ret = array_map(function($item) {
-            // create link
-            $linkEdit =   '/admin/coupon/add/'.$item->getId() ;
-            $linkDelete =  '/admin/coupon/delete/'.$item->getId() ;
-            $linkDetail =   '/admin/coupon/detail/'.$item->getId() ;
-            return array(
-                'id' => $item->getId(),
-                'code' => $item->getCode(),
-                'value' => $item->getValue(),
-                'fromdate' => date('d-m-Y',$item->getFromDate()),
-                'todate' => date('d-m-Y',$item->getToDate()),
-                'type' => $item->getType(),
-                'description' => $item->getDescription(),
-                'action'=> '
-                <a class="btn btn-primary" href="'.$linkEdit.'"><i class="icon-edit-sign"></i></a>
-                <a id="'.$item->getId().'"  data-link="'.$linkDelete.'" data-id="'.$item->getId().'" href="javascript:void(0)" class="btn btn-danger btn-delete" ><i class="icon-trash"></i></a>'
-            );
-        }, $results);
-
-        return $this->getDataTableJsonResponse($ret, $count, $dqlWhere);
-
+        /////end column for table
+        $table = new AjaxTable($columns, array(), 'admin/coupon');
+        $table->setTablePrefix('m');
+        $table->setExtendSQl(array(
+            array('AND','m.isdelete','=','0'),
+        ));
+        $table->setAjaxCall('/admin/coupon');
+        $table->setActionDeleteAll('deleteall');
+        $this->tableAjaxRequest($table,$columns,$this->modelCoupon);
+        //end config table
+        return new ViewModel(array('table' => $table,
+            'title' => $this->translator->translate('Category')));
     }
+
+
 
     public function addAction()
     {
@@ -125,7 +73,6 @@ class CouponController extends BaseController
         //insert
         if($id == ''){
             if($request->isPost()) {
-
                $data = $this->params()->fromPost();
                $coupon = new Coupon();
                 $counponCode = Utility::generateCouponCode();
@@ -178,8 +125,6 @@ class CouponController extends BaseController
             ));
         }
     }
-
-
     public function deleteAction()
     {
         //get user by id

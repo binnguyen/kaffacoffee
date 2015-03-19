@@ -30,6 +30,7 @@ class transactionModel extends globalModel {
     }
 
     public  function convertToArray($datas,$store = SUB_STORE){
+
         $return = array();
         foreach($datas as $data){
             $storeInfo = Utility::getStoreInfo( $data->getMenuStoreId());

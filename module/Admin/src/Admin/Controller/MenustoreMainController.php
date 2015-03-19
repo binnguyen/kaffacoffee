@@ -8,6 +8,10 @@
 
 namespace Admin\Controller;
 
+use Velacolib\Utility\Table;
+use Velacolib\Utility\Table\AjaxTable;
+use Velacolib\Utility\Table\Detail;
+
 use Admin\Entity\MenuStore;
 use Admin\Entity\MenuStoreMain;
 use Admin\Model\menuStoreModel;
@@ -24,7 +28,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 use Zend\Paginator\Paginator;
 
 
-class MenustoreMainController extends    BaseController
+class MenustoreMainController extends    AdminGlobalController
 {
 
     protected $menuStoreModel;
@@ -33,134 +37,101 @@ class MenustoreMainController extends    BaseController
     protected $translator;
     protected $config;
 
-    public function onDispatch(\Zend\Mvc\MvcEvent $e)
-    {
-        $service_locator_str = 'doctrine';
-        $this->sm = $this->getServiceLocator();
-        $doctrine = $this->sm->get($service_locator_str);
-        $this->menuStoreModel = new menuStoreMainModel($doctrine);
-        $this->menuSubStoreModel = new menuStoreModel($doctrine);
-        $this->transactionModel = new transactionModel($doctrine);
-        $this->config = Utility::getConfig();
-        $this->translator = Utility::translate();
-        //check login
-        $user = Utility::checkLogin();
-        if (!is_object($user) && $user == 0) {
-            $this->redirect()->toRoute('admin/child', array('controller' => 'login'));
-        } else {
-            $isPermission = Utility::checkRole($user->userType, ROLE_ADMIN);
-            if ($isPermission == false)
-                $this->redirect()->toRoute('admin/child', array('controller' => 'login'));
-        }
 
+    public function init(){
+        parent::init();
 
-        //end check login
-
-        return parent::onDispatch($e);
-    }
-
-    public function ajaxListAction(){
-
-        $fields = array(
-            'id',
-            'name',
-            'unit',
-            'des',
-            'cost',
-            'supplier',
-            'outOfStock',
-            'supplyItem',
-        );
-
-        $offset = $this->getDataTableQueryOffset();
-        $limit = $this->getDataTableQueryLimit();
-        $sortCol = $this->getDataTableQuerySortingColumn();
-        $sortDirection = $this->getDataTableQuerySortingDirection();
-        $search = $this->getDataTableQuerySearch();
-
-        $customWhere  = ' c.isdelete = 0 ';
-        // WHERE conditions
-
-        $customQuery = $this->customWhereSql($customWhere);
-
-        // WHERE conditions
-        $dqlWhere = $this->getDataTableWhereDql('c', $fields, $search,$customWhere);
-
-        if ( !empty($dqlWhere) ) {
-            $customQuery = '';
-        }
-
-
-        // ORDERING
-        $dqlOrder = $this->getDataTableOrderDql('c', $fields, $sortCol, $sortDirection);
-
-        // DQL
-        $dql = "SELECT c FROM Admin\Entity\MenuStoreMain c";
-
-
-
-        // RESULTS
-        $query = $this->getEntityManager()->createQuery($dql . $customQuery . $dqlWhere . $dqlOrder);
-        if ( !empty($dqlWhere) ) {
-            $query->setParameter(':search', '%' . $search . '%');
-        }
-        $results = $query->setMaxResults($limit)
-            ->setFirstResult($offset)
-            ->getResult();
-
-        // TOTAL RESULTS COUNT
-        $countDql = "SELECT COUNT(c.id) FROM Admin\Entity\MenuStoreMain c";
-        $count = $this->getEntityManager()->createQuery($countDql)->getSingleScalarResult();
-
-
-
-
-        // map data
-        $ret = array_map(function($item) {
-            $quantityInput = TransactionUtility::checkStore($item->getId(),INSERT_STORE_ACRION,MAIN_STORE);
-            if(isset($quantityInput[0])){
-                $input = $quantityInput[0]['sum_store'];
-            }else{ $input = 0; }
-            $quantityOut = TransactionUtility::checkStore($item->getId(),ADD_ORDER_ACTION,MAIN_STORE);
-            if(isset($quantityOut[0])){ $output = $quantityOut[0]['sum_store'];  }else{$output = 0;}
-            $supplier = Utility::getSupplierInfo($item->getSupplier());
-
-            // create link
-           $linkEdit =   '/admin/menustoremain/add/'.$item->getId() ;
-           $linkDelete =  '/admin/menustoremain/delete/'.$item->getId() ;
-           $linkDetail =   '/admin/menustoremain/detail/'.$item->getId() ;
-           $linkEditTransaction =   '/admin/transaction/inserttransactionmain/'.$item->getId() ;
-
-
-
-            return array(
-                'id' => $item->getId(),
-                'name' => $item->getName() ,
-                'unit' => $item->getUnit(),
-                'des' =>$item->getDes(),
-                'quantity_in_stock'=>  TransactionUtility::getMenuItemQuantityInStore( $item->getId(),MAIN_STORE),
-                'cost'=>$item->getCost(),
-                'supplier'=>$supplier->getCompanyName(),
-                'quantityInput'=>$input,
-                'quantityOut'=>$output,
-                'supplyType'=> $item->getSupplyItem(),
-                'action'=> '<a target="_blank" href="'.$linkDetail.'" class="btn btn-info"><i class="icon-info-sign"></i></a><a class="btn btn-primary" href="'.$linkEdit.'"><i class="icon-edit-sign"></i></a>
-                <a href="'.$linkDelete.'" class="btn btn-danger"><i class="icon-trash"></i></a>
-                <a href="'.$linkEditTransaction.'" class="btn btn-danger"><i class="icon-edit"></i></a>
-                '
-            );
-        }, $results);
-
-        return $this->getDataTableJsonResponse($ret, $count, $dqlWhere);
+        $this->menuStoreModel = new menuStoreMainModel($this->doctrineService);
+        $this->menuSubStoreModel = new menuStoreModel($this->doctrineService);
+        $this->transactionModel = new transactionModel($this->doctrineService);
 
     }
+
 
     public function indexAction()
     {
 
+        $columns = array(
+
+            array('title' =>'Id', 'db' => 'id', 'dt' => 0, 'select'=>'id','prefix'=>'m','search'=>false, 'type' => 'number' ),
+            array('title' =>'Name', 'db' => 'name','dt' => 1,'select'=>'name','prefix'=>'m', 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Cost', 'db' => 'cost','dt' => 2,'select'=>'cost','prefix'=>'m', 'search'=>false, 'type' => 'number'),
+            array('title' =>'In', 'db' => 'id','dt' => 3, 'search'=>true, 'type' => 'number','formatter'=>
+                function($d,$row){
+                    $quantityInput =  TransactionUtility::checkStore($d,INSERT_STORE_ACRION,MAIN_STORE);
+                    if(isset($quantityInput[0])){
+                        $input = $quantityInput[0]['sum_store'];
+                    }else{
+                        $input = 0;
+                    }
+                    return $input;
+
+                }
+            ),
+            array('title' =>'Out', 'db' => 'id','dt' => 4, 'search'=>true, 'type' => 'number','formatter'=>
+                function($d,$row){
+
+                    $quantityOut = TransactionUtility::checkStore($d,ADD_ORDER_ACTION,MAIN_STORE);
+                    if(isset($quantityOut[0])){ $output = $quantityOut[0]['sum_store'];  }else{$output = 0;}
+                    return $output;
+
+                } ),
+            array('title' =>'In stock', 'db' => 'outOfStock','dt' => 5 , 'select'=>'outOfStock','prefix'=>'m','search'=>false, 'type' => 'number' ),
+            array('title' =>'Unit', 'db' => 'unit','dt' => 6 , 'select'=>'unit','prefix'=>'m','search'=>false, 'type' => 'text' ),
+
+            array('title' =>'Supplier','prefix'=>'m','select'=>'supplier', 'db' => 'supplier','dt' => 7, 'search'=>true, 'type' => 'text','formatter'=>
+                function($d,$row){
+                    $supplier = Utility::getSupplierInfo($d);
+
+                    return $supplier->getCompanyName();
+
+                } ),
+
+            array('title' =>'Action','db'=>'id','dt' => 8 , 'search'=>false, 'type' => 'number',
+                'formatter' => function( $d, $row ) {
+                    $actionUrl = '/admin/index';
+                    return '
+                        <a class="btn-xs action action-detail btn btn-success btn-default" href="'.$actionUrl.'/add/'.$d.'"><i class="icon-edit"></i></a>
+                        <a data-id="'.$d.'" id="'.$d.'" data-link="'.$actionUrl.'" class="btn-xs action action-detail btn btn-danger  btn-delete " href="javascript:void(0)"><i class="icon-remove"></i></a>
+                    ';
+
+                }
+            ),
+
+
+        );
+
+
+        /////end column for table
+        $table = new AjaxTable($columns, array(), 'admin/menustoremain');
+        $table->setTablePrefix('m');
+        $table->setExtendJoin(
+            array(
+                array(" Admin\\Entity\\Transaction", "t", "WITH", " t.menuStoreId = m.id "),
+                array(" Admin\\Entity\\Supplier", "s", "WITH", " s.id = m.supplier "),
+            )
+        );
+
+        $table->setExtendSQl(array(
+            array('AND','m.isdelete','=','0'),
+        ));
+        $table->setAjaxCall('/admin/menustoremain/index');
+        $table->setActionDeleteAll('deleteall');
+        $this->tableAjaxRequest($table,$columns,$this->menuStoreModel);
+        //end config table
+
+
         return new ViewModel(array(
+            'table' => $table,
             'title' => $this->translator->translate('Menu store')));
+
+
     }
+
+
+
+
+
 
     public function addAction()
     {
@@ -283,92 +254,65 @@ class MenustoreMainController extends    BaseController
 
         $request = $this->getRequest();
         $id = $this->params()->fromRoute('id');
-        return new ViewModel(array(
-            'title' => $this->translator->translate('Detail Store Item'),
-            'id' => $id
-        ));
-    }
+        $columns = array(
+            array('title' =>'Id', 'db' => 'id', 'dt' => 0,'select'=>'id','prefix'=>'o', 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Store name', 'db' => 'menuStoreId','dt' => 1,'select'=>'menuStoreId','prefix'=>'o', 'search'=>true, 'type' => 'text','formatter'=>function($d,$row){
+                $storeInfo = Utility::getMainStoreInfo( $d);
+                return $storeInfo->getName();
+            } ),
+            array('title' =>'Action', 'db' => 'action','dt' => 2,'select'=>'action','prefix'=>'o', 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Quantity', 'db' => 'quantity','dt' => 3,'select'=>'quantity','prefix'=>'o', 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Cost', 'db' => 'cost','dt' => 4,'select'=>'cost','prefix'=>'o', 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Note', 'db' => 'note','dt' => 5,'select'=>'note','prefix'=>'o', 'search'=>true, 'type' => 'text','formatter'=>
+                function($d,$row){
+                    $note = TransactionUtility::getStoreItemInOrder($d);
+                    if($note == ''){
+                        $note = $d;
+                    }
+                    return $note;
+                }),
 
-    public function detailAjaxAction(){
+            array('title' =>'Date', 'db' => 'date','dt' => 6,'select'=>'date','prefix'=>'o', 'search'=>true, 'type' => 'text','formatter'=>
+                function($d,$row){
+                  return date('d-m-Y',$d);
+                }),
 
-        $menuStoreId = $this->params()->fromRoute('id');
+            array('title' =>'Action', 'db' => 'orderId','dt' => 7, 'select'=>'id','prefix'=>'o', 'search'=>false, 'type' => 'number',
+                'formatter' => function( $d, $row ) {
 
-        $fields = array(
-            'id',
-            'menuStoreId',
-            'action',
-            'quantity',
-            'unit',
-            'date',
-            'note',
-            'cost',
-            'supplier',
-            'store',
-            'orderId',
+                    $actionUrl = '/admin/menustoremain';
+                    return '
+                        <a class="btn-xs action action-detail btn btn-info btn-default" href="'.$actionUrl.'/detail/'.$d.'"><i class="icon-info-sign"></i></a>
+                        <a class="btn-xs action action-detail btn btn-success btn-default" href="'.$actionUrl.'/add/'.$d.'"><i class="icon-edit"></i></a>
+                        <a data-id="'.$d.'" id="'.$d.'" data-link="'.$actionUrl.'" class="btn-xs action action-detail btn btn-danger  btn-delete " href="javascript:void(0)"><i class="icon-remove"></i></a>
+                    ';
+
+                }
+            )
+
         );
+        /////end column for table
+        $table = new AjaxTable(array(), array(), 'admin/menustoremain/detail');
+        $table->setTableColumns($columns);
+        $table->setTablePrefix('o');
+        $table->setExtendSQl(array(
+            array('AND','o.id','=',$id),
+        ));
 
-        $offset = $this->getDataTableQueryOffset();
-        $limit = $this->getDataTableQueryLimit();
-        $sortCol = $this->getDataTableQuerySortingColumn();
-        $sortDirection = $this->getDataTableQuerySortingDirection();
-        $search = $this->getDataTableQuerySearch();
-        $customWhere  = ' c.menuStoreId = '.$menuStoreId;
-        // WHERE conditions
-
-        $customQuery = $this->customWhereSql($customWhere);
-
-        // WHERE conditions
-        $dqlWhere = $this->getDataTableWhereDql('c', $fields, $search,$customWhere);
-
-        if ( !empty($dqlWhere) ) {
-            $customQuery = '';
-        }
-
-        // ORDERING
-        $dqlOrder = $this->getDataTableOrderDql('c', $fields, $sortCol, $sortDirection);
-
-        // DQL
-        $dql = "SELECT c FROM Admin\Entity\Transaction c  ";
-
-        // RESULTS
-        $query = $this->getEntityManager()->createQuery($dql . $customQuery . $dqlWhere . $dqlOrder);
-        if ( !empty($dqlWhere) ) {
-            $query->setParameter(':search', '%' . $search . '%');
-        }
-        $results = $query->setMaxResults($limit)
-            ->setFirstResult($offset)
-            ->getResult();
-
-        // TOTAL RESULTS COUNT
-        $countDql = "SELECT COUNT(c.id) FROM Admin\Entity\Transaction c WHERE c.menuStoreId = ".$menuStoreId;
-        $count = $this->getEntityManager()->createQuery($countDql)->getSingleScalarResult();
-
-        // map data
-        $ret = array_map(function($item) {
+        $table->setAjaxCall('/admin/menustoremain/detail/'.$id);
+        $table->setActionDeleteAll('deleteall');
 
 
-
-            $storeInfo = Utility::getMainStoreInfo( $item->getMenuStoreId());
-           // $note = TransactionUtility::getStoreItemInOrder($item->getNote());
-            $supplier  = Utility::getSupplierInfo($item->getSupplier());
-            return array(
-                'id' => $item->getId(),
-                'menuStoreId' => $storeInfo->getName() ,
-                'action' => $item->getAction(),
-                'quantity' =>$item->getQuantity(),
-                'unit'=> $item->getUnit(),
-                'date'=>date('d-m-Y',$item->getDate()),
-                'cost'=> $item->getCost(),
-                'note'=> $item->getNote(),
-                'supplier'=> $supplier->getCompanyName(),
-
-            );
-        }, $results);
+        $this->tableAjaxRequest($table,$columns,$this->transactionModel);
 
 
+        return new ViewModel(
+            array('table' => $table,
+                'title' => $this->translator->translate('Detail Store')));
 
-        return $this->getDataTableJsonResponse($ret, $count, $dqlWhere);
+
     }
+
 
 
     public function deleteAction(){
@@ -388,123 +332,57 @@ class MenustoreMainController extends    BaseController
 
 
     public function managerInOutAction(){
-        $filter = $this->params()->fromRoute('filter_action');
-        $fromDate = $this->params()->fromRoute('fromdate');
-        $toDate = $this->params()->fromRoute('todate');
-        $dataStore = $this->transactionModel->findBy(array('store'=>MAIN_STORE));
-        if($filter != ''){
-            $dataStore = $this->transactionModel->findBy(array('action'=>$filter,'store'=>MAIN_STORE));
-        }
-        $dataRow = $this->transactionModel->convertToArray($dataStore,MAIN_STORE);
+        $columns = array(
+            array('title' =>'Id', 'db' => 'id', 'dt' => 0,'select'=>'id','prefix'=>'o', 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Store name', 'db' => 'menuStoreId','dt' => 1,'select'=>'menuStoreId','prefix'=>'o', 'search'=>true, 'type' => 'text','formatter'=>function($d,$row){
+                 $storeInfo = Utility::getMainStoreInfo( $d);
+                return $storeInfo->getName();
+            } ),
+            array('title' =>'Action', 'db' => 'action','dt' => 2,'select'=>'action','prefix'=>'o', 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Quantity', 'db' => 'quantity','dt' => 3,'select'=>'quantity','prefix'=>'o', 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Cost', 'db' => 'cost','dt' => 4,'select'=>'cost','prefix'=>'o', 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Note', 'db' => 'note','dt' => 5,'select'=>'note','prefix'=>'o', 'search'=>true, 'type' => 'text','formatter'=>
+            function($d,$row){
+                $note = TransactionUtility::getStoreItemInOrder($d);
+                if($note == ''){
+                    $note = $d;
+                }
+                return $note;
+            }),
 
-        $data = array(
-            'tableTitle' => $this->translator->translate('Manager In out'),
-            'link' => 'admin/menustore',
-            'data' => $dataRow,
-            'heading' => array(
-                'id' => 'Id',
-                'menuStoreId' => $this->translator->translate('Name'),
-                'quantity' => $this->translator->translate('Quantity'),
-                'unit' => $this->translator->translate('Unit'),
-                'cost' => $this->translator->translate('Cost'),
-                'unit' => $this->translator->translate('Unit'),
-                'action' => $this->translator->translate('Action'),
-                'supplier' => $this->translator->translate('Supplier'),
-                'date' => $this->translator->translate('Date'),
-                'note' => $this->translator->translate('Note'),
-            ),
-            'hideDetailButton' => 1,
-            'hideDeleteButton' => 1,
-            'hideEditButton' => 1,
+            array('title' =>'Action', 'db' => 'orderId','dt' => 6, 'select'=>'id','prefix'=>'o', 'search'=>false, 'type' => 'number',
+                'formatter' => function( $d, $row ) {
+
+                    $actionUrl = '/admin/menustoremain';
+                    return '
+                        <a class="btn-xs action action-detail btn btn-info btn-default" href="'.$actionUrl.'/detail/'.$d.'"><i class="icon-info-sign"></i></a>
+                        <a class="btn-xs action action-detail btn btn-success btn-default" href="'.$actionUrl.'/add/'.$d.'"><i class="icon-edit"></i></a>
+                        <a data-id="'.$d.'" id="'.$d.'" data-link="'.$actionUrl.'" class="btn-xs action action-detail btn btn-danger  btn-delete " href="javascript:void(0)"><i class="icon-remove"></i></a>
+                    ';
+
+                }
+            )
+
         );
+        /////end column for table
+        $table = new AjaxTable(array(), array(), 'admin/menustoremain/managerinout');
+        $table->setTableColumns($columns);
+        $table->setTablePrefix('o');
+
+
+        $table->setAjaxCall('/admin/menustoremain/managerinout');
+        $table->setActionDeleteAll('deleteall');
+
+
+        $this->tableAjaxRequest($table,$columns,$this->transactionModel);
+
 
         return new ViewModel(
-            array('data' => $data,
+            array('table' => $table,
                 'title' => $this->translator->translate('Manager In out')));
     }
 
-    public function inOutAjaxAction(){
 
-        $fields = array(
-            'id',
-            'menuStoreId',
-            'action',
-            'quantity',
-            'unit',
-            'date',
-            'note',
-            'cost',
-            'supplier',
-            'store',
-            'orderId',
-        );
-
-        $offset = $this->getDataTableQueryOffset();
-        $limit = $this->getDataTableQueryLimit();
-        $sortCol = $this->getDataTableQuerySortingColumn();
-        $sortDirection = $this->getDataTableQuerySortingDirection();
-        $search = $this->getDataTableQuerySearch();
-        $customWhere  = '';
-        // WHERE conditions
-
-        $customQuery = $this->customWhereSql($customWhere);
-
-
-        $dqlWhere = $this->getDataTableWhereDql('c', $fields, $search,$customWhere);
-
-        if ( !empty($dqlWhere) ) {
-            $customQuery = '';
-        }
-        // ORDERING
-        $dqlOrder = $this->getDataTableOrderDql('c', $fields, $sortCol, $sortDirection);
-
-        // DQL
-        $dql = "SELECT c FROM Admin\Entity\Transaction c";
-
-        // RESULTS
-        $query = $this->getEntityManager()->createQuery($dql . $customQuery . $dqlWhere . $dqlOrder);
-        if ( !empty($dqlWhere) ) {
-            $query->setParameter(':search', '%' . $search . '%');
-        }
-        $results = $query->setMaxResults($limit)
-            ->setFirstResult($offset)
-            ->getResult();
-
-        // TOTAL RESULTS COUNT
-        $countDql = "SELECT COUNT(c.id) FROM Admin\Entity\Transaction c ";
-        $count = $this->getEntityManager()->createQuery($countDql)->getSingleScalarResult();
-
-        // map data
-        $ret = array_map(function($item) {
-
-            $storeInfo = Utility::getMainStoreInfo( $item->getMenuStoreId());
-
-            // create link
-            $linkEdit =   '/admin/menustoremain/add/'.$item->getId() ;
-            $linkDelete =  '/admin/menustoremain/delete/'.$item->getId() ;
-            $linkDetail =   '/admin/menustoremain/detail/'.$item->getId() ;
-            return array(
-                'id' => $item->getId(),
-                'menuStoreId' =>$storeInfo->getName() ,
-                'action' => $item->getAction(),
-                'quantity' =>$item->getQuantity(),
-                'unit'=>  $item->getUnit(),
-                'date'=>$item->getDate(),
-                'note'=>$item->getNote(),
-                'cost'=>$item->getCost(),
-                'supplier'=>$item->getSupplier(),
-                'store'=> $item->getStore(),
-                'orderId'=> $item->getOrderId(),
-                'actions'=> '
-                <a href="'.$linkDetail.'" class="btn btn-info"><i class="icon-info-sign"></i></a>
-                <a class="btn btn-primary" href="'.$linkEdit.'"><i class="icon-edit-sign"></i></a>
-                <a href="'.$linkDelete.'" class="btn btn-danger"><i class="icon-trash"></i></a>'
-            );
-        }, $results);
-
-        return $this->getDataTableJsonResponse($ret, $count, $dqlWhere);
-
-    }
 
 
     public function unitcalcAction(){
