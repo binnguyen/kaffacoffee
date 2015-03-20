@@ -8,7 +8,7 @@
 namespace Admin\Controller;
 use Admin\Entity\Coupon;
 use Admin\Entity\Menu;
-use Admin\Entity\Table;
+use Admin\Entity\Managetable;
 use Velacolib\Utility\Utility;
 use Admin\Model\couponModel;
 use Zend\View\Model\ViewModel;

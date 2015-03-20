@@ -13,60 +13,61 @@ use Zend\View\Model\ViewModel;
 use Zend\Mvc\Controller\AbstractActionController;
 use Admin\Form\customerForm;
 use Zend\Validator\File\Size;
+use Velacolib\Utility\Table\AjaxTable;
 
-class CustomerController extends AbstractActionController
+class CustomerController extends AdminGlobalController
 {
     protected   $modelCustomer;
     protected  $translator;
-    public function onDispatch(\Zend\Mvc\MvcEvent $e){
 
-        $service_locator_str = 'doctrine';
-        $this->sm = $this->getServiceLocator();
-        $customerTable = $this->sm->get($service_locator_str);
-        $this->modelCustomer = new customerModel($customerTable);
-        $this->translator = Utility::translate();
-        //check login
-        $user = Utility::checkLogin($this);
-        if(! is_object($user) && $user == 0){
-            $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }else{
-            $isPermission = Utility::checkRole($user->userType,ROLE_ADMIN);
-            if( $isPermission == false)
-                $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }
-        //end check login
+    public function init(){
 
-        return parent::onDispatch($e);
+        parent::init();
+        $this->modelCustomer = new customerModel($this->doctrineService);
     }
 
 
     public function indexAction()
     {
-        $categories = $this->modelCustomer->findBy(array('isdelete'=>'0'));
-        //tableTitle = table heading
-        //datarow row of table... render by heading key
-        //heading key = table column name
-        $dataRow = $this->modelCustomer->convertToArray($categories);
-        $data =  array(
-            'tableTitle'=> $this->translator->translate('Manage customer'),
-            'link' => 'admin/customer',
-            'data' =>$dataRow,
-            'heading' => array(
-                'id' => 'Id',
-                'fullname' => $this->translator->translate('Full name') ,
-                'customerCode' => $this->translator->translate('Customer code') ,
-                'level' => $this->translator->translate('Level') ,
-                'phone' => $this->translator->translate('Phone') ,
-                'email' => $this->translator->translate('Email') ,
-                'address' => $this->translator->translate('Address') ,
-                'birthday' => $this->translator->translate('Birthday') ,
-                'image' => $this->translator->translate('Avatar') ,
-            ),
-            'hideDetailButton' => 1
-        );
-        return new ViewModel(array('data'=>$data,'title'=> $this->translator->translate('Customer')));
-    }
+        //config table
+        /////column for table
+        $columns = array(
+            array('title' =>'Id', 'db' => 'id', 'dt' => 0, 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Full name', 'db' => 'fullname','dt' => 1, 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Nice name', 'db' => 'nicename','dt' => 2, 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Customer Code', 'db' => 'customerCode','dt' => 3, 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Level', 'db' => 'level','dt' => 4, 'search'=>true, 'type' => 'number' ),
+            array('title' =>'Phone', 'db' => 'phone','dt' => 5, 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Email', 'db' => 'email','dt' => 6, 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Address', 'db' => 'address','dt' => 7, 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Birthday', 'db' => 'birthday','dt' => 8, 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Avatar', 'db' => 'avatar','dt' => 9, 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Action', 'db' => 'id','dt' => 10, 'search'=>false, 'type' => 'number',
+                'formatter' => function( $d, $row ) {
+                    $actionUrl = '/admin/customer';
+                    return '
 
+                        <a class="btn-xs action action-detail btn btn-success btn-default" href="'.$actionUrl.'/add/'.$d.'"><i class="icon-edit"></i></a>
+                        <a class="btn-xs action action-detail btn btn-danger  " href="'.$actionUrl.'/delete/'.$d.'"><i class="icon-remove"></i></a>
+                    ';
+                }
+            )
+
+        );
+
+        /////end column for table
+        $table = new AjaxTable($columns, array(), 'admin/customer');
+        $table->setTablePrefix('m');
+        $table->setExtendSQl(array(
+            array('AND','m.isdelete','=','0'),
+        ));
+        $table->setAjaxCall('/admin/customer');
+        $table->setActionDeleteAll('deleteall');
+        $this->tableAjaxRequest($table,$columns,$this->modelCustomer);
+        //end config table
+        return new ViewModel(array('table' => $table,
+            'title' => $this->translator->translate('Manager Customer')));
+    }
 
     public function addAction()
     {
@@ -86,9 +87,12 @@ class CustomerController extends AbstractActionController
 
 
                $fileUpload =  Utility::uploadFile($file);
+
                $data['avatar'] = $fileUpload['avatar'];
                if(!$fileUpload['status']){
+
                    $customerForm->setMessages($fileUpload['error']);
+                    print_r($customerForm->getMessages());die;
                }
 
                 $customer->setFullname($data['fullname']);
@@ -105,7 +109,7 @@ class CustomerController extends AbstractActionController
             }
             return new ViewModel(array(
                 'data' =>$customer,
-                'title' => 'Add customer: '.$customer->getFullname(),
+                'title' => 'Add customer: ',
                 'form' => $customerForm
             ));
 
@@ -135,6 +139,12 @@ class CustomerController extends AbstractActionController
                     $data['avatar'] = $data['avatar_old'];
                 }else{
                     $fileUpload = Utility::uploadFile($file)  ;
+                    if(!$fileUpload['status']){
+                      //  $configForm->setMessages($fileUpload['error']);
+                        print_r($fileUpload['error']);die;
+
+                    }else{
+                    }
 
                     $data['avatar'] = $fileUpload['avatar'];
                 }

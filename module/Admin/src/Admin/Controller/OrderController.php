@@ -6,14 +6,20 @@
  * Time: 1:17 PM
  */
 namespace Admin\Controller;
+
 use Velacolib\Utility\Utility;
 use Admin\Entity\OrderDetail;
 use Admin\Entity\Orders;
-use Admin\Entity\Table;
+use Admin\Entity\Managetable;
+
+use Velacolib\Utility\Table;
+use Velacolib\Utility\Table\AjaxTable;
+use Velacolib\Utility\Table\Detail;
+
+
 use Admin\Model\orderdetailModel;
 use Admin\Model\orderModel;
 use Zend\View\Model\ViewModel;
-use Velacolib\Utility\Table\AjaxTable;
 use Zend\Mvc\Controller\AbstractActionController;
 
 
@@ -56,7 +62,7 @@ class OrderController extends AdminGlobalController
                 'formatter' => function( $d, $row ) {
                     $actionUrl = '/admin/order';
                     return '
-
+                        <a class="btn-xs action action-detail btn btn-info btn-default" href="'.$actionUrl.'/detail/'.$d.'"><i class="icon-info"></i></a>
                         <a class="btn-xs action action-detail btn btn-success btn-default" href="'.$actionUrl.'/add/'.$d.'"><i class="icon-edit"></i></a>
                         <a data-id="'.$d.'" id="'.$d.'" data-link="'.$actionUrl.'" class="btn-xs action action-detail btn btn-danger  btn-delete " href="javascript:void(0)"><i class="icon-remove"></i></a>
                     ';
@@ -90,8 +96,11 @@ class OrderController extends AdminGlobalController
 
     public function addAction()
     {
+
         $viewData =  Utility::addNewOrder($this->params(),$this->getRequest());
+
         return new ViewModel($viewData);
+
     }
     public function deleteAction()
     {

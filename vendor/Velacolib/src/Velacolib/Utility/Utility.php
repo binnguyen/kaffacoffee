@@ -238,6 +238,7 @@ class Utility extends AbstractActionController
                 $catID = $cat->getId();
 
                 if ($param->fromPost('coupon_id') != -1) {
+
                     $doctrine = self::$servicelocator->get('doctrine');
                     $couponModel = new couponModel($doctrine);
                     $coupon = $couponModel->findOneBy(array('id' => $param->fromPost('coupon_id')));
@@ -282,9 +283,11 @@ class Utility extends AbstractActionController
                 'isdelete'=>0
             ));
 
+
             if($request->isPost()){
 
                 $idFormPost = $param->fromPost('id');
+
                 $cat = $table->findOneBy(array('id'=>$idFormPost));
                 $dataDetail = $param->fromPost('detail');
                 $Auth_service = new AuthenticationService();
@@ -305,6 +308,7 @@ class Utility extends AbstractActionController
                 $table->edit($cat);
 
                 if ($param->fromPost('coupon_id') != -1) {
+
                     $doctrine = self::$servicelocator->get('doctrine');
                     $couponModel = new couponModel($doctrine);
                     $coupon = $couponModel->findOneBy(array('id' => $param->fromPost('coupon_id')));
@@ -735,6 +739,7 @@ class Utility extends AbstractActionController
         $cost = number_format($cost,$config['number_decimal']);
         return $cost;
     }
+
     public static function formatCost($cost){
         $config = self::getConfig();
         $currency = $config['currency'];
@@ -965,7 +970,7 @@ class Utility extends AbstractActionController
      */
     static function uploadFile($file){
         $adapter = new \Zend\File\Transfer\Adapter\Http();
-        $size = new Size(array('max'=>2000000)); //minimum bytes filesize
+        $size = new Size(array('max'=>200000000)); //minimum bytes filesize
         $adapter->setValidators(array($size), $file['avatar']['name']);
         $data = array();
         if ($adapter->isValid()){

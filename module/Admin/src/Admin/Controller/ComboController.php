@@ -6,8 +6,13 @@
  * Time: 1:17 PM
  */
 namespace Admin\Controller;
+
+use Velacolib\Utility\Table;
+use Velacolib\Utility\Table\AjaxTable;
+use Velacolib\Utility\Table\Detail;
+
 use Admin\Entity\Categories;
-use Admin\Entity\Table;
+use Admin\Entity\Managetable;
 use Admin\Model\categoryModel;
 use Admin\Model\comboModel;
 use Admin\Model\menuModel;
@@ -16,39 +21,63 @@ use Zend\View\Model\ViewModel;
 use Zend\Mvc\Controller\AbstractActionController;
 
 
-class ComboController extends BaseController
+class ComboController extends AdminGlobalController
 {
     protected   $modelCombo;
     protected   $modelMenu;
     protected  $translator;
-    public function onDispatch(\Zend\Mvc\MvcEvent $e){
 
-        $service_locator_str = 'doctrine';
-        $this->sm = $this->getServiceLocator();
-        $doctrine = $this->sm->get($service_locator_str);
-        $this->modelCombo = new comboModel($doctrine);
-        $this->modelMenu = new menuModel($doctrine);
-        $this->translator =  Utility::translate();
 
-        //check login
-        $user = Utility::checkLogin($this);
-        if(! is_object($user) && $user == 0){
-            $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }else{
-            $isPermission = Utility::checkRole($user->userType,ROLE_ADMIN);
-            if( $isPermission == false)
-                $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }
+    public function init(){
+        parent::init();
+        $this->modelCombo = new comboModel($this->doctrineService);
+        $this->modelMenu = new menuModel($this->doctrineService);
 
-        return parent::onDispatch($e);
     }
 
 
     public function indexAction()
     {
-        return new ViewModel(array('title'=>$this->translator->translate('Manage Combo')));
-    }
 
+        $columns = array(
+
+            array('title' =>'ID', 'db' => 'id', 'dt' => 0,'search'=>false, 'type' => 'number' ),
+            array('title' =>'Parent', 'db' => 'menu_parent_id','dt' => 1, 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Name', 'db' => 'menu_child_id','dt' => 2, 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Quantity', 'db' => 'menu_quantity','dt' => 3, 'search'=>true, 'type' => 'text' ),
+
+            array('title' =>'Action','db'=>'id','dt' => 4 , 'search'=>false, 'type' => 'number',
+                'formatter' => function( $d, $row ) {
+                    $actionUrl = '/admin/combo';
+                    return '
+                        <a class="btn-xs action action-detail btn btn-success btn-default" href="'.$actionUrl.'/add/'.$d.'"><i class="icon-edit"></i></a>
+                        <a data-id="'.$d.'" id="'.$d.'" data-link="'.$actionUrl.'" class="btn-xs action action-detail btn btn-danger  btn-delete " href="javascript:void(0)"><i class="icon-remove"></i></a>
+                    ';
+
+                }
+            ),
+
+
+        );
+
+
+        /////end column for table
+        $table = new AjaxTable($columns, array(), 'admin/combo');
+        $table->setTablePrefix('m');
+        $table->setExtendSQl(array(
+            array('AND','m.isdelete','=','0'),
+        ));
+
+        $table->setAjaxCall('/admin/combo');
+        $table->setActionDeleteAll('deleteall');
+        $this->tableAjaxRequest($table,$columns,$this->modelCombo);
+        //end config table
+
+
+        return new ViewModel(array(
+            'table' => $table,
+            'title' => $this->translator->translate('Manage Combo')));
+    }
     public function ajaxListAction()
     {
 

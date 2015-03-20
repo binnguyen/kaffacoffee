@@ -13,8 +13,12 @@ use Admin\Model\supplyForModel;
 use Zend\Mvc\Controller\AbstractActionController;
 
 use Admin\Entity\SupplierItem;
-use Admin\Entity\Table;
+use Admin\Entity\Managetable;
 use Admin\Form\supplieritemForm;
+
+use Velacolib\Utility\Table;
+use Velacolib\Utility\Table\AjaxTable;
+use Velacolib\Utility\Table\Detail;
 
 
 use Admin\Model\supplyItemModel;
@@ -25,108 +29,65 @@ use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 use Zend\Paginator\Paginator;
 
-class SupplieritemController  extends BaseController {
+class SupplieritemController  extends AdminGlobalController {
 
     protected   $modelSubItem;
     protected   $modelSubItemFor;
     protected  $translator;
-    public function onDispatch(\Zend\Mvc\MvcEvent $e){
-
-        $service_locator_str = 'doctrine';
-        $this->sm = $this->getServiceLocator();
-        $doctrine = $this->sm->get($service_locator_str);
-        $this->modelSubItem = new supplyItemModel($doctrine);
-        $this->modelSubItemFor = new supplyForModel($doctrine);
 
 
-        $this->translator =  Utility::translate();
 
-        //check login
-        $user = Utility::checkLogin($this);
-        if(! is_object($user) && $user == 0){
-            $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }else{
-            $isPermission = Utility::checkRole($user->userType,ROLE_ADMIN);
-            if( $isPermission == false)
-                $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }
-
-        return parent::onDispatch($e);
+    public function init(){
+        parent::init();
+        $this->modelSubItem = new supplyItemModel($this->doctrineService);
+        $this->modelSubItemFor = new supplyForModel($this->doctrineService);
     }
 
 
-    public function ajaxListAction(){
-
-        $fields = array(
-            'id',
-            'value',
-        );
-
-        $offset = $this->getDataTableQueryOffset();
-        $limit = $this->getDataTableQueryLimit();
-        $sortCol = $this->getDataTableQuerySortingColumn();
-        $sortDirection = $this->getDataTableQuerySortingDirection();
-        $search = $this->getDataTableQuerySearch();
-        $customWhere  = ' c.isdelete = 0';
-        // WHERE conditions
-
-        $customQuery = $this->customWhereSql($customWhere);
-
-
-        $dqlWhere = $this->getDataTableWhereDql('c', $fields, $search,$customWhere);
-
-        if ( !empty($dqlWhere) ) {
-            $customQuery = '';
-        }
-
-        // ORDERING
-        $dqlOrder = $this->getDataTableOrderDql('c', $fields, $sortCol, $sortDirection);
-
-        // DQL
-        $dql = "SELECT c FROM Admin\Entity\SupplierItem c";
-
-        // RESULTS
-        $query = $this->getEntityManager()->createQuery($dql . $customQuery . $dqlWhere . $dqlOrder);
-        if ( !empty($dqlWhere) ) {
-            $query->setParameter(':search', '%' . $search . '%');
-        }
-        $results = $query->setMaxResults($limit)
-            ->setFirstResult($offset)
-            ->getResult();
-
-        // TOTAL RESULTS COUNT
-        $countDql = "SELECT COUNT(c.id) FROM Admin\Entity\SupplierItem c";
-        $count = $this->getEntityManager()->createQuery($countDql)->getSingleScalarResult();
-
-
-
-
-        // map data
-        $ret = array_map(function($item) {
-                    // create link
-            $linkEdit =   '/admin/supplieritem/add/'.$item->getId() ;
-            $linkDelete =  '/admin/supplieritem/delete/'.$item->getId() ;
-            $linkDetail =   '/admin/supplieritem/detail/'.$item->getId() ;
-            return array(
-                'id' => $item->getId(),
-                'value' => $item->getValue() ,
-                'action'=>
-                '<a href="'.$linkDetail.'" class="btn btn-info"><i class="icon-info-sign"></i></a>
-                 <a href="'.$linkEdit.'" class="btn btn-primary"><i class="icon-edit-sign"></i></a>
-                 <a id="'.$item->getId().'"  data-link="'.$linkDelete.'" data-id="'.$item->getId().'" href="javascript:void(0)" class="btn btn-danger btn-delete"><i class="icon-trash"></i></a>'
-            );
-        }, $results);
-
-        return $this->getDataTableJsonResponse($ret, $count, $dqlWhere);
-
-    }
 
 
     public function indexAction()
     {
+
+        $columns = array(
+
+            array('title' =>'ID', 'db' => 'id', 'dt' => 0,'search'=>false, 'type' => 'number' ),
+            array('title' =>'Value', 'db' => 'value','dt' => 1, 'search'=>true, 'type' => 'text' ),
+
+            array('title' =>'Action','db'=>'id','dt' => 2 , 'search'=>false, 'type' => 'number',
+                'formatter' => function( $d, $row ) {
+                    $actionUrl = '/admin/supplieritem';
+                    return '
+                        <a class="btn-xs action action-detail btn btn-success btn-default" href="'.$actionUrl.'/add/'.$d.'"><i class="icon-edit"></i></a>
+                        <a data-id="'.$d.'" id="'.$d.'" data-link="'.$actionUrl.'" class="btn-xs action action-detail btn btn-danger  btn-delete " href="javascript:void(0)"><i class="icon-remove"></i></a>
+                    ';
+
+                }
+            ),
+
+
+        );
+
+
+        /////end column for table
+        $table = new AjaxTable($columns, array(), 'admin/supplieritem');
+        $table->setTablePrefix('m');
+        $table->setExtendSQl(array(
+            array('AND','m.isdelete','=','0'),
+        ));
+
+        $table->setAjaxCall('/admin/supplieritem');
+        $table->setActionDeleteAll('deleteall');
+        $this->tableAjaxRequest($table,$columns,$this->modelSubItem);
+        //end config table
+
+
         return new ViewModel(array(
-            'title'=>$this->translator->translate('Supplier item')));
+            'table' => $table,
+            'title' => $this->translator->translate('Supplier Item')));
     }
+
+
     public function addAction()
     {
         $request = $this->getRequest();

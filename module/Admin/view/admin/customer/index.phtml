@@ -1,9 +1,9 @@
 <?php
-$data = $this->data;
 
 $title = array();
 $title['title'] = $this->title;
-$title['link'] =   $this->url('admin/child', array('controller'=>'coupon','action' => 'add'));
-
+$title['link'] =   $this->url('admin/child', array('controller'=>'customer','action' => 'add'));
 $this->titleHelper($title);
-$this->tableHelper($data);
+$data = $this->data;
+$table = $this->table;
+$table->render();

@@ -6,124 +6,70 @@
  * Time: 1:17 PM
  */
 namespace Admin\Controller;
+
+use Velacolib\Utility\Table;
+use Velacolib\Utility\Table\AjaxTable;
+use Velacolib\Utility\Table\Detail;
+
 use Velacolib\Utility\Utility;
 use Admin\Entity\Managetable;
-use Admin\Entity\Table;
 use Admin\Model\tableModel;
 use Zend\View\Model\ViewModel;
 use Zend\Mvc\Controller\AbstractActionController;
 
 
-class TableController extends BaseController
+class TableController extends AdminGlobalController
 {
     protected   $modelTable;
     protected   $translator;
 
-    public function onDispatch(\Zend\Mvc\MvcEvent $e){
-
-        $service_locator_str = 'doctrine';
-        $this->sm = $this->getServiceLocator();
-        $manageTable = $this->sm->get($service_locator_str);
-        $this->translator = Utility::translate();
-
-        //check login
-        $user = Utility::checkLogin($this);
-        if(! is_object($user) && $user == 0){
-            $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }else{
-            $isPermission = Utility::checkRole($user->userType,ROLE_ADMIN);
-            if( $isPermission == false)
-                $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }
-        //end check login
-
-        $this->modelTable = new tableModel($manageTable);
-        return parent::onDispatch($e);
-    }
-
-    public function ajaxListAction(){
-
-        $fields = array(
-            'id',
-            'name',
-        );
-
-        $offset = $this->getDataTableQueryOffset();
-        $limit = $this->getDataTableQueryLimit();
-        $sortCol = $this->getDataTableQuerySortingColumn();
-        $sortDirection = $this->getDataTableQuerySortingDirection();
-        $search = $this->getDataTableQuerySearch();
-        $customWhere  = ' c.isdelete = 0 ';
-        // WHERE conditions
-
-        $customQuery = $this->customWhereSql($customWhere);
-
-
-        $dqlWhere = $this->getDataTableWhereDql('c', $fields, $search,$customWhere);
-
-        if ( !empty($dqlWhere) ) {
-            $customQuery = '';
-        }
-        // ORDERING
-        $dqlOrder = $this->getDataTableOrderDql('c', $fields, $sortCol, $sortDirection);
-
-        // DQL
-        $dql = "SELECT c FROM Admin\Entity\Managetable c";
-
-        // RESULTS
-        $query = $this->getEntityManager()->createQuery($dql. $customQuery . $dqlWhere . $dqlOrder);
-        if ( !empty($dqlWhere) ) {
-            $query->setParameter(':search', '%' . $search . '%');
-        }
-        $results = $query->setMaxResults($limit)
-            ->setFirstResult($offset)
-            ->getResult();
-
-        // TOTAL RESULTS COUNT
-        $countDql = "SELECT COUNT(c.id) FROM Admin\Entity\Managetable c";
-        $count = $this->getEntityManager()->createQuery($countDql)->getSingleScalarResult();
-        // map data
-        $ret = array_map(function($item) {
-            // create link
-            $linkEdit =   '/admin/table/add/'.$item->getId() ;
-            $linkDelete =  '/admin/table/delete/'.$item->getId() ;
-            $linkDetail =   '/admin/table/detail/'.$item->getId() ;
-            return array(
-                'id' => $item->getId(),
-                'name' => $item->getName(),
-                'action'=>
-                '
-                 <a  target="_blank" href="'.$linkEdit.'" class="btn btn-primary"><i class="icon-edit-sign"></i></a>
-                 <a  id="'.$item->getId().'"  data-link="'.$linkDelete.'" data-id="'.$item->getId().'" href="javascript:void(0)" class="btn btn-danger btn-delete"><i class="icon-trash"></i></a>'
-            );
-        }, $results);
-
-        return $this->getDataTableJsonResponse($ret, $count, $dqlWhere);
-
+    public function init(){
+        parent::init();
+        $this->modelTable = new tableModel($this->doctrineService);
     }
 
 
     public function indexAction()
     {
-        $table = $this->modelTable->findBy(array('isdelete'=>'0'));
 
+        $columns = array(
 
-        //tableTitle = table heading
-        //datarow row of table... render by heading key
-        //heading key = table column name
-        $dataRow = $this->modelTable->convertToArray($table);
-        $data =  array(
-            'tableTitle'=> $this->translator->translate('Manager table'),
-            'link' => 'admin/table',
-            'data' =>$dataRow,
-            'heading' => array(
-                'id' => 'Id',
-                'name' => $this->translator->translate('Name')
+            array('title' =>'ID', 'db' => 'id', 'dt' => 0,'search'=>false, 'type' => 'number' ),
+            array('title' =>'Name', 'db' => 'name','dt' => 1, 'search'=>true, 'type' => 'text' ),
+
+            array('title' =>'Action','db'=>'id','dt' => 2 , 'search'=>false, 'type' => 'number',
+                'formatter' => function( $d, $row ) {
+                    $actionUrl = '/admin/table';
+                    return '
+                        <a class="btn-xs action action-detail btn btn-success btn-default" href="'.$actionUrl.'/add/'.$d.'"><i class="icon-edit"></i></a>
+                        <a data-id="'.$d.'" id="'.$d.'" data-link="'.$actionUrl.'" class="btn-xs action action-detail btn btn-danger  btn-delete " href="javascript:void(0)"><i class="icon-remove"></i></a>
+                    ';
+
+                }
             ),
-            'hideDetailButton' => 1
+
+
         );
-        return new ViewModel(array('data'=>$data,'title'=> $this->translator->translate('Table')));
+
+
+        /////end column for table
+        $table = new AjaxTable($columns, array(), 'admin/table');
+        $table->setTablePrefix('m');
+        $table->setExtendSQl(array(
+            array('AND','m.isdelete','=','0'),
+        ));
+
+        $table->setAjaxCall('/admin/table');
+        $table->setActionDeleteAll('deleteall');
+        $this->tableAjaxRequest($table,$columns,$this->modelTable);
+        //end config table
+
+
+        return new ViewModel(array(
+            'table' => $table,
+            'title' => $this->translator->translate('Manage Combo')));
     }
+
     public function addAction()
     {
         $request = $this->getRequest();
@@ -163,6 +109,7 @@ class TableController extends BaseController
             ));
         }
     }
+
     public function deleteAction()
     {
         //get user by id

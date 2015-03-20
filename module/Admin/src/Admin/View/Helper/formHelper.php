@@ -25,9 +25,12 @@ class formHelper extends AbstractHelper {
         <div class="span12 box">
             <div class="box-header blue-background">
                 <div class="title">
-                    <div class="icon-edit"></div>
+                    <div class="icon-edit">
+
+</div>
                     '.$title.'
                      </div>
+                     <div></div>
                 <div class="actions">
                     <a href="#" class="btn box-remove btn-mini btn-link"><i class="icon-remove"></i>
                     </a>

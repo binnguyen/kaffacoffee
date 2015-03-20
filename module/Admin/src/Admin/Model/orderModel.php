@@ -64,7 +64,14 @@ class orderModel extends globalModel {
 
         $userInfo = Utility::getUserInfo($data->getUserId());
         $surtax = Utility::getSurTaxInfo($data->getSurtaxId());
-        $surtaxType = $surtax->getType();
+        if($surtax){
+            $surtaxType = $surtax->getType();
+            $surtaxValue = $surtax->getValue();
+        }else{
+            $surtaxType = 'Cash';
+            $surtaxValue = 0;
+        }
+
         $taxType =  Utility::convertSurtaxType($surtaxType);
         //print_r($coupon);
         $array = array();
@@ -76,7 +83,7 @@ class orderModel extends globalModel {
         $array['coupon'] = $code;
         $array['couponValue'] = ($value);
         $array['couponDesc'] = $desc;
-        $array['surtax'] = number_format($surtax->getValue()) .' '.$taxType;
+        $array['surtax'] = number_format($surtaxValue) .' '.$taxType;
         $array['userid'] = $userInfo->getUserName();
         $array['status'] = $data->getStatus();
         $array['customer_id'] = $data->getCustomerId();
