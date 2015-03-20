@@ -42,11 +42,25 @@ class configModel extends globalModel {
         return $array;
     }
     public function convertSingleToArray($config){
+        $translator = Utility::translate();
+        $configType = $config->getType();
+        $configName = $config->getName();
+        $configValue = $config->getValue();
+
+        //img
+        if($configType == 'file')
+            $configValue ='<img style="width:100px" src="'.$configValue.'">';
+
+        //email pass word
+        if($configName =='emailPassword')
+            $configValue = '***************';
+
         $array = array();
-        $array['name'] = $config->getName();
+
+        $array['name'] = $translator->translate($configName);
         $array['id'] = $config->getId();
-        $array['value'] = $config->getValue();
-        $array['type'] = $config->getType();
+        $array['value'] = $configValue;
+        $array['type'] = $configType;
         return $array;
     }
 

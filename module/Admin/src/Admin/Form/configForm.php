@@ -39,10 +39,10 @@ class configForm extends Form{
         $this->add(array(
             'name' => 'name',
             'options' => array(
-                'label' => 'Config Name'
+
             ),
             'attributes' => array(
-                'type'  => 'text',
+                'type'  => 'hidden',
                 'class'=>'input-xlarge'
             ),
         ));
@@ -62,10 +62,9 @@ class configForm extends Form{
         $this->add(array(
             'name' => 'type',
             'options' => array(
-                'label' => 'Config Type'
             ),
             'attributes' => array(
-                'type'  => 'text',
+                'type'  => 'hidden',
                 'class'=>'input-xlarge'
             ),
         ));

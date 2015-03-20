@@ -1,22 +1,7 @@
 <?php
-
-$title = array();
-$title['title'] = $this->title;
-$title['link'] =   $this->url('admin/child', array('controller'=>'history','action' => 'add'));
+$data = $this->data;
+$title = $this->title;
+$table = $this->table;
 $this->titleHelper($title);
-$partialData = array(
-    'ajaxUrl' => $this->url('admin/child', array('controller'=>'history','action' => 'ajax-list')),
-    'actions' => array(
-        'edit' => array('action' => 'edit', 'label' => 'Edit'),
-        'delete' => array('action' => 'delete', 'label' => 'Delete')
-    ),
-    'columns' => array(
-        0 => array('field' => 'id',                                    'searchable' => false,  'primaryKey' => true),
-        1 => array('field' => 'userId',    'label' => 'User',    'searchable' => true,   'sortable' => true),
-        2 => array('field' => 'actions',    'label' => 'Action',    'searchable' => true,   'sortable' => true),
-        3 => array('field' => 'time',    'label' => 'Time',    'searchable' => true,   'sortable' => true),
-        4 => array('field' => 'action',    'label' => 'Action',    'searchable' => true, 'action'=>true ,  'sortable' => false),
-    )
-);
+$table->render();
 
-echo $this->partial('partial/listing.phtml',$partialData);

@@ -1,9 +1,5 @@
 <?php
-$title = array();
-$title['title'] = $this->title;
-$title['link'] =   $this->url('admin/child', array('controller'=>'tracking-tore','action' => 'add'));
+$title = $this->title;
 $this->titleHelper($title);
 $data = $this->data;
-
-?>
-<?php echo $this->formHelper($form,$this->title); ?>
+echo $this->formHelper($form,$this->title);

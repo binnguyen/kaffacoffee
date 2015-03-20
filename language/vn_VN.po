@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: ZendSkeletonApplication\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-07-05 22:17-0700\n"
-"PO-Revision-Date: 2015-03-06 14:58+0700\n"
+"PO-Revision-Date: 2015-03-18 11:50+0700\n"
 "Last-Translator: Evan Coury <me@evancoury.com>\n"
 "Language-Team: ZF Contibutors <zf-devteam@zend.com>\n"
 "Language: en_US\n"
@@ -269,7 +269,7 @@ msgid "Manager table"
 msgstr "Quản lý bàn"
 
 #: ../view/..
-msgid "Table"
+msgid "Tables"
 msgstr "Bàn"
 
 #: ../view/..
@@ -768,86 +768,60 @@ msgstr "Số lượng xuất"
 msgid "Quantity in stock"
 msgstr "Số lượng trong kho"
 
-msgid "Add multi menu store"
-msgstr "Thêm nhập kho (nhiều item) "
+msgid "Sign in"
+msgstr "Đăng nhập"
 
-msgid "Customer"
-msgstr "Khách hàng "
+#: ../view/application/index/config.phtml
+msgid "logo_printer"
+msgstr "Logo Printer"
 
-msgid "All customer"
-msgstr "Tất cả khách hàng "
+msgid "print_phone"
+msgstr "Print Phone"
 
-msgid "Add new customer"
-msgstr "Thêm khách hàng"
+msgid "print_address"
+msgstr "Print Address"
 
-msgid "Report all"
-msgstr "Báo cáo"
+msgid "max_quantity_order"
+msgstr "Max Quantity Order"
 
-msgid "Report by menu"
-msgstr "Báo cáo theo nguyên liệu"
+msgid "thank_text"
+msgstr "Thanks Text"
 
-msgid "Report by categories"
-msgstr "Báo cáo danh mục"
+msgid "currency"
+msgstr "Currency"
 
-msgid "Report by menu daterange"
-msgstr "Báo cáo thực đơn (ngày tháng)"
+msgid "out_of_stock"
+msgstr "Out Of Stock"
 
-msgid "Report tracking daterange"
-msgstr "Báo cáo chênh lệch"
+msgid "end_year"
+msgstr "End Year"
 
-msgid "Report expense report"
-msgstr "Báo cáo kinh phí"
+msgid "emailId"
+msgstr "Email Id"
 
-msgid "Report payment"
-msgstr "Báo cáo chi phí"
+msgid "emailPassword"
+msgstr "Password Email"
 
-msgid "All month in year"
-msgstr "Báo cáo năm"
+msgid "sitename"
+msgstr "Site Name"
 
-msgid "Date time report"
-msgstr "Báo cáo theo thời gian"
+msgid "meta_description"
+msgstr "Meta Description"
 
-msgid "Select Year"
-msgstr "Chọn năm"
+msgid "print_number"
+msgstr "Number Of Bill"
 
-msgid "Report Total menu store"
-msgstr "Báo cáo nguyên liệu"
+msgid "key_note"
+msgstr "Key Note"
 
-msgid "Start date"
-msgstr "Ngày bắt đầu"
+msgid "lang"
+msgstr "Language"
 
-msgid "End date"
-msgstr "Ngày kết thúc"
+msgid "number_decimal"
+msgstr "Number Decimal"
 
-msgid "Select menu store"
-msgstr "Chọn nguyên liệu"
+msgid "currency_before"
+msgstr "Currency Format"
 
-msgid "Export"
-msgstr "Xuất excel"
-
-msgid "Find"
-msgstr "Báo cáo"
-
-msgid "Report menu follow category"
-msgstr "Báo cáo theo danh mục"
-
-msgid "Report detail menu"
-msgstr "Báo cáo theo thực đơn"
-
-msgid "Report Tracking"
-msgstr "Báo cáo theo chênh lệch"
-
-msgid "Select category"
-msgstr "Chọn danh mục"
-
-msgid "Tracking"
-msgstr "Theo dõi"
-
-msgid "Add new tracking"
-msgstr "Tạo mới theo dõi"
-
-msgid "Supplier Item Name"
-msgstr "Nhà cung cấp"
-
-msgid "Note"
-msgstr "Ghi chú"
+msgid "logo"
+msgstr "Logo"

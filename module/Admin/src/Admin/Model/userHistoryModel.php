@@ -38,7 +38,7 @@ class userHistoryModel extends globalModel {
             $userInfo = Utility::getUserInfo($data->getUserId());
             $array = array();
             $array['id'] = $data->getId();
-            $array['user_id'] =$userInfo->getFullName();
+            $array['userId'] =$userInfo->getFullName();
             $array['action'] = $data->getAction();
             $array['time'] =  date("d-m-y H:i:s",$data->getTime());
             $return[] = $array;

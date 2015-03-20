@@ -15,29 +15,12 @@ use Zend\View\Model\ViewModel;
 use Zend\Mvc\Controller\AbstractActionController;
 
 
-class ConfigController extends AbstractActionController
+class ConfigController extends AdminGlobalController
 {
     protected   $modelConfig;
     protected  $translator;
-    public function onDispatch(\Zend\Mvc\MvcEvent $e){
-
-        $service_locator_str = 'doctrine';
-        $this->sm = $this->getServiceLocator();
-        $doctrine = $this->sm->get($service_locator_str);
-        $this->modelConfig = new configModel($doctrine);
-        $this->translator =  Utility::translate();
-
-        //check login
-        $user = Utility::checkLogin($this);
-        if(! is_object($user) && $user == 0){
-            $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }else{
-            $isPermission = Utility::checkRole($user->userType,ROLE_ADMIN);
-            if( $isPermission == false)
-                $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }
-
-        return parent::onDispatch($e);
+    public function init(){
+        $this->modelConfig = new configModel($this->doctrineService);
     }
     public function indexAction()
     {
@@ -77,7 +60,7 @@ class ConfigController extends AbstractActionController
             $configForm->setAttribute('action', '/admin/config/add/'.$id);
             $configForm->get('id')->setValue($config->getId());
             $configForm->get('name')->setValue($config->getName());
-            $configForm->get('value')->setValue($config->getValue());
+            // $configForm->get('value')->setValue($config->getValue());
             $configForm->get('type')->setValue($config->getType());
 
             $configType = $config->getType();
@@ -85,20 +68,21 @@ class ConfigController extends AbstractActionController
             if($configType == 'file'){
                 $configValueImg = '<img style="width:100px" src="'.$config->getValue().'">';
             }
-
-            $configForm->add(
-                array(
-                    'type' => $config->getType(),
-                    'name' => 'value',
-                    'attributes' =>  array(
-                        'id' => $config->getName(),
-                        'value' => $config->getValue()
-                    ),
-                    'options' => array(
-                        'label' => 'Value',
-                    ),
-                )
-            );
+            if($config->getName() != 'emailPassword'){
+                $configForm->add(
+                    array(
+                        'type' => $config->getType(),
+                        'name' => 'value',
+                        'attributes' =>  array(
+                            'id' => $config->getName(),
+                            'value' => $config->getValue()
+                        ),
+                        'options' => array(
+                            'label' => 'Value',
+                        ),
+                    )
+                );
+            }
 
             if($request->isPost()){
                 $data = $this->params()->fromPost();
@@ -110,22 +94,10 @@ class ConfigController extends AbstractActionController
                     $fileSize = $file['value']['size'];
                     $fileError = $file['value']['error'];
                     $fileType = $file['value']['type'];
-                    $filePatch = './public/img/upload/config/';
-                    if($fileName != ''){
-                       // chmod($filePatch,0777);
-                        $SimpleImage = new \SimpleImage();
-                        $SimpleImage->load($fileTmp);
-                        $SimpleImage->resize(80,60);
-                       $move = $SimpleImage->save($filePatch.$fileName);
-                     //   $move = move_uploaded_file($fileTmp, "./public/img/upload/config/".$fileName);
-//                       if($move){
-                           $value = "/img/upload/config/".$fileName;
-//                       }else{
-//                           $error = error_get_last();
-//                           $this->flashMessenger()->addErrorMessage($error);
-//                           $this->redirect()->toRoute('admin/child',array('controller'=>'config'));
-//                       }
 
+                    if($fileName != ''){
+                        move_uploaded_file($fileTmp, "./public/img/upload/config/".$fileName);
+                        $value = "/img/upload/config/".$fileName;
                     }
 
                 }else{
@@ -136,13 +108,13 @@ class ConfigController extends AbstractActionController
                 $cat->setValue($value);
                 $this->modelConfig->edit($cat);
 
-//                //flash
+                //flash
                 $this->flashMessenger()->addSuccessMessage("Update success");
                 $this->redirect()->toRoute('admin/child',array('controller'=>'config'));
             }
             return new ViewModel(array(
                 'data' =>$config,
-                'title' => 'Edit Config: '.$config->getName(),
+                'title' => 'Edit Config: '.$this->translator->translate($config->getName()),
                 'form' => $configForm,
                 'configValueImg' => $configValueImg
             ));
