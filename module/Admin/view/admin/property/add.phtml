@@ -1,10 +1,5 @@
 <?php
-$title = array();
-$title['title'] = $this->title;
-
+$title = $this->title;
 $this->titleHelper($title);
 $data = $this->data;
-
-?>
-<?php echo $this->formHelper($form,$this->title); ?>
-
+echo $this->formHelper($this->form,$this->title);

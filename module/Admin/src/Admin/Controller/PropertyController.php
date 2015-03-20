@@ -11,112 +11,41 @@ use Admin\Entity\Table;
 use Admin\Form\propertyForm;
 
 use Admin\Model\propertyModel;
-use Velacolib\Utility\Utility;
+use Velacolib\Utility\Table\AjaxTable;
 use Zend\View\Model\ViewModel;
 use Zend\Mvc\Controller\AbstractActionController;
 
-use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
-use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
-use Zend\Paginator\Paginator;
 
-class PropertyController extends BaseController
+
+class PropertyController extends AdminGlobalController
 {
     protected   $modelProperty;
     protected  $translator;
-    public function onDispatch(\Zend\Mvc\MvcEvent $e){
+    public function init(){
 
-        $service_locator_str = 'doctrine';
-        $this->sm = $this->getServiceLocator();
-        $doctrine = $this->sm->get($service_locator_str);
-        $this->modelProperty = new propertyModel($doctrine);
-        $this->translator =  Utility::translate();
-
-        //check login
-        $user = Utility::checkLogin($this);
-        if(! is_object($user) && $user == 0){
-            $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }else{
-            $isPermission = Utility::checkRole($user->userType,ROLE_ADMIN);
-            if( $isPermission == false)
-                $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }
-
-        return parent::onDispatch($e);
+        $this->modelProperty = new propertyModel($this->doctrineService);
     }
 
-    public function ajaxListAction(){
 
-        $fields = array(
-            'id',
-            'name',
-            'quantity',
-            'unit',
-            'des',
-        );
-
-        $offset = $this->getDataTableQueryOffset();
-        $limit = $this->getDataTableQueryLimit();
-        $sortCol = $this->getDataTableQuerySortingColumn();
-        $sortDirection = $this->getDataTableQuerySortingDirection();
-        $search = $this->getDataTableQuerySearch();
-        $customWhere  = '';
-        // WHERE conditions
-
-        $customQuery = $this->customWhereSql($customWhere);
-
-
-        $dqlWhere = $this->getDataTableWhereDql('c', $fields, $search,$customWhere);
-
-        if ( !empty($dqlWhere) ) {
-            $customQuery = '';
-        }
-        // ORDERING
-        $dqlOrder = $this->getDataTableOrderDql('c', $fields, $sortCol, $sortDirection);
-
-        // DQL
-        $dql = "SELECT c FROM Admin\Entity\Property c";
-
-        // RESULTS
-        $query = $this->getEntityManager()->createQuery($dql . $customQuery . $dqlWhere . $dqlOrder);
-        if ( !empty($dqlWhere) ) {
-            $query->setParameter(':search', '%' . $search . '%');
-        }
-        $results = $query->setMaxResults($limit)
-            ->setFirstResult($offset)
-            ->getResult();
-
-        // TOTAL RESULTS COUNT
-        $countDql = "SELECT COUNT(c.id) FROM Admin\Entity\Property c";
-        $count = $this->getEntityManager()->createQuery($countDql)->getSingleScalarResult();
-        // map data
-        $ret = array_map(function($item) {
-
-            // create link
-            $linkEdit =   '/admin/property/add/'.$item->getId() ;
-            $linkDelete =  '/admin/property/delete/'.$item->getId() ;
-            $linkDetail =   '/admin/property/detail/'.$item->getId() ;
-            return array(
-                'id' => $item->getId(),
-                'name' => $item->getName(),
-                'quantity' => $item->getQuantity(),
-                'unit' => $item->getUnit(),
-                'des' => $item->getDes(),
-                'action'=> '
-
-                 <a target="_blank" href="'.$linkEdit.'" class="btn btn-primary"><i class="icon-edit-sign"></i></a>
-                 <a id="'.$item->getId().'"  data-link="'.$linkDelete.'" data-id="'.$item->getId().'" href="javascript:void(0)" class="btn btn-danger btn-delete" ><i class="icon-trash"></i></a>'
-            );
-        }, $results);
-
-        return $this->getDataTableJsonResponse($ret, $count, $dqlWhere);
-
-    }
 
     public function indexAction()
     {
-        return new ViewModel(array(
-            'title'=>$this->translator->translate('Property manager')
-        ));
+        $columns = array(
+            array('title' =>'Id', 'db' => 'id', 'dt' => 0, 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Name', 'db' => 'name', 'dt' => 1, 'search'=>false, 'type' => 'text' ),
+            array('title' =>'Quantity', 'db' => 'quantity', 'dt' => 1, 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Unit', 'db' => 'unit', 'dt' => 1, 'search'=>false, 'type' => 'text' ),
+            array('title' =>'Description', 'db' => 'des', 'dt' => 1, 'search'=>false, 'type' => 'text' ),
+        );
+
+        /////end column for table
+        $table = new AjaxTable($columns, array(), 'admin/property');
+        $table->setTablePrefix('ts');
+        $table->setAjaxCall('/admin/property');
+        $this->tableAjaxRequest($table,$columns,$this->modelProperty);
+        //end config table
+        return new ViewModel(array('table' => $table,
+            'title' => $this->translator->translate('User History')));
     }
     public function addAction()
     {

@@ -7,124 +7,48 @@
  */
 
 namespace Admin\Controller;
-use Admin\Entity\Surtax;
 use Admin\Entity\TrackingTore;
 use Admin\Form\trackingToreForm;
-use Admin\Model\surTaxModel;
-use Admin\Model\menuModel;
 use Admin\Model\trackingToreModel;
-use Velacolib\Utility\Utility;
 use Zend\View\Model\ViewModel;
+use Velacolib\Utility\Table\AjaxTable;
 use Zend\Mvc\Controller\AbstractActionController;
-use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
-use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
-use Zend\Paginator\Paginator;
 
 
-class TrackingToreController extends BaseController {
+
+class TrackingToreController extends AdminGlobalController {
 
 
     protected   $modelTracking;
     protected  $translator;
-    public function onDispatch(\Zend\Mvc\MvcEvent $e){
-
-        $service_locator_str = 'doctrine';
-        $this->sm = $this->getServiceLocator();
-        $doctrine = $this->sm->get($service_locator_str);
-        $this->modelTracking = new trackingToreModel($doctrine);
-        $this->translator =  Utility::translate();
-
-        //check login
-        $user = Utility::checkLogin($this);
-        if(! is_object($user) && $user == 0){
-            $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }else{
-            $isPermission = Utility::checkRole($user->userType,ROLE_ADMIN);
-            if( $isPermission == false)
-                $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }
-
-        return parent::onDispatch($e);
-
+    public function init(){
+        $this->modelTracking = new trackingToreModel($this->doctrineService);
     }
+    public function indexAction(){
+        $columns = array(
+            array('title' =>'Id', 'db' => 'id', 'dt' => 0, 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Name', 'db' => 'name', 'dt' => 1, 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Item Id', 'db' => 'supplierItemId', 'dt' => 2, 'search'=>false, 'type' => 'number' ),
 
+            array('title' =>'Item Name', 'db' => 'supplierItemName', 'dt' => 4, 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Quantity', 'db' => 'quantity', 'dt' => 3, 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Note', 'db' => 'note', 'dt' => 5, 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Time', 'db' => 'time', 'dt' => 6, 'search'=>false, 'type' => 'number',
+                 'formatter'  => function($d,$row){
+                     return date('d-m-Y h:i:s',$d);
+                 }
+            ),
 
-    public function ajaxListAction(){
-
-        $fields = array(
-            'id',
-            'name',
-            'quantity',
-            'supplierItemId',
-            'supplierItemName',
-            'note',
-            'time',
         );
 
-        $offset = $this->getDataTableQueryOffset();
-        $limit = $this->getDataTableQueryLimit();
-        $sortCol = $this->getDataTableQuerySortingColumn();
-        $sortDirection = $this->getDataTableQuerySortingDirection();
-        $search = $this->getDataTableQuerySearch();
-        $customWhere  = '';
-        // WHERE conditions
-
-        $customQuery = $this->customWhereSql($customWhere);
-
-
-        $dqlWhere = $this->getDataTableWhereDql('c', $fields, $search,$customWhere);
-
-        if ( !empty($dqlWhere) ) {
-            $customQuery = '';
-        }
-
-        // ORDERING
-        $dqlOrder = $this->getDataTableOrderDql('c', $fields, $sortCol, $sortDirection);
-
-        // DQL
-        $dql = "SELECT c FROM Admin\Entity\TrackingTore c";
-
-        // RESULTS
-        $query = $this->getEntityManager()->createQuery($dql . $customQuery . $dqlWhere . $dqlOrder);
-        if ( !empty($dqlWhere) ) {
-            $query->setParameter(':search', '%' . $search . '%');
-        }
-        $results = $query->setMaxResults($limit)
-            ->setFirstResult($offset)
-            ->getResult();
-
-        // TOTAL RESULTS COUNT
-        $countDql = "SELECT COUNT(c.id) FROM Admin\Entity\TrackingTore c";
-        $count = $this->getEntityManager()->createQuery($countDql)->getSingleScalarResult();
-        // map data
-        $ret = array_map(function($item) {
-
-            // create link
-            $linkEdit =   '/admin/tracking-tore/add/'.$item->getId() ;
-            $linkDelete =  '/admin/tracking-tore/delete/'.$item->getId() ;
-            $linkDetail =   '/admin/tracking-tore/detail/'.$item->getId() ;
-            return array(
-                'id' => $item->getId(),
-                'name' => $item->getName(),
-                'quantity' => $item->getQuantity(),
-                'supplierItemId' => $item->getSupplierItemId(),
-                'supplierItemName' => $item->getSupplierItemName(),
-                'note' => $item->getNote(),
-                'time' => $item->getTime(),
-                'action'=> '
-
-                 <a href="'.$linkEdit.'" class="btn btn-primary"><i class="icon-edit-sign"></i></a>
-                 <a id="'.$item->getId().'"  data-link="'.$linkDelete.'" data-id="'.$item->getId().'" href="javascript:void(0)" class="btn btn-danger btn-delete" ><i class="icon-trash"></i></a>'
-            );
-        }, $results);
-
-        return $this->getDataTableJsonResponse($ret, $count, $dqlWhere);
-
-    }
-
-
-    public function indexAction(){
-        return new ViewModel(array('title'=>$this->translator->translate('Surtax')));
+        /////end column for table
+        $table = new AjaxTable($columns, array(), 'admin/tracking-tore');
+        $table->setTablePrefix('ts');
+        $table->setAjaxCall('/admin/tracking-tore');
+        $this->tableAjaxRequest($table,$columns,$this->modelTracking);
+        //end config table
+        return new ViewModel(array('table' => $table,
+            'title' => $this->translator->translate('User History')));
     }
 
     public function addAction(){

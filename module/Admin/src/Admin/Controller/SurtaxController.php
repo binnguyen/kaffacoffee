@@ -9,112 +9,37 @@
 namespace Admin\Controller;
 use Admin\Entity\Surtax;
 use Admin\Model\surTaxModel;
-use Admin\Model\menuModel;
-use Velacolib\Utility\Utility;
+use Velacolib\Utility\Table\AjaxTable;
 use Zend\View\Model\ViewModel;
 use Zend\Mvc\Controller\AbstractActionController;
-use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
-use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
-use Zend\Paginator\Paginator;
 
 
-class SurtaxController extends BaseController {
+
+class SurtaxController extends AdminGlobalController {
 
 
     protected   $modelSurTax;
     protected  $translator;
-    public function onDispatch(\Zend\Mvc\MvcEvent $e){
-
-        $service_locator_str = 'doctrine';
-        $this->sm = $this->getServiceLocator();
-        $doctrine = $this->sm->get($service_locator_str);
-        $this->modelSurTax = new surTaxModel($doctrine);
-        $this->translator =  Utility::translate();
-
-        //check login
-        $user = Utility::checkLogin($this);
-        if(! is_object($user) && $user == 0){
-            $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }else{
-            $isPermission = Utility::checkRole($user->userType,ROLE_ADMIN);
-            if( $isPermission == false)
-                $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }
-
-        return parent::onDispatch($e);
+    public function init(){
+        $this->modelSurTax = new surTaxModel($this->doctrineService);
     }
-
-
-    public function ajaxListAction(){
-
-        $fields = array(
-            'id',
-            'name',
-            'quantity',
-            'unit',
-            'des',
-        );
-
-        $offset = $this->getDataTableQueryOffset();
-        $limit = $this->getDataTableQueryLimit();
-        $sortCol = $this->getDataTableQuerySortingColumn();
-        $sortDirection = $this->getDataTableQuerySortingDirection();
-        $search = $this->getDataTableQuerySearch();
-        $customWhere  = '';
-        // WHERE conditions
-
-        $customQuery = $this->customWhereSql($customWhere);
-
-
-        $dqlWhere = $this->getDataTableWhereDql('c', $fields, $search,$customWhere);
-
-        if ( !empty($dqlWhere) ) {
-            $customQuery = '';
-        }
-        // ORDERING
-        $dqlOrder = $this->getDataTableOrderDql('c', $fields, $sortCol, $sortDirection);
-
-        // DQL
-        $dql = "SELECT c FROM Admin\Entity\Surtax c";
-
-        // RESULTS
-        $query = $this->getEntityManager()->createQuery($dql . $customQuery . $dqlWhere . $dqlOrder);
-        if ( !empty($dqlWhere) ) {
-            $query->setParameter(':search', '%' . $search . '%');
-        }
-        $results = $query->setMaxResults($limit)
-            ->setFirstResult($offset)
-            ->getResult();
-
-        // TOTAL RESULTS COUNT
-        $countDql = "SELECT COUNT(c.id) FROM Admin\Entity\Surtax c";
-        $count = $this->getEntityManager()->createQuery($countDql)->getSingleScalarResult();
-        // map data
-        $ret = array_map(function($item) {
-
-            // create link
-            $linkEdit =   '/admin/surtax/add/'.$item->getId() ;
-            $linkDelete =  '/admin/surtax/delete/'.$item->getId() ;
-            $linkDetail =   '/admin/surtax/detail/'.$item->getId() ;
-            return array(
-                'id' => $item->getId(),
-                'name' => $item->getName(),
-                'value' => $item->getValue(),
-                'type' => $item->getType(),
-                'action'=> '
-
-                <a class="btn btn-primary" href="'.$linkEdit.'"><i class="icon-edit-sign"></i></a>
-                <a id="'.$item->getId().'"  data-link="'.$linkDelete.'" data-id="'.$item->getId().'" href="javascript:void(0)" class="btn btn-danger btn-delete" ><i class="icon-trash"></i></a>'
-            );
-        }, $results);
-
-        return $this->getDataTableJsonResponse($ret, $count, $dqlWhere);
-
-    }
-
 
     public function indexAction(){
-        return new ViewModel(array('title'=>$this->translator->translate('Surtax')));
+        $columns = array(
+            array('title' =>'Id', 'db' => 'id', 'dt' => 0, 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Name', 'db' => 'name', 'dt' => 1, 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Value', 'db' => 'value', 'dt' => 2, 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Type', 'db' => 'type', 'dt' => 3, 'search'=>false, 'type' => 'number' ),
+        );
+
+        /////end column for table
+        $table = new AjaxTable($columns, array(), 'admin/surtax');
+        $table->setTablePrefix('ts');
+        $table->setAjaxCall('/admin/surtax');
+        $this->tableAjaxRequest($table,$columns,$this->modelSurTax);
+        //end config table
+        return new ViewModel(array('table' => $table,
+            'title' => $this->translator->translate('User History')));
     }
 
     public function addAction(){

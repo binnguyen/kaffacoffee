@@ -1,10 +1,10 @@
 <?php
-$title = array();
-$title['title'] = $this->title;
-$title['link'] =   $this->url('admin/child', array('controller'=>'config','action' => 'add'));
-
+$title = $this->title;
 $this->titleHelper($title);
 $data = $this->data;
+$configValueImg = $this->configValueImg;
+
 ?>
-<?php echo $this->formHelper($form,$title); ?>
+
+<?php echo $this->formHelper($form,$title,$configValueImg); ?>
 

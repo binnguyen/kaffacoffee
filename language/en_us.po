@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: ZendSkeletonApplication\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-07-05 22:17-0700\n"
-"PO-Revision-Date: 2014-12-03 08:54+0700\n"
+"PO-Revision-Date: 2015-03-18 11:50+0700\n"
 "Last-Translator: Evan Coury <me@evancoury.com>\n"
 "Language-Team: ZF Contibutors <zf-devteam@zend.com>\n"
 "Language: en_US\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-KeywordsList: translate\n"
 "X-Poedit-Basepath: .\n"
-"X-Generator: Poedit 1.6.10\n"
+"X-Generator: Poedit 1.7.4\n"
 "X-Poedit-SearchPath-0: ..\n"
 
 #: ../view/layout/layout.phtml:6 ../view/layout/layout.phtml:33
@@ -34,11 +34,7 @@ msgstr ""
 
 #: ../view/application/index/index.phtml:3
 #, php-format
-msgid ""
-"Congratulations! You have successfully installed the %sZF2 Skeleton "
-"Application%s. You are currently running Zend Framework version %s. This "
-"skeleton can serve as a simple starting point for you to begin building your "
-"application on ZF2."
+msgid "Congratulations! You have successfully installed the %sZF2 Skeleton Application%s. You are currently running Zend Framework version %s. This skeleton can serve as a simple starting point for you to begin building your application on ZF2."
 msgstr ""
 
 #: ../view/application/index/index.phtml:4
@@ -51,12 +47,7 @@ msgstr ""
 
 #: ../view/application/index/index.phtml:11
 #, php-format
-msgid ""
-"Zend Framework 2 is under active development. If you are interested in "
-"following the development of ZF2, there is a special ZF2 portal on the "
-"official Zend Framework website which provides links to the ZF2 %swiki%s, "
-"%sdev blog%s, %sissue tracker%s, and much more. This is a great resource for "
-"staying up to date with the latest developments!"
+msgid "Zend Framework 2 is under active development. If you are interested in following the development of ZF2, there is a special ZF2 portal on the official Zend Framework website which provides links to the ZF2 %swiki%s, %sdev blog%s, %sissue tracker%s, and much more. This is a great resource for staying up to date with the latest developments!"
 msgstr ""
 
 #: ../view/application/index/index.phtml:12
@@ -69,11 +60,7 @@ msgstr ""
 
 #: ../view/application/index/index.phtml:17
 #, php-format
-msgid ""
-"The community is working on developing a community site to serve as a "
-"repository and gallery for ZF2 modules. The project is available %son GitHub"
-"%s. The site is currently live and currently contains a list of some of the "
-"modules already available for ZF2."
+msgid "The community is working on developing a community site to serve as a repository and gallery for ZF2 modules. The project is available %son GitHub%s. The site is currently live and currently contains a list of some of the modules already available for ZF2."
 msgstr ""
 
 #: ../view/application/index/index.phtml:18
@@ -86,11 +73,7 @@ msgstr ""
 
 #: ../view/application/index/index.phtml:23
 #, php-format
-msgid ""
-"If you need any help or support while developing with ZF2, you may reach us "
-"via IRC: %s#zftalk on Freenode%s. We'd love to hear any questions or "
-"feedback you may have regarding the beta releases. Alternatively, you may "
-"subscribe and post questions to the %smailing lists%s."
+msgid "If you need any help or support while developing with ZF2, you may reach us via IRC: %s#zftalk on Freenode%s. We'd love to hear any questions or feedback you may have regarding the beta releases. Alternatively, you may subscribe and post questions to the %smailing lists%s."
 msgstr ""
 
 #: ../view/application/index/index.phtml:24
@@ -135,8 +118,7 @@ msgid "The requested controller was unable to dispatch the request."
 msgstr ""
 
 #: ../view/error/404.phtml:13
-msgid ""
-"The requested controller could not be mapped to an existing controller class."
+msgid "The requested controller could not be mapped to an existing controller class."
 msgstr ""
 
 #: ../view/error/404.phtml:16
@@ -163,3 +145,95 @@ msgstr ""
 #: ../view/error/404.phtml:51
 msgid "Exception"
 msgstr ""
+
+#: ../view/application/index/addNewOrder.phtml
+msgid "Total cost"
+msgstr "Total Cost"
+
+msgid "Total real cost"
+msgstr "Total Real Cost"
+
+msgid "Create date"
+msgstr "Create Date"
+
+#: ../view/application/index/config.phtml
+msgid "logo_printer"
+msgstr "Logo Printer"
+
+msgid "print_phone"
+msgstr "Print Phone"
+
+msgid "print_address"
+msgstr "Print Address"
+
+msgid "max_quantity_order"
+msgstr "Max Quantity Order"
+
+msgid "thank_text"
+msgstr "Thanks Text"
+
+msgid "currency"
+msgstr "Currency"
+
+msgid "out_of_stock"
+msgstr "Out Of Stock"
+
+msgid "end_year"
+msgstr "End Year"
+
+msgid "emailId"
+msgstr "Email Id"
+
+msgid "emailPassword"
+msgstr "Password Email"
+
+msgid "sitename"
+msgstr "Site Name"
+
+msgid "meta_description"
+msgstr "Meta Description"
+
+msgid "print_number"
+msgstr "Number Of Bill"
+
+msgid "key_note"
+msgstr "Key Note"
+
+msgid "lang"
+msgstr "Language"
+
+msgid "number_decimal"
+msgstr "Number Decimal"
+
+msgid "currency_before"
+msgstr "Currency Format"
+
+msgid "logo"
+msgstr "Logo"
+
+msgid "payment"
+msgstr "Pay Now"
+
+msgid "Order detail"
+msgstr "Order Detail"
+
+msgid "Add new order"
+msgstr "Add New Order"
+
+msgid "Real cost"
+msgstr "Real Cost"
+
+msgid "Add new order detail"
+msgstr "Add New Order Detail"
+
+msgid "New not exists product"
+msgstr "New Not Exists Product"
+
+msgid "Take away cost"
+msgstr "Take Away Cost"
+
+msgid "Stay here"
+msgstr "Stay Here"
+
+msgid "Select coupon"
+msgstr "Select Coupon"

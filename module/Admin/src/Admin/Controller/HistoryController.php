@@ -13,107 +13,49 @@ use Admin\Model\userHistoryModel;
 use Velacolib\Utility\Utility;
 use Admin\Model\userModel;
 use Zend\View\Model\ViewModel;
+use Velacolib\Utility\Table\AjaxTable;
 use Zend\Mvc\Controller\AbstractActionController;
 
 
-class HistoryController extends BaseController
+class HistoryController extends AdminGlobalController
 {
     protected   $modelHistory;
     protected   $translator;
-    public function onDispatch(\Zend\Mvc\MvcEvent $e){
+    public function init(){
 
-        $service_locator_str = 'doctrine';
-        $this->sm = $this->getServiceLocator();
-        $CategoriesTable = $this->sm->get($service_locator_str);
-        $this->modelHistory = new userHistoryModel($CategoriesTable);
-        $this->translator = Utility::translate();
-
-        //check login
-        $user = Utility::checkLogin($this);
-        if(! is_object($user) && $user == 0){
-            $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }else{
-            $isPermission = Utility::checkRole($user->userType,ROLE_ADMIN);
-            if( $isPermission == false)
-                $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }
-        //end check login
-
-        return parent::onDispatch($e);
+        $this->modelHistory = new userHistoryModel($this->doctrineService);
     }
 
-    public function ajaxListAction(){
-
-        $fields = array(
-            'id',
-            'userId',
-            'action',
-            'time',
-        );
-
-        $offset = $this->getDataTableQueryOffset();
-        $limit = $this->getDataTableQueryLimit();
-        $sortCol = $this->getDataTableQuerySortingColumn(3);
-        $sortDirection = $this->getDataTableQuerySortingDirection();
-        $search = $this->getDataTableQuerySearch();
-        $customWhere  = '';
-        // WHERE conditions
-
-        $customQuery = $this->customWhereSql($customWhere);
-
-
-        $dqlWhere = $this->getDataTableWhereDql('c', $fields, $search,$customWhere);
-
-        if ( !empty($dqlWhere) ) {
-            $customQuery = '';
-        }
-
-        // ORDERING
-        $dqlOrder = $this->getDataTableOrderDql('c', $fields, $sortCol, $sortDirection);
-
-        // DQL
-        $dql = "SELECT c FROM Admin\Entity\UserHistory c";
-
-        $customWhere = $this->customWhereSql();
-
-        // RESULTS
-        $query = $this->getEntityManager()->createQuery($dql . $customWhere . $dqlWhere . $dqlOrder);
-        if ( !empty($dqlWhere) ) {
-            $query->setParameter(':search', '%' . $search . '%');
-        }
-        $results = $query->setMaxResults($limit)
-            ->setFirstResult($offset)
-            ->getResult();
-
-        // TOTAL RESULTS COUNT
-        $countDql = "SELECT COUNT(c.id) FROM Admin\Entity\UserHistory c";
-        $count = $this->getEntityManager()->createQuery($countDql)->getSingleScalarResult();
-        // map data
-        $ret = array_map(function($item) {
-            $userInfo = Utility::getUserInfo($item->getUserId());
-            // create link
-            $linkEdit =   '/admin/history/edit/'.$item->getId() ;
-            $linkDelete =  '/admin/history/delete/'.$item->getId() ;
-            $linkDetail =   '/admin/history/detail/'.$item->getId() ;
-            return array(
-                'id' => $item->getId(),
-                'userId' => $userInfo->getUserName(),
-                'actions' => ($item->getAction()),
-                'time' => date("d-m-Y",$item->getTime()),
-                'action'=> '
-                <a id="'.$item->getId().'"  data-link="'.$linkDelete.'" data-id="'.$item->getId().'" href="#" class="btn btn-danger btn-delete"><i class="icon-trash"></i></a>'
-            );
-        }, $results);
-
-        return $this->getDataTableJsonResponse($ret, $count, $dqlWhere);
-
-    }
 
 
     public function indexAction()
     {
+        $columns = array(
+            array('title' =>'Id', 'db' => 'id', 'dt' => 0,'prefix' => 'h' ,'select' => 'id', 'search'=>false, 'type' => 'number' ),
+            array('title' =>'User', 'db' => 'userName', 'prefix' => 'u' ,'select' => 'userName', 'dt' => 1, 'search'=>true, 'type' => 'text'),
+            array('title' =>'Action', 'db' => 'action','prefix' => 'h', 'select'=>'action','dt' => 2, 'search'=>false, 'type' => 'number'),
+            array('title' =>'Time', 'db' => 'time','prefix'=>'h','select'=>'time', 'dt' => 3, 'search'=>false, 'type' => 'number',
+                'formatter' => function($d,$row){
+                    return date('d-m-Y h:i:s',$d);
+                }
+            ),
+        );
 
-        return new ViewModel(array('title'=>$this->translator->translate('Manager history')));
+        /////end column for table
+        $table = new AjaxTable($columns, array(), 'admin/history');
+        $table->setTablePrefix('h');
+        $table->setExtendJoin(
+            array(
+                array('Admin\Entity\User','u','with','h.userId = u.id')
+            )
+        );
+
+        $table->setAjaxCall('/admin/history');
+        $this->tableAjaxRequest($table,$columns,$this->modelHistory);
+        //end config table
+        return new ViewModel(array('table' => $table,
+            'title' => $this->translator->translate('User History')));
+
     }
     public function addAction()
     {
