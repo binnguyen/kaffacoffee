@@ -59,6 +59,7 @@ abstract class AdminGlobalController extends AbstractActionController
             die;
         }
     }
+
     protected  function getModuleCurrentRoute($e){
         $returnArray = array();
         $controller = $e->getTarget();

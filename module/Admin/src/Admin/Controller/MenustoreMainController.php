@@ -53,9 +53,9 @@ class MenustoreMainController extends    AdminGlobalController
 
         $columns = array(
 
-            array('title' =>'Id', 'db' => 'id', 'dt' => 0, 'select'=>'id','prefix'=>'m','search'=>false, 'type' => 'number' ),
-            array('title' =>'Name', 'db' => 'name','dt' => 1,'select'=>'name','prefix'=>'m', 'search'=>true, 'type' => 'text' ),
-            array('title' =>'Cost', 'db' => 'cost','dt' => 2,'select'=>'cost','prefix'=>'m', 'search'=>false, 'type' => 'number'),
+            array('title' =>'Id', 'db' => 'id', 'dt' => 0,'search'=>false, 'type' => 'number' ),
+            array('title' =>'Name', 'db' => 'name','dt' => 1, 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Cost', 'db' => 'cost','dt' => 2, 'search'=>false, 'type' => 'number'),
             array('title' =>'In', 'db' => 'id','dt' => 3, 'search'=>true, 'type' => 'number','formatter'=>
                 function($d,$row){
                     $quantityInput =  TransactionUtility::checkStore($d,INSERT_STORE_ACRION,MAIN_STORE);
@@ -76,10 +76,10 @@ class MenustoreMainController extends    AdminGlobalController
                     return $output;
 
                 } ),
-            array('title' =>'In stock', 'db' => 'outOfStock','dt' => 5 , 'select'=>'outOfStock','prefix'=>'m','search'=>false, 'type' => 'number' ),
-            array('title' =>'Unit', 'db' => 'unit','dt' => 6 , 'select'=>'unit','prefix'=>'m','search'=>false, 'type' => 'text' ),
+            array('title' =>'In stock', 'db' => 'outOfStock','dt' => 5 , 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Unit', 'db' => 'unit','dt' => 6 ,'search'=>false, 'type' => 'text' ),
 
-            array('title' =>'Supplier','prefix'=>'m','select'=>'supplier', 'db' => 'supplier','dt' => 7, 'search'=>true, 'type' => 'text','formatter'=>
+            array('title' =>'Supplier', 'db' => 'supplier','dt' => 7, 'search'=>true, 'type' => 'text','formatter'=>
                 function($d,$row){
                     $supplier = Utility::getSupplierInfo($d);
 
@@ -105,12 +105,12 @@ class MenustoreMainController extends    AdminGlobalController
         /////end column for table
         $table = new AjaxTable($columns, array(), 'admin/menustoremain');
         $table->setTablePrefix('m');
-        $table->setExtendJoin(
-            array(
-                array(" Admin\\Entity\\Transaction", "t", "WITH", " t.menuStoreId = m.id "),
-                array(" Admin\\Entity\\Supplier", "s", "WITH", " s.id = m.supplier "),
-            )
-        );
+//        $table->setExtendJoin(
+//            array(
+//                array(" Admin\\Entity\\Transaction", "t", "WITH", " t.menuStoreId = m.id "),
+//                array(" Admin\\Entity\\Supplier", "s", "WITH", " s.id = m.supplier "),
+//            )
+//        );
 
         $table->setExtendSQl(array(
             array('AND','m.isdelete','=','0'),
@@ -123,7 +123,8 @@ class MenustoreMainController extends    AdminGlobalController
 
         return new ViewModel(array(
             'table' => $table,
-            'title' => $this->translator->translate('Menu store')));
+            'title' => $this->translator->translate('Menu store'))
+        );
 
 
     }
