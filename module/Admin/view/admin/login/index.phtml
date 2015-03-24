@@ -6,46 +6,79 @@
    // $this->titleHelper($title);
 $config = \Velacolib\Utility\Utility::getConfig();
 ?>
+<div id="wrap-login" class="container">
+    <div  class="row-fluid ">
+        <div class="span6 img-owl hidden-phone hidden-tablet">
+            <img src="/img/owl-icon.png" />
+        </div>
+        <div class="span6 login-form">
+            <h2 class="cms-title-login">Login to <span>Kaffa CMS</span></h2>
 
+            <form class="form-horizontal" method="post" action="<?php echo $link; ?>" enctype="multipart/form-data">
+                <div class="control-group">
+                    <label class="control-label" for="inputEmail">User name</label>
+                    <div class="controls">
+                        <input data-rule-required="true" class="input-radius" id="" name="userName" placeholder="User Name" type="text">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="inputPassword">Password</label>
+                    <div class="controls">
+                        <input  data-rule-required="true" class="input-radius" id="" name="password" placeholder="Password" type="password">
+                    </div>
+                </div>
 
-<div class='application'>
-    <div class='application-content'>
-        <a href="#"><div class='icon-heart'></div>
-            <span><?php echo $config['sitename'] ?></span>
-        </a>
+                <div class="control-group">
+                    <div class="controls">
+                        <button type="submit"  class="input-radius btn btn-signin ">Sign in</button>
+                    </div>
+                </div>
+                <div id="powerby">
+                    <span>Powered by KAFFA CMS 1.0</span>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
-<div class='controls'>
-    <div class='caret'></div>
-    <div class='form-wrapper'>
-        <h1 class='text-center'>Sign in</h1>
-        <form accept-charset="UTF-8" action="<?php echo $link; ?>" method="post" /><div style="margin:0;padding:0;display:inline"></div>
-        <div class='row-fluid'>
-            <div class='span12 icon-over-input'>
-                <input class="span12" data-rule-minlength="2" data-rule-required="true" id="" name="userName" placeholder="User Name" type="text">
-                <i class='icon-user muted'></i>
-            </div>
-        </div>
-        <div class='row-fluid'>
-            <div class='span12 icon-over-input'>
-                <input class="span12" data-rule-required="true" id="" name="password" placeholder="Password" type="password">
-                <i class='icon-lock muted'></i>
-            </div>
-        </div>
 
-        <button class="btn btn-block"  type="submit">Sign in</button>
-        </form>
-        <div class='text-center'>
-            <hr class='hr-normal' />
-
-        </div>
-    </div>
-</div>
-<div class='login-action text-center'>
-<!--    <a href=""><i class='icon-user'></i>-->
-        <?php //echo $config['sitename'] ?>
-    </a>
-</div>
+<!--<div class='application'>-->
+<!--    <div class='application-content'>-->
+<!--        <a href="#"><div class='icon-heart'></div>-->
+<!--            <span>--><?php //echo $config['sitename'] ?><!--</span>-->
+<!--        </a>-->
+<!--    </div>-->
+<!--</div>-->
+<!--<div class='controls'>-->
+<!--    <div class='caret'></div>-->
+<!--    <div class='form-wrapper'>-->
+<!--        <h1 class='text-center'>Sign in</h1>-->
+<!--        <form accept-charset="UTF-8" action="--><?php //echo $link; ?><!--" method="post" /><div style="margin:0;padding:0;display:inline"></div>-->
+<!--        <div class='row-fluid'>-->
+<!--            <div class='span12 icon-over-input'>-->
+<!--                <input class="span12" data-rule-minlength="2" data-rule-required="true" id="" name="userName" placeholder="User Name" type="text">-->
+<!--                <i class='icon-user muted'></i>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class='row-fluid'>-->
+<!--            <div class='span12 icon-over-input'>-->
+<!--                <input class="span12" data-rule-required="true" id="" name="password" placeholder="Password" type="password">-->
+<!--                <i class='icon-lock muted'></i>-->
+<!--            </div>-->
+<!--        </div>-->
+<!---->
+<!--        <button class="btn btn-block"  type="submit">Sign in</button>-->
+<!--        </form>-->
+<!--        <div class='text-center'>-->
+<!--            <hr class='hr-normal' />-->
+<!---->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+<!--<div class='login-action text-center'>-->
+<!--<!--    <a href=""><i class='icon-user'></i>-->-->
+<!--        --><?php ////echo $config['sitename'] ?>
+<!--    </a>-->
+<!--</div>-->
 
 
 

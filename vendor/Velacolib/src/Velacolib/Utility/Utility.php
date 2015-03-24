@@ -214,10 +214,15 @@ class Utility extends AbstractActionController
             $isdelete = 1;
         }
 
+
         //insert
         if ($id == '') {
             if ($request->isPost()) {
-
+                if(!self::checkExistOrderDetail($param->fromPost())){
+                    $param = '?error=1&message=1';
+                   $url = "http://".$_SERVER['HTTP_HOST'].'/frontend/order/add'.$param;
+                    header("Location:".$url);  exit();
+                }
                 //$detailRow = $param->fromPost('countChild');
                 $Auth_service = new AuthenticationService();
                 $auth = $Auth_service->getIdentity();
@@ -1086,6 +1091,57 @@ class Utility extends AbstractActionController
             $arrayReturn[$table->getId()] = $table->getName();
         }
         return $arrayReturn;
+    }
+
+    static function checkExistOrderDetail($param = array()){
+
+        if(is_array($param) && !empty($param)){
+            if(isset($param['detail']) && !empty($param['detail'])){
+                foreach($param['detail'] as $paramDetailChild){
+                    if($paramDetailChild['menuCost'] == 0 && $paramDetailChild['menuid'] == -1){
+                        return false;
+                    }
+                }
+            }
+
+        }
+        return true;
+
+    }
+
+    static function messageErrorArray($message){
+
+        $messageArray = array(
+           'Please insert order detail !',
+           'Please insert order detail !',
+           'Please insert order detail !',
+           'Please insert order detail !',
+        );
+        if(isset($messageArray[$message])){
+            return $messageArray[$message];
+        }else{
+            return false;
+        }
+
+    }
+
+    static function alertScriptError($textError){
+        $script = "<script> swal('Oops...', '$textError', 'error'); </script>";
+        return $script;
+    }
+
+    static function renderSweetAlert(){
+        if(isset($_GET['error']) && $_GET['error'] == 1){
+            if( isset($_GET['message']) && $_GET['message'] != '' && is_numeric($_GET['message'])){
+                $message = trim($_GET['message']);
+                $string =   self::messageErrorArray($message);
+
+                $alert = self::alertScriptError($string);
+                echo $alert;
+
+
+            }
+        }
     }
 }
 

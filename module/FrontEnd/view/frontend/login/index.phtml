@@ -7,40 +7,43 @@ $buttonLogin = $this->buttonLogin;
 $config = \Velacolib\Utility\Utility::getConfig();
 
 ?>
-<!--<div class="span12 box" style="margin: 0px !important;">-->
-<!--    <div class="box-header blue-background">-->
-<!--        <div class="title">--><?php //echo $title; ?><!--</div>-->
-<!--        <div class="actions">-->
-<!--            <a href="#" class="btn box-remove btn-mini btn-link"><i class="icon-remove"></i>-->
-<!--            </a>-->
-<!--            <a href="#" class="btn box-collapse btn-mini btn-link"><i></i>-->
-<!--            </a>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--    <div class="box-content">-->
-<!--        <form method="post" action="--><?php //echo $link; ?><!--" class="form form-horizontal validate-form" style="margin-bottom: 0;" novalidate="novalidate">-->
-<!--            <div class="control-group">-->
-<!--                <label class="control-label" for="validation_name">--><?php //echo $this->userNameText ?><!--</label>-->
-<!--                <div class="controls">-->
-<!--                    <input data-rule-minlength="2" data-rule-required="true" id="" name="userName" placeholder="User Name" type="text">-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="control-group">-->
-<!--                <label class="control-label" for="validation_email">--><?php //echo $this->passwordText ?><!--</label>-->
-<!--                <div class="controls">-->
-<!--                    <input  data-rule-required="true" id="" name="password" placeholder="Password" type="password">-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div class="form-actions" style="margin-bottom:0">-->
-<!--                <button class="btn btn-primary" type="submit">-->
-<!--                    <i class="icon-save"></i>-->
-<!--                    --><?php //echo $buttonLogin; ?>
-<!--                </button>-->
-<!--            </div>-->
-<!--        </form>-->
-<!--    </div>-->
-<!--</div>-->
+<div id="wrap-login" class="container">
+    <div  class="row-fluid ">
+        <div class="span6 img-owl hidden-phone hidden-tablet">
+            <img src="/img/owl-icon.png" />
+        </div>
+        <div class="span6 login-form">
+                <h2 class="cms-title-login">Login to <span>Kaffa CMS</span></h2>
 
+            <form class="form-horizontal" method="post" action="" enctype="multipart/form-data">
+                <div class="control-group">
+                    <label class="control-label" for="inputEmail">User name</label>
+                    <div class="controls">
+                        <input data-rule-required="true" class="input-radius" id="" name="userName" placeholder="User Name" type="text">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="inputPassword">Password</label>
+                    <div class="controls">
+                        <input  data-rule-required="true" class="input-radius" id="" name="password" placeholder="Password" type="password">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <div class="controls">
+                        <button type="submit"  class="input-radius btn btn-signin ">Sign in</button>
+                    </div>
+                </div>
+                <div id="powerby">
+                    <span>Powered by KAFFA CMS 1.0</span>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!--
 <div class='application'>
     <div class='application-content'>
         <a href="#">
@@ -78,16 +81,7 @@ $config = \Velacolib\Utility\Utility::getConfig();
             <hr class='hr-normal'/>
 
         </div>
-<!--         <span id="signinButton">-->
-<!--          <span-->
-<!--              class="g-signin"-->
-<!--              data-callback="signinCallback"-->
-<!--              data-clientid="927311531718-rps1cvcjnd2m6g5m3133gu0m8t7pq1m1.apps.googleusercontent.com"-->
-<!--              data-cookiepolicy="single_host_origin"-->
-<!--              data-requestvisibleactions="http://schema.org/AddAction"-->
-<!--              data-scope="https://www.googleapis.com/auth/plus.login">-->
-<!--          </span>-->
-<!--        </span>-->
+
     </div>
 </div>
 <div class='login-action text-center'>
@@ -95,3 +89,4 @@ $config = \Velacolib\Utility\Utility::getConfig();
         <?php //echo $config['sitename'] ?>
     </a>
 </div>
+-->
