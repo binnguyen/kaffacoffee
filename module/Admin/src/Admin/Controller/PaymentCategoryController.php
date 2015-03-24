@@ -6,6 +6,12 @@
  * Time: 1:17 PM
  */
 namespace Admin\Controller;
+
+use Velacolib\Utility\Table;
+use Velacolib\Utility\Table\AjaxTable;
+use Velacolib\Utility\Table\Detail;
+
+
 use Admin\Entity\Categories;
 use Admin\Entity\PaymentCategory;
 use Admin\Form\paymentCategoryForm;
@@ -13,12 +19,11 @@ use Admin\Model\categoryModel;
 use Admin\Model\paymentCategoryModel;
 use Velacolib\Utility\Utility;
 use Zend\View\Model\ViewModel;
-use Admin\Entity\Table;
 use Zend\Mvc\Controller\AbstractActionController;
 
 
 
-class PaymentCategoryController extends BaseController
+class PaymentCategoryController extends AdminGlobalController
 {
     protected   $modelCategories;
     protected  $translator;
@@ -47,62 +52,35 @@ class PaymentCategoryController extends BaseController
 
     public function indexAction()
     {
-        return new ViewModel(array('title'=> $this->translator->translate('Payment category')));
-    }
 
+        $columns = array(
+            array('title' =>'Id', 'db' => 'id', 'dt' => 0, 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Name', 'db' => 'name', 'dt' => 1, 'search'=>false, 'type' => 'text' ),
+            array('title' =>'Action', 'db' => 'id', 'dt' => 2, 'search'=>false, 'type' => 'text','formatter'=>function($d,$row){
 
+                $actionUrl = '/admin/payment-category';
+                return '
+                        <a class="btn-xs action action-detail btn btn-success btn-default" href="'.$actionUrl.'/add/'.$d.'"><i class="icon-edit"></i></a>
+                        <a data-id="'.$d.'" id="'.$d.'" data-link="'.$actionUrl.'" class="btn-xs action action-detail btn btn-danger  btn-delete " href="javascript:void(0)"><i class="icon-remove"></i></a>
+                    ';
 
-    public function ajaxListAction()
-    {
-
-        $fields = array(
-            'id',
-            'name',
+            } ),
         );
 
-        $offset = $this->getDataTableQueryOffset();
-        $limit = $this->getDataTableQueryLimit();
-        $sortCol = $this->getDataTableQuerySortingColumn();
-        $sortDirection = $this->getDataTableQuerySortingDirection();
-        $search = $this->getDataTableQuerySearch();
-
-        // WHERE conditions
-        $dqlWhere = $this->getDataTableWhereDql('c', $fields, $search);
-
-        // ORDERING
-        $dqlOrder = $this->getDataTableOrderDql('c', $fields, $sortCol, $sortDirection);
-
-        // DQL
-        $dql = "SELECT c FROM Admin\Entity\PaymentCategory c";
-
-        // RESULTS
-        $query = $this->getEntityManager()->createQuery($dql . $dqlWhere . $dqlOrder);
-        if ( !empty($dqlWhere) ) {
-            $query->setParameter(':search', '%' . $search . '%');
-        }
-        $results = $query->setMaxResults($limit)
-            ->setFirstResult($offset)
-            ->getResult();
-
-        // TOTAL RESULTS COUNT
-        $countDql = "SELECT COUNT(c.id) FROM Admin\Entity\PaymentCategory c";
-        $count = $this->getEntityManager()->createQuery($countDql)->getSingleScalarResult();
-
-        $ret = array_map(function($item) {
-            $linkEdit =   '/admin/Payment-category/add/'.$item->getId() ;
-            $linkDelete =  '/admin/Payment-category/delete/'.$item->getId() ;
-            $linkDetail =   '/admin/Payment-category/detail/'.$item->getId() ;
-
-            return array(
-                'id' => $item->getId(),
-                'name' => $item->getName() ,
-                'actions'=> '<a href="'.$linkDetail.'" class="btn btn-info"><i class="icon-edit-sign"></i></a><a class="btn btn-primary" href="'.$linkEdit.'"><i class="icon-edit-sign"></i></a><a href="'.$linkDelete.'" class="btn btn-danger"><i class="icon-trash"></i></a>'
-            );
-        }, $results);
-
-        return $this->getDataTableJsonResponse($ret, $count, $dqlWhere);
+        /////end column for table
+        $table = new AjaxTable($columns, array(), 'admin/payment-category');
+        $table->setTablePrefix('ts');
+        $table->setAjaxCall('/admin/payment-category');
+        $this->tableAjaxRequest($table,$columns,$this->modelCategories);
+        //end config table
+        return new ViewModel(array('table' => $table,
+            'title' => $this->translator->translate('Payment category manage')));
 
     }
+
+
+
+
 
     public function addAction()
     {

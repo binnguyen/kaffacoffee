@@ -6,6 +6,11 @@
  * Time: 1:17 PM
  */
 namespace Admin\Controller;
+
+use Velacolib\Utility\Table;
+use Velacolib\Utility\Table\AjaxTable;
+use Velacolib\Utility\Table\Detail;
+
 use Admin\Entity\Payment;
 use Admin\Model\paymentModel;
 use Velacolib\Utility\Utility;
@@ -15,29 +20,16 @@ use Admin\Form\paymentForm;
 use Zend\Validator\File\Size;
 
 
-class PaymentController extends BaseController
+class PaymentController extends AdminGlobalController
 {
     protected   $modelCustomer;
     protected  $translator;
-    public function onDispatch(\Zend\Mvc\MvcEvent $e){
 
-        $service_locator_str = 'doctrine';
-        $this->sm = $this->getServiceLocator();
-        $customerTable = $this->sm->get($service_locator_str);
-        $this->modelCustomer = new paymentModel($customerTable);
-        $this->translator = Utility::translate();
-        //check login
-        $user = Utility::checkLogin($this);
-        if(! is_object($user) && $user == 0){
-            $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }else{
-            $isPermission = Utility::checkRole($user->userType,ROLE_ADMIN);
-            if( $isPermission == false)
-                $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }
-        //end check login
 
-        return parent::onDispatch($e);
+    public function init(){
+        parent::init();
+
+        $this->modelCustomer = new paymentModel($this->doctrineService);
     }
 
     public function ajaxListAction(){
@@ -115,7 +107,32 @@ class PaymentController extends BaseController
 
     public function indexAction()
     {
-        return new ViewModel(array('title'=> $this->translator->translate('Payment')));
+        $columns = array(
+            array('title' =>'Id', 'db' => 'id', 'dt' => 0, 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Title', 'db' => 'title', 'dt' => 1, 'search'=>false, 'type' => 'text' ),
+            array('title' =>'Value', 'db' => 'value', 'dt' => 2, 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Reason', 'db' => 'reason', 'dt' => 3, 'search'=>false, 'type' => 'text' ),
+            array('title' =>'Time', 'db' => 'time', 'dt' => 4, 'search'=>false, 'type' => 'text' ),
+            array('title' =>'Category', 'db' => 'categoryId', 'dt' => 5, 'search'=>false, 'type' => 'text' ),
+            array('title' =>'Action', 'db' => 'id', 'dt' => 6, 'search'=>false, 'type' => 'text','formatter'=>function($d,$row){
+
+                $actionUrl = '/admin/payment';
+                return '
+                        <a class="btn-xs action action-detail btn btn-success btn-default" href="'.$actionUrl.'/add/'.$d.'"><i class="icon-edit"></i></a>
+                        <a data-id="'.$d.'" id="'.$d.'" data-link="'.$actionUrl.'" class="btn-xs action action-detail btn btn-danger  btn-delete " href="javascript:void(0)"><i class="icon-remove"></i></a>
+                    ';
+
+            } ),
+        );
+
+        /////end column for table
+        $table = new AjaxTable($columns, array(), 'admin/payment');
+        $table->setTablePrefix('ts');
+        $table->setAjaxCall('/admin/payment');
+        $this->tableAjaxRequest($table,$columns,$this->modelCustomer);
+        //end config table
+        return new ViewModel(array('table' => $table,
+            'title' => $this->translator->translate('Payment manage')));
     }
 
 
@@ -157,13 +174,15 @@ class PaymentController extends BaseController
         } else{
 
             $event = $this->modelCustomer->findOneBy(array('id'=>$id));
+            $date = $event->getTime();
+            ($date == '') ? $time = time() : $time = $date;
             $configForm = new paymentForm();
             $configForm->setAttribute('action', '/admin/payment/add/'.$id);
             $configForm->get('id')->setValue($event->getId());
             $configForm->get('title')->setValue($event->getTitle());
             $configForm->get('value')->setValue($event->getValue());
             $configForm->get('reason')->setValue($event->getReason());
-            $configForm->get('time')->setValue(date("m-d-Y",$event->getTime()));
+            $configForm->get('time')->setValue(date("m-d-Y",$time));
 
 
             if($request->isPost()){

@@ -1,6 +1,9 @@
 <?php
-$data = $this->data;
-$title = $this->title;
-$table = $this->table;
+
+$title = array();
+$title['title'] = $this->title;
+$title['link'] =   $this->url('admin/child', array('controller'=>'property','action' => 'add'));
 $this->titleHelper($title);
+$data = $this->data;
+$table = $this->table;
 $table->render();

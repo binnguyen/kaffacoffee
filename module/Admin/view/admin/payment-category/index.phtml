@@ -1,19 +1,9 @@
 <?php
+
 $title = array();
 $title['title'] = $this->title;
-$title['link'] =   $this->url('admin/child', array('controller'=>'menustore','action' => 'add'));
+$title['link'] =   $this->url('admin/child', array('controller'=>'payment-category','action' => 'add'));
 $this->titleHelper($title);
-$partialData = array(
-    'ajaxUrl' => $this->url('admin/child', array('controller'=>'payment-category','action' => 'ajax-list')),
-    'actions' => array(
-        'edit' => array('action' => 'edit', 'label' => 'Edit'),
-        'delete' => array('action' => 'delete', 'label' => 'Delete')
-    ),
-    'columns' => array(
-        0 => array('field' => 'id',                                    'searchable' => false,  'primaryKey' => true),
-        1 => array('field' => 'name',    'label' => 'Name',    'searchable' => true,   'sortable' => true),
-        2 => array('field' => 'action',    'label' => 'Action',    'searchable' => true, 'action'=>true ,  'sortable' => false),
-    )
-);
-
-echo $this->partial('partial/listing.phtml',$partialData);
+$data = $this->data;
+$table = $this->table;
+$table->render();
