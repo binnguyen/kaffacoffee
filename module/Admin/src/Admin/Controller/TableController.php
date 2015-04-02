@@ -67,7 +67,7 @@ class TableController extends AdminGlobalController
 
         return new ViewModel(array(
             'table' => $table,
-            'title' => $this->translator->translate('Manage Combo')));
+            'title' => $this->translator->translate('Manage Table')));
     }
 
     public function addAction()

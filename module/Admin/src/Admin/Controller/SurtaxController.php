@@ -39,7 +39,7 @@ class SurtaxController extends AdminGlobalController {
         $this->tableAjaxRequest($table,$columns,$this->modelSurTax);
         //end config table
         return new ViewModel(array('table' => $table,
-            'title' => $this->translator->translate('User History')));
+            'title' => $this->translator->translate('Manage Surtax')));
     }
 
     public function addAction(){

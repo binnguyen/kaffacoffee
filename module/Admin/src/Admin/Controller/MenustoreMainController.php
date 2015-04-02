@@ -123,7 +123,7 @@ class MenustoreMainController extends    AdminGlobalController
 
         return new ViewModel(array(
             'table' => $table,
-            'title' => $this->translator->translate('Menu store'))
+            'title' => $this->translator->translate('Manage Menu Store Main'))
         );
 
 
@@ -380,7 +380,7 @@ class MenustoreMainController extends    AdminGlobalController
 
         return new ViewModel(
             array('table' => $table,
-                'title' => $this->translator->translate('Manager In out')));
+                'title' => $this->translator->translate('Manage Import/Export')));
     }
 
 

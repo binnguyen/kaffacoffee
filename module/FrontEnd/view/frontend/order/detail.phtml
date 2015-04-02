@@ -1,9 +1,10 @@
 <?php
+$title = array();
 $dataOrder = $this->data;
 $dataRow = $dataOrder['data'];
 $heading = $dataOrder['heading'];
 $link = $dataOrder['link'];
-$title = $dataOrder['title'];
+$title['title'] = $dataOrder['title'];
 $button = $this->printButton;
 $dataOrderDetail = $this->dataOrderDetail;
 $this->titleHelper($title);

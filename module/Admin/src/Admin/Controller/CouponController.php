@@ -61,7 +61,7 @@ class CouponController extends AdminGlobalController
         $this->tableAjaxRequest($table,$columns,$this->modelCoupon);
         //end config table
         return new ViewModel(array('table' => $table,
-            'title' => $this->translator->translate('Category')));
+            'title' => $this->translator->translate('Manage Coupon')));
     }
 
 

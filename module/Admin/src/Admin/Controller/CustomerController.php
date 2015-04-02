@@ -69,7 +69,7 @@ class CustomerController extends AdminGlobalController
         $this->tableAjaxRequest($table,$columns,$this->modelCustomer);
         //end config table
         return new ViewModel(array('table' => $table,
-            'title' => $this->translator->translate('Manager Customer')));
+            'title' => $this->translator->translate('Manage Customer')));
     }
 
     public function addAction()

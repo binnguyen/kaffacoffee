@@ -91,7 +91,7 @@ class OrderController extends AdminGlobalController
         $this->tableAjaxRequest($table,$columns,$this->modelOrder);
         //end config table
         return new ViewModel(array('table' => $table,
-            'title' => $this->translator->translate('Order')));
+            'title' => $this->translator->translate('Manage Order')));
     }
 
     public function addAction()

@@ -23,7 +23,7 @@ if ($data) {
     <div class="box-header blue-background">
         <div class="title">
             <div class="icon-edit"></div>
-            <?php echo $title; ?>
+            <?php echo $this->title; ?>
         </div>
         <div class="actions">
             <a href="#" class="btn box-remove btn-mini btn-link"><i class="icon-remove"></i>
@@ -146,6 +146,9 @@ if ($data) {
                             )
                         );
                         $currentTime = time();
+
+
+
                         foreach ($coupons as $coupon) {
                             $expride = '1';
 
@@ -159,6 +162,7 @@ if ($data) {
                             <?php
 
                             echo ' <option data-expride="0" value="-1" > ' . $translator->translate('Select coupon') . ' </option>';
+                            if(!empty($coupons)){
                             foreach ($coupons as $coupon) {
                                 $selected = '';
                                 if (($dataObject) && $dataObject->getCouponId() == $coupon->getId()) {
@@ -173,6 +177,7 @@ if ($data) {
                                 if ($coupon->getReuse() == 0)
                                     $name = $coupon->getCode();
                                 echo ' <option ' . $selected . ' data-reuse="' . $coupon->getReuse() . '" data-expride="' . $expride . '" data-coupon-desc="' . $coupon->getDescription() . '" data-coupon-type="' . $coupon->getType() . '" data-coupon-value="' . $coupon->getValue() . '" value="' . $coupon->getId() . '" >' . $name . '</option>';
+                                }
                             }
                             ?>
                         </select>
@@ -205,18 +210,21 @@ if ($data) {
                         <select name="surtax_id" id="surtax" class="input-block-level">
                             <option value="0" data-tax-value="0"
                                     data-tax-type="percent"> <?php echo $translator->translate('Select'); ?></option>
-                            <?php foreach ($surtax as $tax) {
-                                $selected = '';
-                                if (($dataObject) && $tax->getId() == $dataObject->getSurtaxId()) {
-                                    $selected = 'selected';
-                                }
+                            <?php if(!empty($surtax)){
+                                foreach ($surtax as $tax) {
+                                    $selected = '';
+                                    if (($dataObject) && $tax->getId() == $dataObject->getSurtaxId()) {
+                                        $selected = 'selected';
+                                    }
+
                                 ?>
                                 <option <?= $selected ?> data-tax-type="<?php echo $tax->getType(); ?>"
                                                          data-tax-value="<?php echo $tax->getValue(); ?>"
                                                          value="<?php echo $tax->getId(); ?>">
                                     <?php echo $tax->getName(); ?>
                                 </option>
-                            <?php } ?>
+                            <?php } }
+                            ?>
 
                         </select>
                     </div>
@@ -366,21 +374,23 @@ if ($data) {
                                                 <?php
 
                                                 echo ' <option data-expride="0" value="-1" > ' . $translator->translate('Select coupon') . ' </option>';
-                                                foreach ($coupons as $coupon) {
-                                                    $selected = '';
-                                                    if ($order->getDiscount() ==  $coupon->getId()  ) {
-                                                        $selected = 'selected';
-                                                    }
-                                                    $expride = '1';
+                                    if(!empty($coupons)) {
+                                        foreach ($coupons as $coupon) {
+                                            $selected = '';
+                                            if ($order->getDiscount() == $coupon->getId()) {
+                                                $selected = 'selected';
+                                            }
+                                            $expride = '1';
 
-                                                    if (time() >= $coupon->getFromdate() && time() <= $coupon->getTodate()) {
-                                                        $expride = '0';
-                                                    }
-                                                    $name = $coupon->getDescription();
-                                                    if ($coupon->getReuse() == 0)
-                                                        $name = $coupon->getCode();
-                                                    echo ' <option ' . $selected . ' data-reuse="' . $coupon->getReuse() . '" data-expride="' . $expride . '" data-coupon-desc="' . $coupon->getDescription() . '" data-coupon-type="' . $coupon->getType() . '" data-coupon-value="' . $coupon->getValue() . '" value="' . $coupon->getId() . '" >' . $name . '</option>';
-                                                }
+                                            if (time() >= $coupon->getFromdate() && time() <= $coupon->getTodate()) {
+                                                $expride = '0';
+                                            }
+                                            $name = $coupon->getDescription();
+                                            if ($coupon->getReuse() == 0)
+                                                $name = $coupon->getCode();
+                                            echo ' <option ' . $selected . ' data-reuse="' . $coupon->getReuse() . '" data-expride="' . $expride . '" data-coupon-desc="' . $coupon->getDescription() . '" data-coupon-type="' . $coupon->getType() . '" data-coupon-value="' . $coupon->getValue() . '" value="' . $coupon->getId() . '" >' . $name . '</option>';
+                                        }
+                                    }
                                                 ?>
                                             </select>
 
@@ -595,6 +605,7 @@ function addRowDetail() {
         '<?php
 
         echo ' <option data-expride="0" value="-1" > ' . $translator->translate('Select coupon') . ' </option>';
+         if(!empty($coupons)){
         foreach ($coupons as $coupon) {
             $selected = '';
             if (($dataObject) && $dataObject->getCouponId() == $coupon->getId()) {
@@ -609,7 +620,7 @@ function addRowDetail() {
             if ($coupon->getReuse() == 0)
                 $name = $coupon->getCode();
             echo ' <option ' . $selected . ' data-reuse="' . $coupon->getReuse() . '" data-expride="' . $expride . '" data-coupon-desc="' . $coupon->getDescription() . '" data-coupon-type="' . $coupon->getType() . '" data-coupon-value="' . $coupon->getValue() . '" value="' . $coupon->getId() . '" >' . $name . '</option>';
-        }
+        } }
         ?>'+
         '</select>'+
         '</td>' +
@@ -988,6 +999,7 @@ function renderRow(respone) {
     '<?php
 
         echo ' <option data-expride="0" value="-1" > ' . $translator->translate('Select coupon') . ' </option>';
+         if(!empty($coupons)){
         foreach ($coupons as $coupon) {
             $selected = '';
             if (($dataObject) && $dataObject->getCouponId() == $coupon->getId()) {
@@ -1002,6 +1014,7 @@ function renderRow(respone) {
             if ($coupon->getReuse() == 0)
                 $name = $coupon->getCode();
             echo ' <option ' . $selected . ' data-reuse="' . $coupon->getReuse() . '" data-expride="' . $expride . '" data-coupon-desc="' . $coupon->getDescription() . '" data-coupon-type="' . $coupon->getType() . '" data-coupon-value="' . $coupon->getValue() . '" value="' . $coupon->getId() . '" >' . $name . '</option>';
+        }
         }
         ?>'+
     '</select>'+

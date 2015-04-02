@@ -48,7 +48,7 @@ class TrackingToreController extends AdminGlobalController {
         $this->tableAjaxRequest($table,$columns,$this->modelTracking);
         //end config table
         return new ViewModel(array('table' => $table,
-            'title' => $this->translator->translate('User History')));
+            'title' => $this->translator->translate('Manage Tracking')));
     }
 
     public function addAction(){

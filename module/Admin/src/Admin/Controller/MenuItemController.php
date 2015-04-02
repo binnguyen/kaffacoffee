@@ -65,7 +65,7 @@ class MenuItemController extends AbstractActionController {
             ),
             'hideDetailButton' => 1
         );
-        return new ViewModel(array('data'=>$data,'title'=> $this->translator->translate('Table')));
+        return new ViewModel(array('data'=>$data,'title'=> $this->translator->translate('Manage Menu Item')));
     }
     public function addAction()
     {

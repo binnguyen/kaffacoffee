@@ -86,7 +86,7 @@ class IndexController extends AdminGlobalController
         $this->tableAjaxRequest($table,$columns,$this->modelMenu);
         //end config table
         return new ViewModel(array('table' => $table,
-            'title' => $this->translator->translate('Menu')));
+            'title' => $this->translator->translate('Manage Menu')));
 
     }
 

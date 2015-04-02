@@ -74,7 +74,7 @@ class PaymentCategoryController extends AdminGlobalController
         $this->tableAjaxRequest($table,$columns,$this->modelCategories);
         //end config table
         return new ViewModel(array('table' => $table,
-            'title' => $this->translator->translate('Payment category manage')));
+            'title' => $this->translator->translate('Manage Payment Category')));
 
     }
 
