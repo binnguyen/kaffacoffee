@@ -1274,6 +1274,59 @@ class Utility extends AbstractActionController
         return $string;
     }
 
+    public static  function getCategoryForSelect(){
+        $doctrineService = self::$servicelocator->get('doctrine');
+        $categoryModel = new categoryModel($doctrineService);
+        $cat = $categoryModel->findBy(array('isdelete'=>0));
+        $return = array();
+        foreach($cat as $item){
+            $return[$item->getId()] = $item->getName();
+        }
+        return $return;
+    }
+
+    public function getTableForSelect(){
+        $tables = self::getTables();
+        $arrayReturn = array();
+        foreach($tables as $table){
+            $arrayReturn[$table->getId()] = $table->getName();
+        }
+        return $arrayReturn;
+    }
+
+    public static function renderTableIcon($class,$status,$table,$showStatus=false){?>
+        <div class="span2 margin-top-10 <?= $class ?>" style="position: relative">
+            <div class="row row-cus">
+                <div class="span12 icon-content right-ico-ab">
+                    <div data-order-id="<?php echo $status['id'] ?>"
+                         class="muted cancel-order icon-remove align-right"></div>
+
+                </div>
+            </div>
+            <a href="<?= $status['link'] ?>" class="" style="text-decoration: none">
+                <div style="float: left;width: 81%; padding: 5px" class=" box-content box-statistic <?= $status['background'] ?>">
+                    <h3 class="title text-error"><?php echo $table->getName() ?></h3>
+                    <?php if($showStatus){ ?>
+                        <small ><?= $status['status'] ?></small>
+                    <?php } ?>
+                    <small class="pull-left"><?= $status['cost']  ?></small>
+                    <div class="text-error icon-inbox align-right"></div>
+                </div>
+            </a>
+
+        </div>
+    <?php
+    }
+
+    public static  function checkUserExist($userName){
+        $doctrineService = self::$servicelocator->get('doctrine');
+        $userModel = new userModel($doctrineService);
+        $user = $userModel->findOneBy(array('userName'=>$userName));
+        if($user)
+            return true;
+        return false;
+    }
+
 }
 
 

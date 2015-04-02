@@ -87,7 +87,9 @@ class IndexController extends AdminGlobalController
         //end config table
         return new ViewModel(array('table' => $table,
             'title' => $this->translator->translate('Menu')));
+
     }
+
 
     public function ajaxListAction()
     {
