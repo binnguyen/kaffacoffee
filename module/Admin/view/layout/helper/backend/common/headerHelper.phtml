@@ -4,12 +4,13 @@ $config = Velacolib\Utility\Utility::getConfig();
 
 ?>
 <header>
+    <div class="logo-header">
+        <a href="<?php //echo $this->url('admin') ?>"> <img src="<?php echo $this->basePath().$config['logo']; ?>" /> </a>
+    </div>
     <div class="navbar">
         <div class="navbar-inner">
             <div class="container-fluid">
-                <a style="padding: 0px; margin-right:0px " class="brand" href="/">
-                  <img src="<?php echo $config['logo']; ?>">
-                </a>
+
                 <a class="toggle-nav btn pull-left" style="margin-left: 10px" href="#">
                     <i class="icon-reorder"></i>
                 </a>
@@ -177,11 +178,6 @@ $config = Velacolib\Utility\Utility::getConfig();
                     <i class="icon-Plus"></i> <?php echo $translator->translate('Add new order') ?>
                 </a>
 
-                <form accept-charset="UTF-8" action="search_results.html" class="navbar-search pull-right hidden-phone" method="get">
-                    <div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="✓"></div>
-                    <button class="btn btn-link icon-search" name="button" type="submit"></button>
-
-                </form>
             </div>
         </div>
     </div>
