@@ -578,9 +578,9 @@ class Utility extends AbstractActionController
 
     public static function getSurTax()
     {
-//        $surTax = self::$servicelocator->get('doctrine');
-//        $surTax = new surTaxModel($surTax);
-//        return $surTax->findAll();
+        $surTax = self::$servicelocator->get('doctrine');
+        $surTax = new surTaxModel($surTax);
+        return $surTax->findAll();
     }
 
 
@@ -1325,6 +1325,44 @@ class Utility extends AbstractActionController
         if($user)
             return true;
         return false;
+    }
+
+
+    static function renderTableForAddOrder(){
+
+        $table = self::getTables();
+        $option = '';
+        if (isset ($_GET['tbl']) && $_GET['tbl'] != 0) {
+
+            $tbl = $_GET['tbl'];
+            foreach ($table as $itemTable) {
+
+                if($itemTable->getId() == $tbl){
+                    $selected="selected";
+                }else{
+                    $selected="";
+                }
+
+                $option .= '<option value="'.$itemTable->getId().'" '.$selected.' > '.$itemTable->getName() .'</option>';
+
+            }
+
+
+        }else{
+            foreach($table as $itemTable){
+                $status = self::getTableStatus($itemTable->getId());
+                if (strtolower($status['status']) == strtolower('Finish')) {
+                    $option .= ' <option value="' . $itemTable->getId() . '" >' . $itemTable->getName() . '</option>';
+
+                }
+            }
+
+
+        }
+        return $option;
+
+
+
     }
 
 }
