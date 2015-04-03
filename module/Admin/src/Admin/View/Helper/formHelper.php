@@ -16,6 +16,7 @@ use Zend\View\Helper\AbstractHelper;
 //config in module getViewHelperConfig
 class formHelper extends AbstractHelper {
     public function __invoke($form,$title = 'Form title') {
+        $titles = $title['title'];
         $form->prepare();
         $html1 = $this->view->form()->openTag($form) . PHP_EOL;
         $html1 .= $this->renderFieldsets($form->getFieldsets());
@@ -28,7 +29,7 @@ class formHelper extends AbstractHelper {
                     <div class="icon-edit">
 
 </div>
-                    '.$title.'
+                    '.$titles.'
                      </div>
                      <div></div>
                 <div class="actions">

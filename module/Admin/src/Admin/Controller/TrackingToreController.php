@@ -30,13 +30,21 @@ class TrackingToreController extends AdminGlobalController {
             array('title' =>'Name', 'db' => 'name', 'dt' => 1, 'search'=>false, 'type' => 'number' ),
             array('title' =>'Item Id', 'db' => 'supplierItemId', 'dt' => 2, 'search'=>false, 'type' => 'number' ),
 
-            array('title' =>'Item Name', 'db' => 'supplierItemName', 'dt' => 4, 'search'=>false, 'type' => 'number' ),
-            array('title' =>'Quantity', 'db' => 'quantity', 'dt' => 3, 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Item Name', 'db' => 'supplierItemName', 'dt' => 3, 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Quantity', 'db' => 'quantity', 'dt' => 4, 'search'=>false, 'type' => 'number' ),
             array('title' =>'Note', 'db' => 'note', 'dt' => 5, 'search'=>false, 'type' => 'number' ),
             array('title' =>'Time', 'db' => 'time', 'dt' => 6, 'search'=>false, 'type' => 'number',
                  'formatter'  => function($d,$row){
-                     return date('d-m-Y h:i:s',$d);
+                     return $d;
                  }
+            ),
+            array('title' =>'Action', 'db' => 'id', 'dt' => 7, 'search'=>false, 'type' => 'text',
+                'formatter'  => function($d,$row){
+                    $actionUrl = '/admin/tracking-tore';
+                    return '
+                        <a class="btn-xs action action-detail btn btn-success btn-default" href="'.$actionUrl.'/add/'.$d.'"><i class="icon-edit"></i></a>
+                    ';
+                }
             ),
 
         );
@@ -127,15 +135,18 @@ class TrackingToreController extends AdminGlobalController {
     public function deleteAction()
     {
         //get user by id
+        if($this->getRequest()->isPost()){
             $id = $this->params()->fromRoute('id');
-          //  $menu = $this->modelTracking->findOneBy(array('id' => $id));
-           // $menu->setIsdelete(1);
-          //  $this->modelTracking->edit($menu);
+             $menu = $this->modelTracking->findOneBy(array('id' => $id));
+            // $menu->setIsdelete(1);
+            //  $this->modelTracking->edit($menu);
             $this->modelTracking->delete(array('id'=>$id));
-            $this->flashMessenger()->addSuccessMessage('Delete success');
-            $this->redirect()->toRoute('admin/child',array(
-                'controller'=>'tracking-tore',
-                ));
+
+            echo 1;die;
+        }else{
+            echo 0;die;
+        }
+
 
     }
 } 
