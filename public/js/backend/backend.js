@@ -133,7 +133,7 @@ $(document).on('click','.split-order',function(){
            success : function (returnData) {
                //stuff
                var data = JSON.parse(returnData);
-               if(data.data != ''){
+               if(data.oldOrderId != ''){
                        $('#split-tbody').append(data.data);
                        $('#oldOrder').val(data.oldOrderId);
 

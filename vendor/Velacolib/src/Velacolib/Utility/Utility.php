@@ -213,6 +213,7 @@ class Utility extends AbstractActionController
 
     public static function addNewOrder($param, $request, $url = 'admin/child')
     {
+
         $tables = self::$servicelocator->get('doctrine');
         $table = new orderModel($tables);
         $orderItem = new orderdetailModel($tables);
@@ -234,19 +235,22 @@ class Utility extends AbstractActionController
         //insert
         if ($id == '') {
             if ($request->isPost()) {
-                if (!self::checkExistOrderDetail($param->fromPost())) {
-                    $param = '?error=1&message=1';
-                    $url = "http://" . $_SERVER['HTTP_HOST'] . '/frontend/order/add' . $param;
-                    header("Location:" . $url);
-                    exit();
-                }
+
+//                if (!self::checkExistOrderDetail($param->fromPost())) {
+//                    $param = '?error=1&message=1';
+//                    $url = "http://" . $_SERVER['HTTP_HOST'] . '/frontend/order/add' . $param;
+//                    header("Location:" . $url);
+//                    exit();
+//                }
                 //$detailRow = $param->fromPost('countChild');
+
+
                 $Auth_service = new AuthenticationService();
                 $auth = $Auth_service->getIdentity();
 
                 if ($auth->userId) {
                     $dataDetail = $param->fromPost('detail');
-                    $totalRealCost = self::roundCost($param->fromPost('total_real_cost'));
+                    $totalRealCost = ($param->fromPost('total_real_cost'));
 
                     $cat = new Orders();
                     $cat->setTotalCost($param->fromPost('total_cost'));
@@ -327,8 +331,8 @@ class Utility extends AbstractActionController
                 $dataDetail = $param->fromPost('detail');
                 $Auth_service = new AuthenticationService();
                 $auth = $Auth_service->getIdentity();
-                $totalRealCost = self::roundCost($param->fromPost('total_real_cost'));
-                $totalCost = self::roundCost($param->fromPost('total_cost'));
+                $totalRealCost = ($param->fromPost('total_real_cost'));
+                $totalCost = ($param->fromPost('total_cost'));
                 $tableId = $param->fromPost('table_id');
                 $cat->setTotalCost($totalCost);
                 $cat->setTableId($param->fromPost('table_id'));
@@ -1059,15 +1063,36 @@ class Utility extends AbstractActionController
         $couponDetail = $couponModel->findOneBy(array(
             'id' => $couponId
         ));
-        $newPrice = self::roundCost($price);
+        $newPrice = ($price);
         if (!empty($couponDetail)) {
             if ($couponDetail->getType() == 0) {
-                $newPrice = self::roundCost($price - $couponDetail->getValue());
+                $newPrice = ($price - $couponDetail->getValue());
             } elseif ($couponDetail->getType() == 1) {
-                $newPrice = self::roundCost($price - (($price * $couponDetail->getValue()) / 100));
+                $newPrice = ($price - (($price * $couponDetail->getValue()) / 100));
             }
         } elseif ($couponId == -1) {
-            $newPrice = self::roundCost($price);
+            $newPrice = ($price);
+        }
+        return $newPrice;
+
+    }
+
+    public static function getPriceUseSurtax($price = 0, $surtaxId = 0)
+    {
+        $doctrine = self::$servicelocator->get('doctrine');
+        $surtaxModel = new surTaxModel($doctrine);
+        $surtaxDetail = $surtaxModel->findOneBy(array(
+            'id' => $surtaxId
+        ));
+        $newPrice = ($price);
+        if (!empty($surtaxDetail)) {
+            if ($surtaxDetail->getType() == 'cash') {
+                $newPrice = ($price + $surtaxDetail->getValue());
+            } elseif ($surtaxDetail->getType() == 'percent') {
+                $newPrice = ($price + (($price * $surtaxDetail->getValue()) / 100));
+            }
+        } else {
+            $newPrice = ($price);
         }
         return $newPrice;
 

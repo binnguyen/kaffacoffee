@@ -275,6 +275,7 @@ class OrderController extends FrontEndController
                 'orderId' => $fromTable
             ));
 
+
             if (!empty($orderDetailModel) && $fromTable != $toOrderId) {
 
                 foreach ($orderDetailModel as $orderDetail) {
@@ -282,26 +283,41 @@ class OrderController extends FrontEndController
                     $this->modelOrderDetail->edit($orderDetail);
                 }
 
-
                 $orderFrom = $this->modelOrder->findOneBy(array(
                     'id' => $fromTable
                 ));
 
                 $totalCostFrom = $orderFrom->getTotalCost();
+
                 $totalRealCostFrom = $orderFrom->getTotalRealCost();
 
                 $orderTo = $this->modelOrder->findOneBy(array('id' => $toOrderId));
-                $orderTo->setTotalCost($orderTo->getTotalCost() + $totalCostFrom);
-                $orderTo->setTotalRealCost($orderTo->getTotalRealCost() + $totalRealCostFrom);
+
+                $finalTotalRealCost = $orderTo->getTotalCost() + $totalCostFrom;
+
+                $orderTo->setTotalCost($finalTotalRealCost);
+
+
+                $finalTotalRealCost = Utility::getPriceUseCoupon($finalTotalRealCost,$orderTo->getCouponId());
+
+                $finalTotalRealCost = Utility::getPriceUseSurtax($finalTotalRealCost,$orderTo->getSurtaxId());
+
+
+
+                $orderTo->setTotalRealCost($finalTotalRealCost);
 
                 $this->modelOrder->edit($orderTo);
 
                 $this->modelOrder->delete(array('id' => $fromTable));
+                $this->flashMessenger()->addSuccessMessage('Merge order success!');
+                return $this->redirect()->toRoute('frontend/child', array('controller' => 'order', 'action' => 'add'));
 
-
+            }else{
+                $this->flashMessenger()->addErrorMessage('Opp! Something Wrong, pls try again...');
+                return $this->redirect()->toRoute('frontend/child', array('controller' => 'order', 'action' => 'add'));
             }
-            $this->flashMessenger()->addSuccessMessage('Merge order success!');
-            return $this->redirect()->toRoute('frontend/child', array('controller' => 'order', 'action' => 'add'));
+
+
 
 
         }
@@ -349,12 +365,7 @@ class OrderController extends FrontEndController
                             <td>
                             <input type="text" name="data' . $orderDetail->getId() . '[qty]" class="input-small" />
                             </td>
-                            <td>
-                            <select name="data' . $orderDetail->getId() . '[newCoupon]">
-                            <option value="-1">Select...</option>
-                            '.$couponHtml.'
-                            </select>
-                            </td>
+
 
                     </tr>';
                 }
@@ -380,7 +391,8 @@ class OrderController extends FrontEndController
             $post = $this->params()->fromPost();
 
             $table = $post['table-new'];
-            $discount = $post['discount'];
+            $discount = -1;
+        //    $oldDiscount = $post['discount'];
             $oldOrder = $post['oldOrder'];
             unset($post['table-new']);
             unset($post['discount']);
@@ -400,6 +412,7 @@ class OrderController extends FrontEndController
                 $orderEntity->setSurtaxId(0);
                 $orderEntity->setIsdelete(0);
                 $orderEntity->setStatus($status);
+                $orderEntity->setNewDate(date('d-m-Y',time()));
                 $orderLastInsert = $this->modelOrder->insert($orderEntity);
                 $lastOrderId = $orderLastInsert->getId();
 
@@ -410,7 +423,7 @@ class OrderController extends FrontEndController
                 $newRealCost = 0;
 
                 foreach ($post as $order) {
-
+                    $order['newCoupon'] = -1;
                     $orderDetailId = $order['orderDetailId'];
 
                     $oldQty = $order['oldQty'];
@@ -495,10 +508,16 @@ class OrderController extends FrontEndController
                 $oldOrderModel =     $this->modelOrder->findOneBy(array(
                     'id'=>$oldOrder
                 ));
+                $oldTotalCost = $oldPrice;
+                $oldPrice = Utility::getPriceUseCoupon($oldPrice,$oldOrderModel->getCouponId());
+
+                $oldPrice = Utility::getPriceUseSurtax($oldPrice,$oldOrderModel->getSurtaxId());
+
+
 
                 $oldOrderModel->setTotalRealCost($oldPrice);
 
-                $oldOrderModel->setTotalCost($oldPrice);
+                $oldOrderModel->setTotalCost($oldTotalCost);
 
                 $this->modelOrder->edit($oldOrderModel);
 

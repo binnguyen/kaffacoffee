@@ -15,7 +15,7 @@ use Zend\View\Helper\AbstractHelper;
 //example helper
 //config in module getViewHelperConfig
 class formHelper extends AbstractHelper {
-    public function __invoke($form,$title = 'Form title') {
+    public function __invoke($form,$title =array()) {
         $titles = $title['title'];
         $form->prepare();
         $html1 = $this->view->form()->openTag($form) . PHP_EOL;

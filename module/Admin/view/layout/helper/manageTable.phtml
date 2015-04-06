@@ -218,7 +218,7 @@ $translator = \Velacolib\Utility\Utility::translate();
                             <th><?php echo  $translator->translate('Price'); ?></th>
                             <th><?php echo  $translator->translate('Quantity'); ?></th>
                             <th><?php echo  $translator->translate('Quantity split'); ?></th>
-                            <th><?php echo  $translator->translate('Discount'); ?></th>
+<!--                            <th>--><?php //echo  $translator->translate('Discount'); ?><!--</th>-->
                         </thead>
                         <tbody id="split-tbody">
 
@@ -246,24 +246,24 @@ $translator = \Velacolib\Utility\Utility::translate();
                             </td>
 
                         </tr>
-                        <tr>
-                            <td ><?php echo  $translator->translate('Discount'); ?></td>
-                            <td colspan="4">
-                                <?php
-                                $coupons = Velacolib\Utility\Utility::getCouponCheckExpire();
-
-                                    ?>
-                                    <select name="discount" class="input-small">
-                                        <option value="-1"><?php echo  $translator->translate('Select'); ?></option>
-                                        <?php  if (!empty($coupons)): ?>
-                                        <?php foreach ($coupons as $coupon) : ?>
-                                            <option value="<?= $coupon->getId(); ?>"><?= $coupon->getDescription(); ?></option>
-                                        <?php endforeach ?>
-                                        <?php endif ?>
-                                    </select>
-
-                            </td>
-                        </tr>
+<!--                        <tr>-->
+<!--                            <td >--><?php //echo  $translator->translate('Discount'); ?><!--</td>-->
+<!--                            <td colspan="4">-->
+<!--                                --><?php
+//                                $coupons = Velacolib\Utility\Utility::getCouponCheckExpire();
+//
+//                                    ?>
+<!--                                    <select name="discount" class="input-small">-->
+<!--                                        <option value="-1">--><?php //echo  $translator->translate('Select'); ?><!--</option>-->
+<!--                                        --><?php // if (!empty($coupons)): ?>
+<!--                                        --><?php //foreach ($coupons as $coupon) : ?>
+<!--                                            <option value="--><?php //echo  $coupon->getId(); ?><!--">--><?php //$coupon->getDescription(); ?><!--</option>-->
+<!--                                        --><?php //endforeach ?>
+<!--                                        --><?php //endif ?>
+<!--                                    </select>-->
+<!---->
+<!--                            </td>-->
+<!--                        </tr>-->
                            <input type="hidden" name="oldOrder" id="oldOrder" value="" />
                         </tfoot>
 
