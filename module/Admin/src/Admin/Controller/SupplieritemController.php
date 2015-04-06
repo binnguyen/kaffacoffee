@@ -110,7 +110,7 @@ class SupplieritemController  extends AdminGlobalController {
 
             return new ViewModel(array(
                 'data' =>$event,
-                'title' => $this->translator->translate('Add new supplier item'),
+                'title' => $this->translator->translate('Add New Supplier Item'),
                 'form' => $configForm
             ));
         }

@@ -173,7 +173,7 @@ class MenustoreController extends AdminGlobalController
 
             //insert new user
 
-            return new ViewModel(array('title' => $this->translator->translate('Add new menu store')));
+            return new ViewModel(array('title' => $this->translator->translate('Add New Menu Store')));
         } else {
             $menuStore = $this->menuStoreModel->findOneBy(array('id' => $id));
 

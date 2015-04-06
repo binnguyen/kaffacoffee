@@ -57,7 +57,9 @@ class IndexController extends AbstractActionController
                 //write config file
 
                 $connection = mysql_connect($data['host'],$data['username'],$data['password']);
-                if(!$connection){
+                $selectDB = mysql_select_db($data['dbname']);
+
+                if(!$connection || !$selectDB){
                     $this->flashMessenger()->addErrorMessage("Could not connect to mysql host. Wrong username or password, Please try again!");
                     return $this->redirect()->toRoute('install',array('controller'=>'install','action'=>'index'));
                 }else{
@@ -67,19 +69,24 @@ class IndexController extends AbstractActionController
                     if($result == true)
                     {
                         $this->flashMessenger()->addSuccessMessage("Config file created");
+                        return $this->redirect()->toRoute('install',array('controller'=>'install','action'=>'installstep2'));
                     }
                     else{
-                        $this->flashMessenger()->addErrorMessage("Config file existed");
+                        $this->flashMessenger()->addErrorMessage("Could not connect to mysql host. Wrong DatabaseName, Please try again!");
+                        // return $this->redirect()->toRoute('install',array('controller'=>'install','action'=>'index'));
                     }
                     //finish create config file
-                    return $this->redirect()->toRoute('install',array('controller'=>'install','action'=>'installstep2'));
+
                 }
 
 
             }
         }
         return new ViewModel(
-            array( 'title' => $this->translator->translate('Install'),
+            array(
+                'title' => array(
+                    'title'=>$this->translator->translate('Install')
+                ),
                 'form' => $installForm,
                 'writeable' => $writeables)
         );
@@ -112,7 +119,9 @@ class IndexController extends AbstractActionController
             }
         }
         return  new ViewModel(
-            array( 'title' => $this->translator->translate('Install Step 2'),
+            array(  'title' => array(
+                'title'=>$this->translator->translate('Install Step 2')
+            ),
                 'form' => $installForm2));
     }
     public function installstep3Action(){
@@ -131,8 +140,10 @@ class IndexController extends AbstractActionController
             return $this->redirect()->toRoute('frontend/child',array('controller'=>'login'));
         }
         return  new ViewModel(
-            array( 'title' => $this->translator->translate('Install Step 3'),
-             'form' =>$installForm3  ));
+            array(  'title' => array(
+                'title'=>$this->translator->translate('Install Step 3')
+            ),
+                'form' =>$installForm3  ));
     }
 
     public function testAction(){}

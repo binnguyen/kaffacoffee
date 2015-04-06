@@ -88,7 +88,7 @@ class TableController extends AdminGlobalController
             }
             //insert new user
             //$this->redirect()->toRoute('admin/child',array('controller'=>'table'));
-            return new ViewModel(array('title'=>$this->translator->translate('Add new table')));
+            return new ViewModel(array('title'=>$this->translator->translate('Add New Table')));
         }
         else{
 
@@ -100,7 +100,7 @@ class TableController extends AdminGlobalController
                 $this->modelTable->edit($table);
 
                 //flash
-                $this->flashMessenger()->addSuccessMessage("Update success");
+                $this->flashMessenger()->addSuccessMessage("Update Success");
                 $this->redirect()->toRoute('admin/child',array('controller'=>'table'));
             }
             return new ViewModel(array(

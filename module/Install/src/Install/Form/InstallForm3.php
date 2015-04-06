@@ -17,7 +17,7 @@ class InstallForm3 extends Form{
 
         parent::__construct('installstep3');
         $this->setAttribute('method', 'post');
-        $this->setAttribute('class', 'form-horizontal');
+        $this->setAttribute('class', 'form-horizontal cutom-form');
         $this->setAttribute('enctype', 'multipart/form-data');
         $this->setAttribute('action', '/install/installstep3');
         $this->prepareElements();

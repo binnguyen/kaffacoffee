@@ -125,7 +125,7 @@ class SupController extends AdminGlobalController
 
             return new ViewModel(array(
                 'data' =>$event,
-                'title' => $this->translator->translate('Add new supplier'),
+                'title' => $this->translator->translate('Add New Supplier'),
                 'form' => $configForm
             ));
         }

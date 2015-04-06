@@ -35,8 +35,8 @@ class CouponController extends AdminGlobalController
             array('title' =>'Code', 'db' => 'code','dt' => 1, 'search'=>true, 'type' => 'text' ),
             array('title' =>'Value', 'db' => 'value','dt' => 2, 'search'=>true, 'type' => 'text' ),
             array('title' =>'Type', 'db' => 'type','dt' => 3, 'search'=>true, 'type' => 'text',   'dataSelect' => Utility::getCouponType() ),
-            array('title' =>'From date', 'db' => 'fromdate','dt' => 4, 'search'=>true, 'type' => 'text' ),
-            array('title' =>'To date', 'db' => 'todate','dt' => 5, 'search'=>true, 'type' => 'text' ),
+            array('title' =>'From Date', 'db' => 'fromdate','dt' => 4, 'search'=>true, 'type' => 'text' ),
+            array('title' =>'To Date', 'db' => 'todate','dt' => 5, 'search'=>true, 'type' => 'text' ),
             array('title' =>'Action', 'db' => 'id','dt' => 6, 'search'=>false, 'type' => 'number',
                 'formatter' => function( $d, $row ) {
                     $actionUrl = '/admin/coupon';
@@ -92,7 +92,7 @@ class CouponController extends AdminGlobalController
             }
             //insert new user
 
-            return new ViewModel(array('title'=> $this->translator->translate('Add new coupon')));
+            return new ViewModel(array('title'=> $this->translator->translate('Add New Coupon')));
         }
         else{
 

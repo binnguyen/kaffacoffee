@@ -17,7 +17,7 @@ class InstallForm2 extends Form{
 
         parent::__construct('installstep2');
         $this->setAttribute('method', 'post');
-        $this->setAttribute('class', 'form-horizontal');
+        $this->setAttribute('class', 'form-horizontal cutom-form');
         $this->setAttribute('enctype', 'multipart/form-data');
         $this->setAttribute('action', '/install/installstep2');
         $this->prepareElements();
@@ -33,7 +33,7 @@ class InstallForm2 extends Form{
         $this->add(array(
             'name' => 'adminName',
             'options' => array(
-                'label' => 'Admin name'
+                'label' => 'Username'
             ),
             'attributes' => array(
                 'type'  => 'text',
@@ -44,10 +44,10 @@ class InstallForm2 extends Form{
         $this->add(array(
             'name' => 'adminPassword1',
             'options' => array(
-                'label' => 'Admin Password'
+                'label' => 'Password'
             ),
             'attributes' => array(
-                'type'  => 'text',
+                'type'  => 'password',
                 'class'=>'input-xlarge span12'
             ),
         ));
@@ -55,10 +55,10 @@ class InstallForm2 extends Form{
         $this->add(array(
             'name' => 'adminPassword2',
             'options' => array(
-                'label' => 'Confirm your password'
+                'label' => 'Confirm Password'
             ),
             'attributes' => array(
-                'type'  => 'text',
+                'type'  => 'password',
                 'class'=>'input-xlarge span12'
             ),
         ));
