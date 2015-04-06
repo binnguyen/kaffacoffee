@@ -231,24 +231,264 @@ table tr td{
     margin-left: 0px !important;
 }
 .actions-button {
-    position: absolute;
-    top: 120px;
+    /*position: absolute;*/
+    top: 90px;
     right: 20px;
 }
-#listing_processing {
+.cpr{
+    padding-bottom: 10px;
+    float: left;
+    width: 100%;
     text-align: center;
-    position: absolute;
-    top: 50%;
+    border-top: 1px solid #dddddd;
+
+    bottom: 0px;
+    padding-top: 10px;
+    font-size: 13px;
 }
-.column_filter{
-    width: 150px !important;
+
+.table_footer {
+    float: left;
+    width: 100%;
+    text-align: right;
 }
-h1, h2, h3, h4, h5, h6{
-    font-family: "Arial,sans-serif", Tahoma, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+
+/*.form-horizontal .control-label,.form-horizontal .controls{*/
+    /*float: left;*/
+    /* width: 100%; */
+    /*text-align: left;*/
+    /*margin-left: 0px;*/
+/*}*/
+/*.form-horizontal .control-label {*/
+    /*float: left;*/
+    /*min-width: 20px;*/
+    /*width: auto;*/
+    /*margin-right: 15px;*/
+    /*padding-top: 5px;*/
+    /*text-align: left;*/
+    /*font-weight: bold;*/
+/*}*/
+#totalOrderCost, #totalRealOrderCost{
+    font-weight: bold;
 }
-input.column_filter {
-    max-width: 100px;
+.min-wdth-150{
+    min-width: 150px;
+}
+.cutom-form .form-label,
+.cutom-form .input-xlarge {
+    float: left;
+    width: 29%;
+    margin-right: 1%;
+}
+.cutom-form .input-xlarge{
+    width: 69%;
+    margin-left: 1%;
+    margin-right: 0%;
+}
+.install-logo,.install-footer{
+    float: left;
+    width: 100%;
+    text-align: center;
+    background: white;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-top: 20px;
+}
+.install-footer{
+    background: none;
+}
+.install-footer p{
+    color: #DADADA;
+}
+.custom .alert{
+    width: 89.5%;
+    margin-bottom: 0px;
+    float: left;
+}
+body.sign-in #wrapper .controls .form-wrapper.custom{
+    width: 480px;
+}
+.no-margin{
+    margin: 0px!important;
+}
+.float-right{
+    float: right!important;
+    width: auto !important;
+}
+.form-horizontal .control-group {
+    margin-bottom: 5px;
+}
+.box {
+    margin-bottom: 10px;
+    position: relative;
+}
+.right-ico-ab{
+    position: absolute!important;
+    right: 7px;
+    top: -22px;
+}
+.margin-top-10{
+    margin-top: 10px!important;
 }
 .table-responsive{
     overflow-x: auto;
+}
+.contrast-red header .navbar .navbar-inner{
+
+    background: url("../img/icon-inner/header-repeat.jpg") repeat-x !important;
+    height: 40px;
+
+}
+.icon-menu{
+    background: url("../img/icon-inner/icon-menu.jpg") no-repeat;
+    height: 29px;
+    width: 29px!important;
+    margin-bottom: -5px;
+    border-radius: 4px;
+}
+
+.icon-tables{
+    background: url("../img/icon-inner/icon-table.png") no-repeat;
+    height: 29px;
+    width: 29px!important;
+    margin-bottom: -5px;
+    border-radius: 4px;
+}
+
+.icon-order{
+    background: url("../img/icon-inner/icon-order.png") no-repeat;
+    height: 29px;
+    width: 29px!important;
+    margin-bottom: -5px;
+    border-radius: 4px;
+}
+.icon-customer{
+    background: url("../img/icon-inner/icon-customer.png") no-repeat;
+    height: 29px;
+    width: 29px!important;
+    margin-bottom: -5px;
+    border-radius: 4px;
+}
+
+.icon-coupon{
+    background: url("../img/icon-inner/icon-coupon.png") no-repeat;
+    height: 29px;
+    width: 29px!important;
+    margin-bottom: -5px;
+    border-radius: 4px;
+}
+
+.icon-report{
+    background: url("../img/icon-inner/icon-report.png") no-repeat;
+    height: 29px;
+    width: 29px!important;
+    margin-bottom: -5px;
+    border-radius: 4px;
+}
+
+
+.icon-config{
+    background: url("../img/icon-inner/icon-config.png") no-repeat;
+    height: 29px;
+    width: 29px!important;
+    margin-bottom: -5px;
+    border-radius: 4px;
+}
+.icon-menustore{
+    background: url("../img/icon-inner/icon-config.png") no-repeat;
+    height: 29px;
+    width: 29px!important;
+    margin-bottom: -5px;
+    border-radius: 4px;
+}
+.icon-supplier{
+    background: url("../img/icon-inner/icon-config.png") no-repeat;
+    height: 29px;
+    width: 29px!important;
+    margin-bottom: -5px;
+    border-radius: 4px;
+}
+.icon-combo{
+    background: url("../img/icon-inner/icon-config.png") no-repeat;
+    height: 29px;
+    width: 29px!important;
+    margin-bottom: -5px;
+    border-radius: 4px;
+}
+.icon-users{
+    background: url("../img/icon-inner/icon-config.png") no-repeat;
+    height: 29px;
+    width: 29px!important;
+    margin-bottom: -5px;
+    border-radius: 4px;
+}
+
+.icon-surtax{
+    background: url("../img/icon-inner/icon-config.png") no-repeat;
+    height: 29px;
+    width: 29px!important;
+    margin-bottom: -5px;
+    border-radius: 4px;
+}
+
+.icon-accrued{
+    background: url("../img/icon-inner/icon-config.png") no-repeat;
+    height: 29px;
+    width: 29px!important;
+    margin-bottom: -5px;
+    border-radius: 4px;
+}
+
+.icon-property{
+    background: url("../img/icon-inner/icon-config.png") no-repeat;
+    height: 29px;
+    width: 29px!important;
+    margin-bottom: -5px;
+    border-radius: 4px;
+}
+.icon-tracking{
+    background: url("../img/icon-inner/icon-config.png") no-repeat;
+    height: 29px;
+    width: 29px!important;
+    margin-bottom: -5px;
+    border-radius: 4px;
+}
+.icon-history{
+    background: url("../img/icon-inner/icon-config.png") no-repeat;
+    height: 29px;
+    width: 29px!important;
+    margin-bottom: -5px;
+    border-radius: 4px;
+}
+
+.logo-header{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 238px;
+}
+
+@media screen and (min-width: 768px){
+    .logo-header img{
+        position: absolute;
+        z-index: 999;
+        width: 300px;
+    }
+    #main-nav{
+        margin-top: 100px;
+    }
+    .toggle-nav{
+        display: none;
+    }
+}
+@media screen and (max-width: 768px){
+    .logo-header{
+        display: none;
+    }
+    .logo-header img{
+        display: none;
+    }
+    .toggle-nav{
+        display: block;
+    }
 }

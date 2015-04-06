@@ -22,10 +22,10 @@ class IndexController extends FrontEndController
     protected   $modelCombo;
     protected   $translator;
     public function init(){
-
+        parent::init();
         $this->modelMenu = new menuModel($this->doctrineService);
         $this->translator = Utility::translate();
-        parent::init();
+
     }
 
     public function indexAction()
@@ -42,17 +42,18 @@ class IndexController extends FrontEndController
         );
 
         /////end column for table
-        $table = new AjaxTable($columns, array(), 'admin/index');
+        $table = new AjaxTable($columns, array(), 'frontend/index');
         $table->setTablePrefix('m');
         $table->setExtendSQl(array(
             array('AND','m.isdelete','=','0'),
         ));
-        $table->setAjaxCall('/admin/index');
+        $table->setAjaxCall('/frontend/index');
         $table->setActionDeleteAll('deleteall');
         $this->tableAjaxRequest($table,$columns,$this->modelMenu);
         //end config table
         return new ViewModel(array('table' => $table,
             'title' => $this->translator->translate('Menu')));
+
     }
 
     public function detailAction(){

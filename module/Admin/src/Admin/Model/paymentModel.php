@@ -42,15 +42,21 @@ class paymentModel extends globalModel {
         return $array;
     }
     public function convertSingleToArray($user){
+
         $paymentCategory = Utility::getPaymentCateInfo($user->getCategoryId());
+
+
+        $date = $user->getTime();
+        ( $date == '') ? $time = time() : $time = $date;
         $array = array();
         $array['id'] = $user->getId();
         $array['title'] = $user->getTitle();
         $array['value'] = number_format($user->getValue());
         $array['reason'] = $user->getReason();
-        $array['time'] =  date("m-d-Y",$user->getTime());
-        $array['category'] = $user->getCategoryId();
+        $array['time'] =  date('d-m-Y', $time );
+        $array['categoryId'] = $user->getCategoryId();
         return $array;
+
     }
 
     public function createQuery($strQuery){
@@ -64,6 +70,7 @@ class paymentModel extends globalModel {
         return $rs;
 
     }
+
 
     public function createQueryToArray($strQuery){
 

@@ -1,6 +1,8 @@
 <?php
 $data = $this->data;
-$title = $this->title;
 $table = $this->table;
+$title = array();
+$title['title'] = $this->title;
+$title['link'] =   $this->url('admin/child', array('controller'=>'surtax','action' => 'add'));
 $this->titleHelper($title);
 $table->render();

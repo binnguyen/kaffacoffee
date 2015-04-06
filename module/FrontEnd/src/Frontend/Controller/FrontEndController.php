@@ -12,7 +12,7 @@ use Velacolib\Utility\Utility;
 use Zend\View\Model\ViewModel;
 use Zend\Mvc\Controller\AbstractActionController;
 
-class FrontEndController extends AbstractActionController{
+abstract class FrontEndController extends AbstractActionController{
     protected $translator;
     protected  $serviceLocatorStr;
     protected  $doctrineService;
@@ -20,10 +20,11 @@ class FrontEndController extends AbstractActionController{
     //not edit ini onDispatch
     public function onDispatch(\Zend\Mvc\MvcEvent $e)
     {
-        $install = setupUtility::checkInstall();
-        if($install == true){
-            return $this->redirect()->toRoute('install');
-        }
+
+//        $install = setupUtility::checkInstall();
+//        if($install == true){
+//            return $this->redirect()->toRoute('install');
+//        }
 
         //get doctrine service
         $this->serviceLocatorStr = 'doctrine';
@@ -48,6 +49,7 @@ class FrontEndController extends AbstractActionController{
         //end acl
 
         $this->init();
+
         return parent::onDispatch($e);
     }
 

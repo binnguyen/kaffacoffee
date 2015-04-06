@@ -1,5 +1,6 @@
 <?php
-$title = $this->title;
+$title = array();
+$title['title'] = $this->title;
 $this->titleHelper($title);
 $data = $this->data;
 $orderDetails = $this->orderDetails;
@@ -10,7 +11,7 @@ $this->manageTableHelper(array(
 ));
 $this->addorderHelper(array(
     'data'=>$data,
-    'title'=>$title ,
+    'title'=>$this->title ,
     'orderDetails'=>$orderDetails,
     'dataObject'=>$dataObject,
 ));

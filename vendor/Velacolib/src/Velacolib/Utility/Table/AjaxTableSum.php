@@ -8,7 +8,8 @@
 namespace Velacolib\Utility\Table;
 
 
-use ZFTool\Model\Utility;
+use Velacolib\Utility\Utility;
+
 
 class AjaxTableSum extends AjaxTable{
 
@@ -50,7 +51,7 @@ class AjaxTableSum extends AjaxTable{
 
 
     public function __construct(){
-        $config = \Velacolib\Utility\Utility::getConfig();
+        $config = Utility::getConfig();
         $this->sumOption =  array(
             'option' =>
                 array(

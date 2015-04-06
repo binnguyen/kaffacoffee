@@ -6,14 +6,17 @@
  * Time: 1:17 PM
  */
 namespace Frontend\Controller;
-
 use Admin\Model\transactionModel;
 use Velacolib\Utility\Table\AjaxTableSum;
 use Velacolib\Utility\Utility;
-use Admin\Entity\OrderDetail;
-use Admin\Entity\Orders;
-use Admin\Entity\Table;
+use Velacolib\Utility\Table;
 use Velacolib\Utility\Table\AjaxTable;
+use Velacolib\Utility\Table\Detail;
+
+use Admin\Entity\OrderDetail;
+
+use Admin\Entity\Orders;
+use Admin\Entity\Managetable;
 use Admin\Model\orderdetailModel;
 use Admin\Model\orderModel;
 use Zend\View\Model\ViewModel;
@@ -32,7 +35,7 @@ class OrderController extends FrontEndController
 
     public function init()
     {
-
+        parent::init();
         $this->modelOrder = new orderModel($this->doctrineService);
         $this->modelOrderDetail = new orderdetailModel($this->doctrineService);
 

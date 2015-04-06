@@ -54,7 +54,7 @@ class HistoryController extends AdminGlobalController
         $this->tableAjaxRequest($table,$columns,$this->modelHistory);
         //end config table
         return new ViewModel(array('table' => $table,
-            'title' => $this->translator->translate('User History')));
+            'title' => $this->translator->translate('Manage User History')));
 
     }
     public function addAction()

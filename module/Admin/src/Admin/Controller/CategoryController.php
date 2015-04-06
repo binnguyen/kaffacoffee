@@ -62,7 +62,7 @@ class CategoryController extends AdminGlobalController
         $this->tableAjaxRequest($table,$columns,$this->catModel);
         //end config table
         return new ViewModel(array('table' => $table,
-            'title' => $this->translator->translate('Category'))
+            'title' => $this->translator->translate('Manage Menu Category'))
         );
     }
 

@@ -41,12 +41,15 @@ class CustomerController extends AdminGlobalController
             array('title' =>'Email', 'db' => 'email','dt' => 6, 'search'=>true, 'type' => 'text' ),
             array('title' =>'Address', 'db' => 'address','dt' => 7, 'search'=>true, 'type' => 'text' ),
             array('title' =>'Birthday', 'db' => 'birthday','dt' => 8, 'search'=>true, 'type' => 'text' ),
-            array('title' =>'Avatar', 'db' => 'avatar','dt' => 9, 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Avatar', 'db' => 'avatar','dt' => 9, 'search'=>true, 'type' => 'text',
+                'formatter' =>function($d,$row){
+                $image = '<img src="'.$d.'" width="50" />';
+                    return $image;
+            } ),
             array('title' =>'Action', 'db' => 'id','dt' => 10, 'search'=>false, 'type' => 'number',
                 'formatter' => function( $d, $row ) {
                     $actionUrl = '/admin/customer';
                     return '
-
                         <a class="btn-xs action action-detail btn btn-success btn-default" href="'.$actionUrl.'/add/'.$d.'"><i class="icon-edit"></i></a>
                         <a class="btn-xs action action-detail btn btn-danger  " href="'.$actionUrl.'/delete/'.$d.'"><i class="icon-remove"></i></a>
                     ';
@@ -66,7 +69,7 @@ class CustomerController extends AdminGlobalController
         $this->tableAjaxRequest($table,$columns,$this->modelCustomer);
         //end config table
         return new ViewModel(array('table' => $table,
-            'title' => $this->translator->translate('Manager Customer')));
+            'title' => $this->translator->translate('Manage Customer')));
     }
 
     public function addAction()

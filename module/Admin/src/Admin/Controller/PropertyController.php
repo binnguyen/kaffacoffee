@@ -33,9 +33,16 @@ class PropertyController extends AdminGlobalController
         $columns = array(
             array('title' =>'Id', 'db' => 'id', 'dt' => 0, 'search'=>false, 'type' => 'number' ),
             array('title' =>'Name', 'db' => 'name', 'dt' => 1, 'search'=>false, 'type' => 'text' ),
-            array('title' =>'Quantity', 'db' => 'quantity', 'dt' => 1, 'search'=>false, 'type' => 'number' ),
-            array('title' =>'Unit', 'db' => 'unit', 'dt' => 1, 'search'=>false, 'type' => 'text' ),
-            array('title' =>'Description', 'db' => 'des', 'dt' => 1, 'search'=>false, 'type' => 'text' ),
+            array('title' =>'Quantity', 'db' => 'quantity', 'dt' => 2, 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Unit', 'db' => 'unit', 'dt' => 3, 'search'=>false, 'type' => 'text' ),
+            array('title' =>'Description', 'db' => 'des', 'dt' => 4, 'search'=>false, 'type' => 'text' ),
+            array('title' =>'Action', 'db' => 'id', 'dt' => 5, 'search'=>false, 'type' => 'text','formatter'=>function($d,$row){
+                $actionUrl = '/admin/property';
+                return '
+                        <a class="btn-xs action action-detail btn btn-success btn-default" href="'.$actionUrl.'/add/'.$d.'"><i class="icon-edit"></i></a>
+                        <a data-id="'.$d.'" id="'.$d.'" data-link="'.$actionUrl.'" class="btn-xs action action-detail btn btn-danger  btn-delete " href="javascript:void(0)"><i class="icon-remove"></i></a>
+                    ';
+            } ),
         );
 
         /////end column for table
@@ -45,7 +52,7 @@ class PropertyController extends AdminGlobalController
         $this->tableAjaxRequest($table,$columns,$this->modelProperty);
         //end config table
         return new ViewModel(array('table' => $table,
-            'title' => $this->translator->translate('User History')));
+            'title' => $this->translator->translate('Manage Property')));
     }
     public function addAction()
     {
@@ -113,9 +120,9 @@ class PropertyController extends AdminGlobalController
         $request = $this->getRequest();
         if($request->isPost()){
             $id = $this->params()->fromPost('id');
-            $combo = $this->modelCombo->findOneBy(array('id'=>$id));
-            $combo->setIsdelete(1);
-            $this->modelCombo->edit($combo);
+            $combo = $this->modelProperty->delete(array('id'=>$id));
+//            $combo->setIsdelete(1);
+//            $this->modelProperty->edit($combo);
             //$this->model->delete(array('id'=>$id));
             echo 1;
         }

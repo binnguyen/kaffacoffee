@@ -8,6 +8,7 @@ $config = \Velacolib\Utility\Utility::getConfig();
 $orderDetails = $this->orderDetails;
 $dataObject = $this->dataObject;
 
+
 ?>
 <?php
 $url = $this->url($urlRoute, array('controller' => 'order', 'action' => 'add'));
@@ -17,458 +18,484 @@ if ($data) {
 
 ?>
 <div class="row-fluid">
-<form accept-charset="UTF-8" action="<?= $url ?>" class="form form-horizontal" method="post"
-      style="margin-bottom: 0;">
-<div class="span4 box">
-    <div class="box-header blue-background">
-        <div class="title">
-            <div class="icon-edit"></div>
-            <?php echo $title; ?>
-        </div>
-        <div class="actions">
-            <a href="#" class="btn box-remove btn-mini btn-link"><i class="icon-remove"></i>
-            </a>
-            <a href="#" class="btn box-collapse btn-mini btn-link"><i></i>
-            </a>
-        </div>
-    </div>
-    <div class="box-content">
-        <input type="hidden" name="id" value="<?php if ($data) {
-            echo $data['id'];
-        } ?>">
-
+    <form accept-charset="UTF-8" action="<?= $url ?>" id="order-form" class="form form-horizontal" method="post"
+          style="margin-bottom: 0;">
+        <!--total -->
         <div class="control-group">
-            <label class="control-label" id=""
-                   for="inputText1"><?php echo $translator->translate('Total cost'); ?></label>
+            <div class="row">
 
-            <div class="controls">
-                <input class="input-block-level" name="" id="totalOrderCost" placeholder="Cost" name="cost" disabled
-                       type="text" value="<?php if ($data) {
-                    echo $data['totalCost'];
-                } ?>">
+                <div class="">
+                    <input type="hidden" name="id" value="<?php if ($data) {
+                        echo $data['id'];
+                    } ?>">
+                    <!---Table --->
+                    <div class="control-group span3 no-margin">
+                        <label class="control-label"><?php echo $translator->translate('Table'); ?></label>
 
-                <input class="input-block-level" name="total_cost" id="totalOrderCostHide" placeholder="Cost"
-                       name="cost" type="hidden" value="<?php if ($data) {
-                    echo $data['totalCost'];
-                } ?>">
+                        <div class="controls min-wdth-150">
+                            <div class="row-fluid">
+                                <div class="span8">
+                                    <?php
+                                    /// $tables = Velacolib\Utility\Utility::getTables();
+                                    //
+
+                                    ?>
+                                    <select class="select2-icon input-block-level" name="table_id" id="inputSelect">
+
+                                        <?php
+
+                                        $table = \Velacolib\Utility\Utility::renderTableForAddOrder();
+                                        echo $table;
+
+                                        //                                    foreach ($tables as $table) {
+                                        //                                        $selected = '';
+                                        //                                        $tableID = $table->getId();
+                                        //                                        if ($data) {
+                                        //
+                                        //                                            if ($tableID == $dataObject->getTableId()) {
+                                        //                                                $selected = 'selected';
+                                        //                                            } elseif (isset($_GET['tbl']) && $_GET['tbl'] != 0) {
+                                        //                                                $tbl = $_GET['tbl'];
+                                        //                                                $tbl == $tableID ? $selected = 'selected' : $selected = '';
+                                        //                                            }
+                                        //
+                                        //
+                                        //                                        } else {
+                                        //                                            if (isset($_GET['tbl']) && $_GET['tbl'] != 0) {
+                                        //                                                $tbl = $_GET['tbl'];
+                                        //                                                $tbl == $tableID ? $selected = 'selected' : $selected = '';
+                                        //                                            }
+                                        //                                        }
+                                        //                                        $status = Velacolib\Utility\Utility::getTableStatus($table->getId());
+                                        //                                        if (strtolower($status['status']) == strtolower('Finish')) {
+                                        //
+                                        //                                            echo ' <option value="' . $table->getId() . '"' . $selected . ' >' . $table->getName() . '</option>';
+                                        //                                        }
+                                        //                                    }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!---create date --->
+                    <div class="control-group span5 no-margin">
+                        <label class="control-label"
+                               for="inputTextArea1"><?php echo $translator->translate('Create date'); ?></label>
+
+                        <div class="controls">
+                            <input name="create_date" class="date-picker input-block-level" disabled type="text"
+                                   value="<?php if ($data) {
+                                       echo $data['createDate'];
+                                   } else {
+                                       echo date('d:m:Y', time());
+                                   } ?>">
+                        </div>
+                    </div>
+
+                    <div class="control-group span4 no-margin" style="">
+                        <label class="control-label"><?php echo $translator->translate('Surtax'); ?></label>
+
+                        <div class="controls">
+                            <div class="row-fluid">
+                                <div class="span8">
+                                    <?php
+                                    $surtax = Velacolib\Utility\Utility::getSurTax();
+
+                                    ?>
+                                    <select name="surtax_id" id="surtax" class="input-block-level">
+                                        <option value="0" data-tax-value="0"
+                                                data-tax-type="percent"> <?php echo $translator->translate('Select'); ?></option>
+                                        <?php foreach ($surtax as $tax) {
+                                            $selected = '';
+                                            if (($dataObject) && $tax->getId() == $dataObject->getSurtaxId()) {
+                                                $selected = 'selected';
+                                            }
+                                            ?>
+                                            <option <?= $selected ?> data-tax-type="<?php echo $tax->getType(); ?>"
+                                                                     data-tax-value="<?php echo $tax->getValue(); ?>"
+                                                                     value="<?php echo $tax->getId(); ?>">
+                                                <?php echo $tax->getName(); ?>
+                                            </option>
+                                        <?php } ?>
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control-group  no-margin">
+                        <label></label>
+
+                        <div class="controls">
+                            <label class="text-red" id="applyCouponText"></label>
+
+                            <p class="text-green" id="applyCouponDesc"></p>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
-
+        <!--end total -->
+        <!-- detail -->
         <div class="control-group">
-            <label class="control-label" id=""
-                   for="inputText1"><?php echo $translator->translate('Total real cost'); ?></label>
+            <div class="span12 box ">
+                <div class="">
+                    <div class="" style="margin-bottom:0;">
+                        <div class="box-header blue-background">
+                            <div class="title"><p><?php echo $translator->translate('Order Details'); ?></p></div>
+                            <!--action buttons -->
+                            <div class="actions-button pull-right">
+                                <button class="btn btn-success  btn-default check-add-order" id="save-order  " type="submit" name="save" value="save">
+                                    <i class="icon-save"></i>
+                                    <?php echo $translator->translate('Save'); ?>
+                                </button>
 
-            <div class="controls">
-                <input class="input-block-level" name="" id="totalRealOrderCost" placeholder="Cost" name="cost" disabled
-                       type="text" value="<?php if ($data) {
-                    echo $data['totalRealCost'];
-                } ?>">
+                                <!--    <button class="btn" type="submit"> <i class="icon-backward"></i> -->
+                                <?php //echo $translator->translate('Cancel'); ?><!--</button>-->
+                                <button class="btn btn-danger confirmF btn-save-order check-add-order" id="payment-order" type="submit" name="save" value="payment">
+                                    <i class="icon-print"></i>
+                                    <?php echo $translator->translate('payment'); ?>
+                                </button>
+                            </div>
+                            <!--end action buttons -->
+                        </div>
+                        <div class="box-content box-no-padding">
+                            <div class="responsive-table">
+                                <div class="scrollable-area">
+                                    <table class="table" style="margin-bottom:0;">
+                                        <thead>
+                                        <tr>
+                                            <th>
+                                                <?php echo $translator->translate('Menu'); ?>
+                                            </th>
 
-                <input class="input-block-level" name="total_real_cost" id="totalRealOrderCostHide" placeholder="Cost"
-                       name="cost" type="hidden" value="<?php if ($data) {
-                    echo $data['totalRealCost'];
-                } ?>">
+                                            <th>
+                                                <?php echo $translator->translate('Cost Type'); ?>
+                                            </th>
+
+                                            <th>
+                                                <?php echo $translator->translate('Cost'); ?>
+                                            </th>
+
+                                            <th>
+                                                <?php echo $translator->translate('Quantity'); ?>
+                                            </th>
+
+                                            <th>
+                                                <?php echo $translator->translate('Discount'); ?>
+                                            </th>
+
+                                            <th>
+                                                <?php echo $translator->translate('Real cost'); ?>
+                                            </th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <?php if ($orderDetails) {
+                                            $countChild = count($orderDetails);
+                                        } else {
+                                            $countChild = 1;
+                                        }
+                                        ?>
+                                        <tbody class="tableOrderDetail" data-child="<?= $countChild ?>" id="tableOrderDetail">
+
+                                        <input type="hidden" id="countChild" name="countChild" value="<?= $countChild ?>">
+                                        <?php
+                                        if ($orderDetails) {
+                                            $j = 0;
+                                            foreach ($orderDetails as $order) {
+                                                $j++;
+                                                ?>
+
+                                                <tr id="detailRow-<?= $j ?>">
+                                                    <td>
+                                                        <div class="row-fluid">
+                                                            <div class="span12">
+                                                                <select id="" data-parent="<?= $j ?>"
+                                                                        name="detail[data<?= $j ?>][menuid]"
+                                                                        class="input-block-level menu_select select2-icon"
+                                                                        data-parent-id="">
+                                                                    <option value="-1"
+                                                                            data-cost="0"><?php echo $translator->translate('Select') ?></option>
+                                                                    <?php
+                                                                    //only show isdelte = 0
+                                                                    $menus = \Velacolib\Utility\Utility::getMenu();
+                                                                    //show all
+                                                                    if (isset($data['id']))
+                                                                        $menus = \Velacolib\Utility\Utility::getMenu(1);
+                                                                    foreach ($menus as $menu) {
+                                                                        $selected = '';
+                                                                        if ($menu->getId() == $order->getMenuId()) {
+                                                                            $selected = 'selected';
+                                                                        }
+                                                                        $combo = '';
+                                                                        if ($menu->getIsCombo() == 1) {
+                                                                            $combo = 'Combo: ';
+                                                                        }
+                                                                        ?>
+                                                                        <option <?= $selected ?>
+                                                                            data-ta-cost="<?php echo $menu->getTakeAwayCost(); ?>"
+                                                                            data-cost="<?php echo $menu->getCost(); ?>"
+                                                                            value="<?php echo $menu->getId(); ?>"><?php echo $combo . $menu->getName(); ?></option>
+                                                                    <?php } ?>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+
+                                                        <input <?php if ($order->getCostType() == 0) {
+                                                            echo 'checked="checked"';
+                                                        } ?>  data-parent="<?= $j ?>" type="radio"
+                                                              name="detail[data<?= $j ?>][orderDetailType]"
+                                                              class="menuOrderMenuCostType" value="0">
+                                                        <?php echo $translator->translate('Take away'); ?>&nbsp
+                                                        <input data-parent="<?= $j ?>" type="radio"
+                                                               name="detail[data<?= $j ?>][orderDetailType]"
+                                                               class="menuOrderMenuCostType"  <?php if ($order->getCostType() == 1) {
+                                                            echo 'checked="checked"';
+                                                        } ?>                            value="1">
+                                                        <?php echo $translator->translate('Stay here'); ?>
+                                                    </td>
+                                                    <td>
+                                                        <span class="menucost"><?= $order->getMenuCost() ?></span>
+                                                        <input type="hidden" value="<?= $order->getMenuCost() ?>"
+                                                               name="detail[data<?= $j ?>][menuCost]" class="menucostInput">
+                                                    </td>
+                                                    <td>
+
+                                                        <select name="detail[data<?= $j ?>][quantity]" data-parent="<?= $j ?>"
+                                                                class="quatity input-block-level  select2-icon">
+                                                            <?php
+
+                                                            for ($i = 1; $i <= $config['max_quantity_order']; $i++) {
+                                                                $selected = '';
+                                                                if ($order->getQuantity() == $i) {
+                                                                    $selected = 'selected';
+                                                                }
+                                                                echo '<option ' . $selected . ' value="' . $i . '">' . $i . '</option>';
+                                                            }
+                                                            ?>
+                                                        </select>
+                                                    </td>
+                                                    <td>
 
 
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label"
-                   for="inputTextArea1"><?php echo $translator->translate('Create date'); ?></label>
+                                                        <select class="select2-icon input-block-level select_discount"  class="input-block-level"  name="detail[data<?php echo $j; ?>][discount]"  data-parent="<?php echo $j; ?>"             id="">
+                                                            <?php
 
-            <div class="controls">
-                <input name="create_date" class="date-picker input-block-level" disabled type="text"
-                       value="<?php if ($data) {
-                           echo $data['createDate'];
-                       } else {
-                           echo date('d:m:Y', time());
-                       } ?>">
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label"><?php echo $translator->translate('Table'); ?></label>
+                                                            echo ' <option data-expride="0" value="-1" > ' . $translator->translate('Select coupon') . ' </option>';
+                                                            foreach ($coupons as $coupon) {
+                                                                $selected = '';
+                                                                if ($order->getDiscount() ==  $coupon->getId()  ) {
+                                                                    $selected = 'selected';
+                                                                }
+                                                                $expride = '1';
 
-            <div class="controls">
-                <div class="row-fluid">
-                    <div class="span8">
-                        <?php
-                        $tables = Velacolib\Utility\Utility::getTables();
-                        //                        print_r($categories);
+                                                                if (time() >= $coupon->getFromdate() && time() <= $coupon->getTodate()) {
+                                                                    $expride = '0';
+                                                                }
+                                                                $name = $coupon->getDescription();
+                                                                if ($coupon->getReuse() == 0)
+                                                                    $name = $coupon->getCode();
+                                                                $name == '' ? $name = $coupon->getCode(): $name = $name;
+                                                                echo ' <option ' . $selected . ' data-reuse="' . $coupon->getReuse() . '" data-expride="' . $expride . '" data-coupon-desc="' . $coupon->getDescription() . '" data-coupon-type="' . $coupon->getType() . '" data-coupon-value="' . $coupon->getValue() . '" value="' . $coupon->getId() . '" >' . $name . '</option>';
+                                                            }
+                                                            ?>
+                                                        </select>
 
-                        ?>
-                        <select class="select2-icon input-block-level" name="table_id" id="inputSelect">
-
-                            <?php
-
-                            foreach ($tables as $table) {
-                                $selected = '';
-                                $tableID = $table->getId();
-                                if ($data) {
-
-                                    if ($tableID == $dataObject->getTableId()) {
-                                        $selected = 'selected';
-                                    } elseif (isset($_GET['tbl']) && $_GET['tbl'] != 0) {
-                                        $tbl = $_GET['tbl'];
-                                        $tbl == $tableID ? $selected = 'selected' : $selected = '';
-                                    }
+                                                    </td>
 
 
-                                } else {
-                                    if (isset($_GET['tbl']) && $_GET['tbl'] != 0) {
-                                        $tbl = $_GET['tbl'];
-                                        $tbl == $tableID ? $selected = 'selected' : $selected = '';
-                                    }
-                                }
-                                $status = Velacolib\Utility\Utility::getTableStatus($table->getId());
-                                if (strtolower($status['status']) == strtolower('Finish')) {
 
-                                    echo ' <option value="' . $table->getId() . '"' . $selected . ' >' . $table->getName() . '</option>';
-                                }
-                            }
-                            ?>
-                        </select>
+                                                    <td>
+                                                    <span class="realcost">
+                                                       <?= $order->getRealCost() ?>
+                                                    </span>
+                                                        <input type="hidden" value="<?= $order->getRealCost() ?>"
+                                                               name="detail[data<?= $j ?>][realcost]" class="realcostInput">
+                                                    </td>
+                                                    <td>
+                                                        <div class="text-right">
+                                                            <a class="btn btn-danger btn-mini btn-remove-detail"
+                                                               data-parent="detailRow-<?= $j ?>">
+                                                                <i class="icon-remove"></i>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            <?php
+                                            }
+                                        }
+
+                                        ?>
+                                        </tbody>
+                                        <tbody class="tableOrderDetailAction" id="tableOrderDetailAction">
+                                        <tr>
+                                            <td>
+                                                <input type="button" class="btn btn-success  btn-default"
+                                                       value="<?php echo $translator->translate('Add new order detail') ?>"
+                                                       id="newOrderDetailRow">
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-danger btn-medium" data-toggle="modal" href="#modal-example"
+                                                   role="button" style="margin-bottom: 5px; width: 89%">
+                                                    <?php
+                                                    echo $translator->translate('New not exists product');
+                                                    ?>
+                                                </a>
+                                            </td>
+
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
+        <!--end detail -->
         <div class="control-group">
-            <label class="control-label"><?php echo $translator->translate('Coupon'); ?></label>
+            <div class="span12">
 
-            <div class="controls">
-                <div class="row-fluid">
-                    <div class="span8">
-                        <?php
-                        $coupons = Velacolib\Utility\Utility::queryCoupons(
-                            array(
-                                'isdelete' => 0,
-                                'reuse' => 1,
-                            )
-                        );
-                        $currentTime = time();
-                        foreach ($coupons as $coupon) {
-                            $expride = '1';
+                <!--  coupon -->
+                <div class="control-group span4">
 
-                            if ($currentTime >= $coupon->getFromdate() && $currentTime <= $coupon->getTodate()) {
-                                $expride = '0';
-                            }
-                        }
-                        ?>
-                        <select class="select2-icon input-block-level" name="coupon_id" class="input-block-level"
-                                id="inputSelectCoupon">
-                            <?php
+                    <div class="row-fluid">
+                        <div class="span4">
+                            <label class="control-label float-right"><?php echo $translator->translate('Coupon'); ?></label>
+                        </div>
 
-                            echo ' <option data-expride="0" value="-1" > ' . $translator->translate('Select coupon') . ' </option>';
-                            foreach ($coupons as $coupon) {
-                                $selected = '';
-                                if (($dataObject) && $dataObject->getCouponId() == $coupon->getId()) {
-                                    $selected = 'selected';
+                        <div class="span8">
+                            <div>
+                                <?php
+                                $coupons = Velacolib\Utility\Utility::queryCoupons(
+                                    array(
+                                        'isdelete' => 0
+                                    )
+                                );
+
+                                $currentTime = time();
+                                foreach ($coupons as $coupon) {
+                                    $expride = '1';
+
+                                    if ($currentTime >= $coupon->getFromdate() && $currentTime <= $coupon->getTodate()) {
+                                        $expride = '0';
+                                    }
                                 }
-                                $expride = '1';
+                                ?>
+                                <select class="select2-icon input-block-level" name="coupon_id" class="input-block-level"
+                                        id="inputSelectCoupon">
+                                    <?php
 
-                                if (time() >= $coupon->getFromdate() && time() <= $coupon->getTodate()) {
-                                    $expride = '0';
-                                }
-                                $name = $coupon->getDescription();
-                                if ($coupon->getReuse() == 0)
-                                    $name = $coupon->getCode();
-                                echo ' <option ' . $selected . ' data-reuse="' . $coupon->getReuse() . '" data-expride="' . $expride . '" data-coupon-desc="' . $coupon->getDescription() . '" data-coupon-type="' . $coupon->getType() . '" data-coupon-value="' . $coupon->getValue() . '" value="' . $coupon->getId() . '" >' . $name . '</option>';
-                            }
-                            ?>
-                        </select>
+                                    echo ' <option data-expride="0" value="-1" > ' . $translator->translate('Select coupon') . ' </option>';
+                                    foreach ($coupons as $coupon) {
+                                        $selected = '';
+                                        if (($dataObject) && $dataObject->getCouponId() == $coupon->getId()) {
+                                            $selected = 'selected';
+                                        }
+                                        $expride = '1';
+
+                                        if (time() >= $coupon->getFromdate() && time() <= $coupon->getTodate()) {
+                                            $expride = '0';
+                                        }
+                                        $name = $coupon->getDescription();
+                                        if ($coupon->getReuse() == 0)
+                                            $name = $coupon->getCode();
+
+                                        $name == '' ? $name = $coupon->getCode(): $name = $name;
+                                        echo ' <option ' . $selected . ' data-reuse="' . $coupon->getReuse() . '" data-expride="' . $expride . '" data-coupon-desc="' . $coupon->getDescription() . '" data-coupon-type="' . $coupon->getType() . '" data-coupon-value="' . $coupon->getValue() . '" value="' . $coupon->getId() . '" >' . $name . '</option>';
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+                        <input type="hidden" value="" id="reuse" name="reuse">
+
                     </div>
-                    <input type="hidden" value="" id="reuse" name="reuse">
+
+
+
                 </div>
+
+                <!---Total real cost --->
+                <div class="control-group span4">
+                    <div class="row-fluid">
+                        <div class="span4">
+                            <label class="control-label float-right" id=""  for="inputText1"><?php echo $translator->translate('Total real cost'); ?></label>
+                        </div>
+                        <div class="span8">
+                            <div class="">
+                                <input class="input-block-level" name="" id="totalRealOrderCost" placeholder="Cost" name="cost" disabled
+                                       type="text" value="<?php if ($data) {
+                                    echo $data['totalRealCost'];
+                                } ?>">
+
+                                <input class="input-block-level" name="total_real_cost" id="totalRealOrderCostHide" placeholder="Cost"
+                                       name="cost" type="hidden" value="<?php if ($data) {
+                                    echo $data['totalRealCost'];
+                                } ?>">
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!---Total cost --->
+                <div class="control-group span4" >
+                    <div class="row-fluid">
+                        <div class="span4">
+                            <label class="control-label float-right" id=""
+                                   for="inputText1"><?php echo $translator->translate('Total cost'); ?></label>
+                        </div>
+                        <div class="span8">
+                            <div class="">
+                                <input class="input-block-level" name="" id="totalOrderCost" placeholder="Cost" name="cost" disabled
+                                       type="text" value="<?php if ($data) {
+                                    echo $data['totalCost'];
+                                } ?>">
+
+                                <input class="input-block-level" name="total_cost" id="totalOrderCostHide" placeholder="Cost"
+                                       name="cost" type="hidden" value="<?php if ($data) {
+                                    echo $data['totalCost'];
+                                } ?>">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
             </div>
         </div>
-
 
         <div class="control-group">
             <label></label>
 
             <div class="controls">
-                <label class="text-red" id="applyCouponText"></label>
+                <label class="text-red" id="applySurtaxText"></label>
 
-                <p class="text-green" id="applyCouponDesc"></p>
+                <p class="text-green" id="applySurtaxDesc"></p>
             </div>
         </div>
 
-        <div class="control-group">
-            <label class="control-label"><?php echo $translator->translate('Surtax'); ?></label>
-
-            <div class="controls">
-                <div class="row-fluid">
-                    <div class="span8">
-                        <?php
-                        $surtax = Velacolib\Utility\Utility::getSurTax();
-                        ?>
-                        <select name="surtax_id" id="surtax" class="input-block-level">
-                            <option value="0" data-tax-value="0"
-                                    data-tax-type="percent"> <?php echo $translator->translate('Select'); ?></option>
-                            <?php foreach ($surtax as $tax) {
-                                $selected = '';
-                                if (($dataObject) && $tax->getId() == $dataObject->getSurtaxId()) {
-                                    $selected = 'selected';
-                                }
-                                ?>
-                                <option <?= $selected ?> data-tax-type="<?php echo $tax->getType(); ?>"
-                                                         data-tax-value="<?php echo $tax->getValue(); ?>"
-                                                         value="<?php echo $tax->getId(); ?>">
-                                    <?php echo $tax->getName(); ?>
-                                </option>
-                            <?php } ?>
-
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- add row detail -->
 
 
-    </div>
-</div>
-
-<div class="span8 box ">
-    <div class="">
-        <div class="" style="margin-bottom:0;">
-            <div class="box-header blue-background">
-                <div class="title"><?php echo $translator->translate('Order detail'); ?></div>
-                <div class="actions">
-                    <a href="#" class="btn box-remove btn-mini btn-link"><i class="icon-remove"></i>
-                    </a>
-                    <a href="#" class="btn box-collapse btn-mini btn-link"><i></i>
-                    </a>
-                </div>
-            </div>
-            <div class="box-content box-no-padding">
-                <div class="responsive-table">
-                    <div class="scrollable-area">
-                        <table class="table" style="margin-bottom:0;">
-                            <thead>
-                            <tr>
-                                <th>
-                                    <?php echo $translator->translate('Menu'); ?>
-                                </th>
-
-                                <th>
-                                    <?php echo $translator->translate('Cost Type'); ?>
-                                </th>
-
-                                <th>
-                                    <?php echo $translator->translate('Cost'); ?>
-                                </th>
-
-                                <th>
-                                    <?php echo $translator->translate('Quantity'); ?>
-                                </th>
-
-                                <th>
-                                    <?php echo $translator->translate('Discount'); ?>
-                                </th>
-
-                                <th>
-                                    <?php echo $translator->translate('Real cost'); ?>
-                                </th>
-                                <th></th>
-                            </tr>
-                            </thead>
-                            <?php if ($orderDetails) {
-                                $countChild = count($orderDetails);
-                            } else {
-                                $countChild = 1;
-                            }
-                            ?>
-                            <tbody class="tableOrderDetail" data-child="<?= $countChild ?>" id="tableOrderDetail">
-
-                            <input type="hidden" id="countChild" name="countChild" value="<?= $countChild ?>">
-                            <?php
-                            if ($orderDetails) {
-                                $j = 0;
-                                foreach ($orderDetails as $order) {
-                                    $j++;
-                                    ?>
-
-                                    <tr id="detailRow-<?= $j ?>">
-                                        <td>
-                                            <div class="row-fluid">
-                                                <div class="span12">
-                                                    <select id="" data-parent="<?= $j ?>"
-                                                            name="detail[data<?= $j ?>][menuid]"
-                                                            class="input-block-level menu_select select2-icon"
-                                                            data-parent-id="">
-                                                        <option value="-1"
-                                                                data-cost="0"><?php echo $translator->translate('Select') ?></option>
-                                                        <?php
-                                                        //only show isdelte = 0
-                                                        $menus = \Velacolib\Utility\Utility::getMenu();
-                                                        //show all
-                                                        if (isset($data['id']))
-                                                            $menus = \Velacolib\Utility\Utility::getMenu(1);
-                                                        foreach ($menus as $menu) {
-                                                            $selected = '';
-                                                            if ($menu->getId() == $order->getMenuId()) {
-                                                                $selected = 'selected';
-                                                            }
-                                                            $combo = '';
-                                                            if ($menu->getIsCombo() == 1) {
-                                                                $combo = 'Combo: ';
-                                                            }
-                                                            ?>
-                                                            <option <?= $selected ?>
-                                                                data-ta-cost="<?php echo $menu->getTakeAwayCost(); ?>"
-                                                                data-cost="<?php echo $menu->getCost(); ?>"
-                                                                value="<?php echo $menu->getId(); ?>"><?php echo $combo . $menu->getName(); ?></option>
-                                                        <?php } ?>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-
-                                            <input <?php if ($order->getCostType() == 0) {
-                                                echo 'checked="checked"';
-                                            } ?>  data-parent="<?= $j ?>" type="radio"
-                                                  name="detail[data<?= $j ?>][orderDetailType]"
-                                                  class="menuOrderMenuCostType" value="0">
-                                            <?php echo $translator->translate('Take away'); ?>&nbsp
-                                            <input data-parent="<?= $j ?>" type="radio"
-                                                   name="detail[data<?= $j ?>][orderDetailType]"
-                                                   class="menuOrderMenuCostType"  <?php if ($order->getCostType() == 1) {
-                                                echo 'checked="checked"';
-                                            } ?>                            value="1">
-                                            <?php echo $translator->translate('Stay here'); ?>
-                                        </td>
-                                        <td>
-                                            <span class="menucost"><?= $order->getMenuCost() ?></span>
-                                            <input type="hidden" value="<?= $order->getMenuCost() ?>"
-                                                   name="detail[data<?= $j ?>][menuCost]" class="menucostInput">
-                                        </td>
-                                        <td>
-
-                                            <select name="detail[data<?= $j ?>][quantity]" data-parent="<?= $j ?>"
-                                                    class="quatity input-block-level  select2-icon">
-                                                <?php
-
-                                                for ($i = 1; $i <= $config['max_quantity_order']; $i++) {
-                                                    $selected = '';
-                                                    if ($order->getQuantity() == $i) {
-                                                        $selected = 'selected';
-                                                    }
-                                                    echo '<option ' . $selected . ' value="' . $i . '">' . $i . '</option>';
-                                                }
-                                                ?>
-                                            </select>
-                                        </td>
-                                        <td>
+        <!-- end add row detail -->
 
 
-                                            <select class="select2-icon input-block-level select_discount"  class="input-block-level"  name="detail[data<?php echo $j; ?>][discount]"  data-parent="<?php echo $j; ?>"             id="">
-                                                <?php
-
-                                                echo ' <option data-expride="0" value="-1" > ' . $translator->translate('Select coupon') . ' </option>';
-                                                foreach ($coupons as $coupon) {
-                                                    $selected = '';
-                                                    if ($order->getDiscount() ==  $coupon->getId()  ) {
-                                                        $selected = 'selected';
-                                                    }
-                                                    $expride = '1';
-
-                                                    if (time() >= $coupon->getFromdate() && time() <= $coupon->getTodate()) {
-                                                        $expride = '0';
-                                                    }
-                                                    $name = $coupon->getDescription();
-                                                    if ($coupon->getReuse() == 0)
-                                                        $name = $coupon->getCode();
-                                                    echo ' <option ' . $selected . ' data-reuse="' . $coupon->getReuse() . '" data-expride="' . $expride . '" data-coupon-desc="' . $coupon->getDescription() . '" data-coupon-type="' . $coupon->getType() . '" data-coupon-value="' . $coupon->getValue() . '" value="' . $coupon->getId() . '" >' . $name . '</option>';
-                                                }
-                                                ?>
-                                            </select>
-
-                                            </td>
-
-
-
-                                        <td>
-                                                    <span class="realcost">
-                                                       <?= $order->getRealCost() ?>
-                                                    </span>
-                                            <input type="hidden" value="<?= $order->getRealCost() ?>"
-                                                   name="detail[data<?= $j ?>][realcost]" class="realcostInput">
-                                        </td>
-                                        <td>
-                                            <div class="text-right">
-                                                <a class="btn btn-danger btn-mini btn-remove-detail"
-                                                   data-parent="detailRow-<?= $j ?>">
-                                                    <i class="icon-remove"></i>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                <?php
-                                }
-                            }
-
-                            ?>
-                            </tbody>
-                            <tbody class="tableOrderDetailAction" id="tableOrderDetailAction">
-                            <tr>
-                                <td>
-                                    <input type="button" class="btn btn-success  btn-default"
-                                           value="<?php echo $translator->translate('Add new order detail') ?>"
-                                           id="newOrderDetailRow">
-                                </td>
-                                <td>
-                                    <a class="btn btn-danger btn-medium" data-toggle="modal" href="#modal-example"
-                                       role="button" style="margin-bottom: 5px; width: 89%">
-                                        <?php
-                                        echo $translator->translate('New not exists product');
-                                        ?>
-                                    </a>
-                                </td>
-
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="control-group">
-    <label></label>
-
-    <div class="controls">
-        <label class="text-red" id="applySurtaxText"></label>
-
-        <p class="text-green" id="applySurtaxDesc"></p>
-    </div>
-</div>
-
-<!-- add row detail -->
-
-
-<!-- end add row detail -->
-
-
-<div class="actions-button">
-    <button class="btn btn-primary btn-save-order" id="save-order" type="submit" name="save" value="save">
-        <i class="icon-save"></i>
-        <?php echo $translator->translate('Save'); ?>
-    </button>
-
-    <!--    <button class="btn" type="submit"> <i class="icon-backward"></i> -->
-    <?php //echo $translator->translate('Cancel'); ?><!--</button>-->
-    <button class="btn btn-danger confirmF btn-save-order" id="payment-order" type="submit" name="save" value="payment">
-        <i class="icon-print"></i>
-        <?php echo $translator->translate('Payment'); ?>
-    </button>
-</div>
-</form>
+    </form>
 </div>
 
 
@@ -544,55 +571,55 @@ if ($data) {
 
 
 <script>
-$(document).ready(function () {
+    $(document).ready(function () {
 
-    var totalOrderCostHide = $("#totalOrderCostHide").val();
-    totalOrderCostHide = totalOrderCostHide.replace(",", "");
-    $("#totalOrderCostHide").val(totalOrderCostHide);
+        var totalOrderCostHide = $("#totalOrderCostHide").val();
+        totalOrderCostHide = totalOrderCostHide.replace(",", "");
+        $("#totalOrderCostHide").val(totalOrderCostHide);
 
 
-    var totalRealOrderCostHide = $("#totalRealOrderCostHide").val();
-    totalRealOrderCostHide = totalRealOrderCostHide.replace(",", "");
-    $("#totalRealOrderCostHide").val(totalRealOrderCostHide);
+        var totalRealOrderCostHide = $("#totalRealOrderCostHide").val();
+        totalRealOrderCostHide = totalRealOrderCostHide.replace(",", "");
+        $("#totalRealOrderCostHide").val(totalRealOrderCostHide);
 
-})
-//order detail action
-$(document).on('click', '#newOrderDetailRow', function () {
-    addRowDetail();
-})
+    })
+    //order detail action
+    $(document).on('click', '#newOrderDetailRow', function () {
+        addRowDetail();
+    })
 
-function addRowDetail() {
-    var child = $('#tableOrderDetail').attr('data-child');
+    function addRowDetail() {
+        var child = $('#tableOrderDetail').attr('data-child');
 
-    child = parseInt(child) + 1;
-    $('#countChild').val(child);
-    $('#tableOrderDetail').attr('data-child', child);
-    var htmlRow = '<tr id="detailRow-' + child + '">' +
-        '<td><div class="row-fluid"><div class="span12"> <select name="detail[data' + child + '][menuid]"  data-parent="' + child + '" name="menu_id" class="input-block-level menu_select select2-icon-ajax" data-parent-id="">' +
-        '<option value="-1" data-cost="0"><?php echo $translator->translate('Select') ?></option>' +
-        '<?php
+        child = parseInt(child) + 1;
+        $('#countChild').val(child);
+        $('#tableOrderDetail').attr('data-child', child);
+        var htmlRow = '<tr id="detailRow-' + child + '">' +
+            '<td><div class="row-fluid"><div class="span12"> <select name="detail[data' + child + '][menuid]"  data-parent="' + child + '" name="menu_id" class="input-block-level menu_select select2-icon-ajax" data-parent-id="">' +
+            '<option value="-1" data-cost="0"><?php echo $translator->translate('Select') ?></option>' +
+            '<?php
                 $menus = \Velacolib\Utility\Utility::getMenu();
                 foreach($menus as $menu){
                     echo '<option data-ta-cost="'.$menu->getTakeAwayCost().'" data-cost="'.$menu->getCost().'" value="'.$menu->getId().'" >'.$menu->getName().'</option>';
                 }
             ?></select></div></div></td>' +
-        '<td>' +
-        ' <input data-parent="' + child + '" class="menuOrderMenuCostType" type="radio" name="detail[data' + child + '][orderDetailType]" value="0"> <?php echo $translator->translate('Take away') ?> &nbsp <br/>' +
-        '<input data-parent="' + child + '" checked class="menuOrderMenuCostType" type="radio" name="detail[data' + child + '][orderDetailType]" value="1"><?php echo $translator->translate('Stay here') ?>' +
-        '</td>' +
-        '<td><span class="menucost">0</span><input name="detail[data' + child + '][menuCost]" type="hidden" value="" class="menucostInput"></td>' +
-        '<td>' +
-        '<select name="detail[data' + child + '][quantity]" data-parent="' + child + '"  class="quatity input-block-level  select2-icon-ajax">'
-        + '<?php
+            '<td>' +
+            ' <input data-parent="' + child + '" class="menuOrderMenuCostType" type="radio" name="detail[data' + child + '][orderDetailType]" value="0"> <?php echo $translator->translate('Take away') ?> &nbsp <br/>' +
+            '<input data-parent="' + child + '" checked class="menuOrderMenuCostType" type="radio" name="detail[data' + child + '][orderDetailType]" value="1"><?php echo $translator->translate('Stay here') ?>' +
+            '</td>' +
+            '<td><span class="menucost">0</span><input name="detail[data' + child + '][menuCost]" type="hidden" value="" class="menucostInput"></td>' +
+            '<td>' +
+            '<select name="detail[data' + child + '][quantity]" data-parent="' + child + '"  class="quatity input-block-level  select2-icon-ajax">'
+            + '<?php
                 for($i=1; $i<= $config['max_quantity_order']; $i++){
                     echo '<option value="'.$i.'">'.$i.'</option>';
                 }
             ?>' +
-        '</select>' +
-        '<td>' +
+            '</select>' +
+            '<td>' +
 //        '<input style="width: 70px" data-parent="' + child + '" type="text" class="discount" name="detail[data' + child + '][discount]" id="discount_' + child + '" value="" />' +
             '<select class="select2-icon-ajax input-block-level select_discount" class="input-block-level" name="detail[data' + child + '][discount]"  data-parent="'+child+'"       id="">'+
-        '<?php
+            '<?php
 
         echo ' <option data-expride="0" value="-1" > ' . $translator->translate('Select coupon') . ' </option>';
         foreach ($coupons as $coupon) {
@@ -608,318 +635,319 @@ function addRowDetail() {
             $name = $coupon->getDescription();
             if ($coupon->getReuse() == 0)
                 $name = $coupon->getCode();
+                $name == '' ? $name = $coupon->getCode(): $name = $name;
             echo ' <option ' . $selected . ' data-reuse="' . $coupon->getReuse() . '" data-expride="' . $expride . '" data-coupon-desc="' . $coupon->getDescription() . '" data-coupon-type="' . $coupon->getType() . '" data-coupon-value="' . $coupon->getValue() . '" value="' . $coupon->getId() . '" >' . $name . '</option>';
         }
         ?>'+
-        '</select>'+
-        '</td>' +
-        '</td>' +
-        '<td><span class="realcost"> 0</span><input type="hidden" value="" name="detail[data' + child + '][realcost]"  class="realcostInput"></td>' +
-        '<td><div class="text-right">\
-            <a class="btn btn-danger btn-mini btn-remove-detail" data-parent="detailRow-' + child + '">\
+            '</select>'+
+            '</td>' +
+            '</td>' +
+            '<td><span class="realcost"> 0</span><input type="hidden" value="" name="detail[data' + child + '][realcost]"  class="realcostInput"></td>' +
+            '<td><div class="text-right">\
+                <a class="btn btn-danger btn-mini btn-remove-detail" data-parent="detailRow-' + child + '">\
                 <i class="icon-remove"></i>\
                 </a>\
         </div></td>' +
-        '</tr>';
-    $('#tableOrderDetail').append(htmlRow);
-    select2icon = function (e) {
-        return "<i class='" + e.text + "'></i>" + e.text;
-    };
-    $(".select2-icon-ajax").select2({
-        formatResult: select2icon,
-        formatSelection: select2icon,
-        escapeMarkup: function (e) {
-            return e;
+            '</tr>';
+        $('#tableOrderDetail').append(htmlRow);
+        select2icon = function (e) {
+            return "<i class='" + e.text + "'></i>" + e.text;
+        };
+        $(".select2-icon-ajax").select2({
+            formatResult: select2icon,
+            formatSelection: select2icon,
+            escapeMarkup: function (e) {
+                return e;
+            }
+        });
+
+    }
+
+
+    $(document).on('change', '.menu_select', function () {
+
+        var cost = $(this).find(":selected").attr('data-cost');
+        var parent = $(this).attr('data-parent');
+
+        var quantity = $('#detailRow-' + parent + ' .quatity').find(":selected").val();
+        var discount = $('#detailRow-' + parent + ' .select_discount').find(":selected").attr('data-coupon-value');
+        $('#detailRow-' + parent + ' .menucost').text(cost);
+        $('#detailRow-' + parent + ' .menucostInput').val(cost);
+        if( typeof discount != 'undefined'){
+            var discountValue = ((cost * discount)/100)*quantity;
+            var realCost = roundCalc((cost*quantity)- discountValue);
+        }else{
+            realCost = cost * quantity;
         }
+
+
+        $('#detailRow-' + parent + '  .realcost').text(realCost);
+        $('#detailRow-' + parent + '  .realcostInput').val(realCost);
+
+        totalRealCost();
+        //discount(parent);
     });
 
-}
+
+    $(document).on('change', '.quatity', function () {
+
+        var parent = $(this).attr('data-parent');
+        var cost = $('#detailRow-' + parent + ' .menucost').text();
+
+        var quantity = $(this).find(':selected').val();
+        var discount = discountSelect(parent,cost) * quantity;
 
 
-$(document).on('change', '.menu_select', function () {
+        discount = roundCalc(discount);
+        $('#detailRow-' + parent + '  .realcost').text(discount);
+        $('#detailRow-' + parent + '  .realcostInput').val(discount);
 
-    var cost = $(this).find(":selected").attr('data-cost');
-    var parent = $(this).attr('data-parent');
+        totalRealCost();
 
-    var quantity = $('#detailRow-' + parent + ' .quatity').find(":selected").val();
-    var discount = $('#detailRow-' + parent + ' .select_discount').find(":selected").attr('data-coupon-value');
-    $('#detailRow-' + parent + ' .menucost').text(cost);
-    $('#detailRow-' + parent + ' .menucostInput').val(cost);
-    if( typeof discount != 'undefined'){
-        var discountValue = ((cost * discount)/100)*quantity;
-        var realCost = roundCalc((cost*quantity)- discountValue);
-    }else{
-        realCost = cost * quantity;
-    }
+    });
+    //hung start
+    $(document).on('change', '.discount', function () {
 
+        var singleDiscount = $(this).val();
+        var parent = $(this).attr('data-parent');
+        var quantity = $("#detailRow-" + parent + " .quatity").find(':selected').val();
+        var discount = singleDiscount * quantity;
+        var menuCost = $("#detailRow-" + parent + " .menucostInput").val();
+        var realCost = (menuCost * quantity) - (discount);
 
-    $('#detailRow-' + parent + '  .realcost').text(realCost);
-    $('#detailRow-' + parent + '  .realcostInput').val(realCost);
+        //update
+        $('#detailRow-' + parent + '  .realcost').text(realCost);
+        $('#detailRow-' + parent + '  .realcostInput').val(realCost);
+        totalRealCost();
 
-    totalRealCost();
-    //discount(parent);
-});
-
-
-$(document).on('change', '.quatity', function () {
-
-    var parent = $(this).attr('data-parent');
-    var cost = $('#detailRow-' + parent + ' .menucost').text();
-
-    var quantity = $(this).find(':selected').val();
-    var discount = discountSelect(parent,cost) * quantity;
-
-
-    discount = roundCalc(discount);
-    $('#detailRow-' + parent + '  .realcost').text(discount);
-    $('#detailRow-' + parent + '  .realcostInput').val(discount);
-
-    totalRealCost();
-
-});
-//hung start
-$(document).on('change', '.discount', function () {
-
-    var singleDiscount = $(this).val();
-    var parent = $(this).attr('data-parent');
-    var quantity = $("#detailRow-" + parent + " .quatity").find(':selected').val();
-    var discount = singleDiscount * quantity;
-    var menuCost = $("#detailRow-" + parent + " .menucostInput").val();
-    var realCost = (menuCost * quantity) - (discount);
-
-    //update
-    $('#detailRow-' + parent + '  .realcost').text(realCost);
-    $('#detailRow-' + parent + '  .realcostInput').val(realCost);
-    totalRealCost();
-
-});
-function discount(parent){
-    var singleDiscount = $("#detailRow-" + parent + " .discount").val();
-    var quantity = $("#detailRow-" + parent + " .quatity").find(':selected').val();
-    var realCost =   discountSelect(parent,singleDiscount) * quantity;
+    });
+    function discount(parent){
+        var singleDiscount = $("#detailRow-" + parent + " .discount").val();
+        var quantity = $("#detailRow-" + parent + " .quatity").find(':selected').val();
+        var realCost =   discountSelect(parent,singleDiscount) * quantity;
 //    var menuCost = $("#detailRow-" + parent + " .menucostInput").val();
 //    var realCost = (menuCost * quantity) - (discount);
-    $('#detailRow-' + parent + '  .realcost').text(realCost);
-    $('#detailRow-' + parent + '  .realcostInput').val(realCost);
-    totalRealCost();
-}
-//hung end
-
-//tri start
-$(document).on('change','.select_discount',function(){
-    var parent = $(this).attr('data-parent');
-    var menuCost = $("#detailRow-" + parent + " .menucostInput").val();
-    var quantity = $("#detailRow-" + parent + " .quatity").find(':selected').val();
-    menuCost = discountSelect(parent,menuCost);
-
-    var realCost = (menuCost * quantity);
-    realCost =   roundCalc(realCost);
-
-    //update
-    $('#detailRow-' + parent + '  .realcost').text(realCost);
-    $('#detailRow-' + parent + '  .realcostInput').val(realCost);
-    totalRealCost();
-
-});
-function discountSelect(parent, realCost){
-
-    var coupon_type =  $('#detailRow-'+parent+' .select_discount').find(':selected').attr('data-coupon-type');
-
-    var coupon_val = $('#detailRow-'+parent+' .select_discount').find(':selected').attr('data-coupon-value');
-
-    var coupon_expride =  $('#detailRow-'+parent+' .select_discount').find(':selected').attr('data-expride');
-    var coupon_id = $('#detailRow-'+parent+' .select_discount').find(':selected').val();
-    var coupon_reuse = $('#detailRow-'+parent+' .select_discount').find(':selected').attr('data-reuse');
-
-    if(isNaN(coupon_type))
-        return realCost;
-    if(isNaN(coupon_val))
-        return realCost;
-    if(isNaN(coupon_expride))
-        return realCost;
-
-    if(coupon_expride == 1)
-        return realCost;
-    //percent
-    if(coupon_type == 1){
-        var cost_percent = (realCost*coupon_val)/100;
-        discount = realCost - cost_percent;
+        $('#detailRow-' + parent + '  .realcost').text(realCost);
+        $('#detailRow-' + parent + '  .realcostInput').val(realCost);
+        totalRealCost();
     }
-    //real cost
-    else {
-        discount = realCost - coupon_val;
-    }
-    return discount;
-}
-//tri end
+    //hung end
 
-$(document).on('click', '.btn-remove-detail', function () {
-    var child = $('#tableOrderDetail').attr('data-child');
+    //tri start
+    $(document).on('change','.select_discount',function(){
+        var parent = $(this).attr('data-parent');
+        var menuCost = $("#detailRow-" + parent + " .menucostInput").val();
+        var quantity = $("#detailRow-" + parent + " .quatity").find(':selected').val();
+        menuCost = discountSelect(parent,menuCost);
 
-    child = parseInt(child) - 1;
-    $('#tableOrderDetail').attr('data-child', child);
-    $('#countChild').val(child);
+        var realCost = (menuCost * quantity);
+        realCost =   roundCalc(realCost);
 
-    var parent = $(this).attr('data-parent');
-    $('#' + parent).remove();
-    totalRealCost();
+        //update
+        $('#detailRow-' + parent + '  .realcost').text(realCost);
+        $('#detailRow-' + parent + '  .realcostInput').val(realCost);
+        totalRealCost();
 
-});
+    });
+    function discountSelect(parent, realCost){
 
-$(document).on('change', '#inputSelectCoupon', function () {
-    reduceCostByCoupon();
-});
+        var coupon_type =  $('#detailRow-'+parent+' .select_discount').find(':selected').attr('data-coupon-type');
 
+        var coupon_val = $('#detailRow-'+parent+' .select_discount').find(':selected').attr('data-coupon-value');
 
+        var coupon_expride =  $('#detailRow-'+parent+' .select_discount').find(':selected').attr('data-expride');
+        var coupon_id = $('#detailRow-'+parent+' .select_discount').find(':selected').val();
+        var coupon_reuse = $('#detailRow-'+parent+' .select_discount').find(':selected').attr('data-reuse');
 
-function reduceCostByCoupon() {
+        if(isNaN(coupon_type))
+            return realCost;
+        if(isNaN(coupon_val))
+            return realCost;
+        if(isNaN(coupon_expride))
+            return realCost;
 
-    var float = 1000;
-    var couponId = $('#inputSelectCoupon').find(":selected").val();
-    var couponType = $('#inputSelectCoupon').find(":selected").attr('data-coupon-type');
-    var couponValue = $('#inputSelectCoupon').find(":selected").attr('data-coupon-value');
-    var couponDesc = $('#inputSelectCoupon').find(":selected").attr('data-coupon-desc');
-    var expride = $('#inputSelectCoupon').find(":selected").attr('data-expride');
-    var reuse = $('#inputSelectCoupon').find(":selected").attr('data-reuse');
-//        alert(reuse);
-    $('#reuse').val(reuse);
-    var cost = $('#totalOrderCost').val();
-    var totalRealCost = 0;
-    var surtax = reduceCostBySurtax();
-
-    console.log(surtax);
-    cost = parseFloat(cost.replace(',', ''));
-
-    if (expride == 0) {
-
-        if (couponId != -1) {
-            if (couponType == 0) {
-                totalRealCost = cost - couponValue;
-                $('#applyCouponText').text('Reduce cost ' + couponValue + ' ');
-                $('#applyCouponDesc').text(couponDesc);
-
-            }
-            else {
-                totalRealCost = cost - ((couponValue * cost) / 100);
-                $('#applyCouponText').text('Reduce cost ' + couponValue + '% ');
-                $('#applyCouponDesc').text(couponDesc);
-
-            }
-        } else {
-
-            totalRealCost = cost;
-            $('#applyCouponText').text('');
-            $('#applyCouponDesc').text('');
+        if(coupon_expride == 1)
+            return realCost;
+        //percent
+        if(coupon_type == 1){
+            var cost_percent = (realCost*coupon_val)/100;
+            discount = realCost - cost_percent;
         }
+        //real cost
+        else {
+            discount = realCost - coupon_val;
+        }
+        return discount;
     }
-    else {
-        totalRealCost = cost;
-        //$('#applyCouponText').text('Reduce cost '+couponValue+'% ');
-        $('#applyCouponText').text('');
-        $('#applyCouponDesc').text('Coupon expired');
-        $('#inputSelectCoupon').find(":selected").val('-1');
+    //tri end
+
+    $(document).on('click', '.btn-remove-detail', function () {
+        var child = $('#tableOrderDetail').attr('data-child');
+
+        child = parseInt(child) - 1;
+        $('#tableOrderDetail').attr('data-child', child);
+        $('#countChild').val(child);
+
+        var parent = $(this).attr('data-parent');
+        $('#' + parent).remove();
+        totalRealCost();
+
+    });
+
+    $(document).on('change', '#inputSelectCoupon', function () {
+        reduceCostByCoupon();
+    });
+
+
+
+    function reduceCostByCoupon() {
+
+        var float = 1000;
+        var couponId = $('#inputSelectCoupon').find(":selected").val();
+        var couponType = $('#inputSelectCoupon').find(":selected").attr('data-coupon-type');
+        var couponValue = $('#inputSelectCoupon').find(":selected").attr('data-coupon-value');
+        var couponDesc = $('#inputSelectCoupon').find(":selected").attr('data-coupon-desc');
+        var expride = $('#inputSelectCoupon').find(":selected").attr('data-expride');
+        var reuse = $('#inputSelectCoupon').find(":selected").attr('data-reuse');
+//        alert(reuse);
+        $('#reuse').val(reuse);
+        var cost = $('#totalOrderCost').val();
+        var totalRealCost = 0;
+        var surtax = reduceCostBySurtax();
+
+        console.log(surtax);
+        cost = parseFloat(cost.replace(',', ''));
+
+        if (expride == 0) {
+
+            if (couponId != -1) {
+                if (couponType == 0) {
+                    totalRealCost = cost - couponValue;
+                    $('#applyCouponText').text('Reduce cost ' + couponValue + ' ');
+                    $('#applyCouponDesc').text(couponDesc);
+
+                }
+                else {
+                    totalRealCost = cost - ((couponValue * cost) / 100);
+                    $('#applyCouponText').text('Reduce cost ' + couponValue + '% ');
+                    $('#applyCouponDesc').text(couponDesc);
+
+                }
+            } else {
+
+                totalRealCost = cost;
+                $('#applyCouponText').text('');
+                $('#applyCouponDesc').text('');
+            }
+        }
+        else {
+            totalRealCost = cost;
+            //$('#applyCouponText').text('Reduce cost '+couponValue+'% ');
+            $('#applyCouponText').text('');
+            $('#applyCouponDesc').text('Coupon expired');
+            $('#inputSelectCoupon').find(":selected").val('-1');
+        }
+        totalRealCost = totalRealCost + parseFloat(surtax);
+        $('#totalRealOrderCost').val(totalRealCost);
+        $('#totalRealOrderCostHide').val(totalRealCost);
+
     }
-    totalRealCost = totalRealCost + parseFloat(surtax);
-    $('#totalRealOrderCost').val(totalRealCost);
-    $('#totalRealOrderCostHide').val(totalRealCost);
+    $(document).on('change', '#surtax', function () {
+        reduceCostByCoupon();
+    });
 
-}
-$(document).on('change', '#surtax', function () {
-    reduceCostByCoupon();
-});
+    function reduceCostBySurtax() {
+        var surtax = $('#surtax').find(':selected').attr('data-tax-value');
+        var surtaxType = $('#surtax').find(':selected').attr('data-tax-type');
+        var surtaxText = $('#surtax').find(':selected').text();
 
-function reduceCostBySurtax() {
-    var surtax = $('#surtax').find(':selected').attr('data-tax-value');
-    var surtaxType = $('#surtax').find(':selected').attr('data-tax-type');
-    var surtaxText = $('#surtax').find(':selected').text();
+        var percent = 0;
+        if (surtaxType == 'percent') {
+            var realCost = $('#totalOrderCost').val();
+            realCost = realCost.replace(',', '');
 
-    var percent = 0;
-    if (surtaxType == 'percent') {
-        var realCost = $('#totalOrderCost').val();
-        realCost = realCost.replace(',', '');
+            var percent = parseFloat((realCost * surtax) / 100);
+            var realCostAfterPercent = percent + parseFloat(realCost);
 
-        var percent = parseFloat((realCost * surtax) / 100);
-        var realCostAfterPercent = percent + parseFloat(realCost);
-
-        //alert(' 1 '+percent+' '+ realCostAfterPercent);
+            //alert(' 1 '+percent+' '+ realCostAfterPercent);
 
 //        $('#applySurtaxText').text(surtaxText + ' tăng ' + surtax + '% của ' + realCost + ' = ' + realCostAfterPercent);
 //        $('#applySurtaxDesc').text(' + ' + realCostAfterPercent);
 //        $('#totalRealOrderCost').val(realCostAfterPercent);
 //        $('#totalRealOrderCostHide').val(realCostAfterPercent);
 
-    } else {
-        var realCost = $('#totalOrderCost').val();
-        var percent = surtax.replace(',', '');
-        var realCostAfterPercent = percent + parseFloat(realCost);
-        //alert(' 2 '+percent+' '+ realCostAfterPercent);
+        } else {
+            var realCost = $('#totalOrderCost').val();
+            var percent = surtax.replace(',', '');
+            var realCostAfterPercent = percent + parseFloat(realCost);
+            //alert(' 2 '+percent+' '+ realCostAfterPercent);
 //        $('#applySurtaxText').text(surtaxText + ' tăng ' + surtax + ' của ' + realCost + ' = ' + realCostAfterPercent);
 //        $('#applySurtaxDesc').text(' + ' + realCostAfterPercent);
 //        $('#totalRealOrderCost').val(realCostAfterPercent);
 //        $('#totalRealOrderCostHide').val(realCostAfterPercent);
-    }
-    return percent;
+        }
+        return percent;
 
-}
-function totalRealCost() {
-    var total = 0;
-    $('.realcost').each(function () {
-        var val = $(this).text();
-        total += parseInt(val);
+    }
+    function totalRealCost() {
+        var total = 0;
+        $('.realcost').each(function () {
+            var val = $(this).text();
+            total += parseFloat(val);
+        });
+
+        $('#totalOrderCost').val(total);
+        $('#totalOrderCostHide').val(total);
+        $('#totalRealOrderCost').val(total);
+        reduceCostByCoupon();
+    }
+    $(document).on('click', '.menuOrderMenuCostType', function () {
+        var parent = $(this).attr('data-parent');
+        var val = $(this).val();
+        var quantity = $('#detailRow-' + parent + ' .quatity').find(":selected").val();
+        if (val == 1) {
+            var cost = $('#detailRow-' + parent + ' .menu_select').find(":selected").attr('data-cost');
+
+        }
+        else {
+            var cost = $('#detailRow-' + parent + ' .menu_select').find(":selected").attr('data-ta-cost');
+        }
+
+        $('#detailRow-' + parent + ' .menucost').text(cost);
+        $('#detailRow-' + parent + ' .menucostInput').val(cost);
+        cost = discountSelect(parent,cost);
+        cost = roundCalc(cost);
+        $('#detailRow-' + parent + '  .realcost').text(cost * quantity);
+        $('#detailRow-' + parent + '  .realcostInput').val(cost * quantity);
+        totalRealCost();
+        reduceCostByCoupon();
+        //discount(parent);
     });
-
-    $('#totalOrderCost').val(total);
-    $('#totalOrderCostHide').val(total);
-    $('#totalRealOrderCost').val(total);
-    reduceCostByCoupon();
-}
-$(document).on('click', '.menuOrderMenuCostType', function () {
-    var parent = $(this).attr('data-parent');
-    var val = $(this).val();
-    var quantity = $('#detailRow-' + parent + ' .quatity').find(":selected").val();
-    if (val == 1) {
-        var cost = $('#detailRow-' + parent + ' .menu_select').find(":selected").attr('data-cost');
+    function menuCostType() {
 
     }
-    else {
-        var cost = $('#detailRow-' + parent + ' .menu_select').find(":selected").attr('data-ta-cost');
-    }
-
-    $('#detailRow-' + parent + ' .menucost').text(cost);
-    $('#detailRow-' + parent + ' .menucostInput').val(cost);
-    cost = discountSelect(parent,cost);
-    cost = roundCalc(cost);
-    $('#detailRow-' + parent + '  .realcost').text(cost * quantity);
-    $('#detailRow-' + parent + '  .realcostInput').val(cost * quantity);
-    totalRealCost();
-    reduceCostByCoupon();
-    //discount(parent);
-});
-function menuCostType() {
-
-}
-//end order detail action
+    //end order detail action
 
 
-//ajax new product
-$(document).on('click', '#ajaxProductSave', function () {
-    var Name = $('#ajaxName').val();
-    var TotalCost = $('#ajaxTotalCost').val();
-    var TotalTaCost = $('#ajaxTotalTaCost').val();
-    var desc = $('#ajaxDesc').val();
-    var Category = $('#ajaxCategory').val();
+    //ajax new product
+    $(document).on('click', '#ajaxProductSave', function () {
+        var Name = $('#ajaxName').val();
+        var TotalCost = $('#ajaxTotalCost').val();
+        var TotalTaCost = $('#ajaxTotalTaCost').val();
+        var desc = $('#ajaxDesc').val();
+        var Category = $('#ajaxCategory').val();
 
-    $.ajax({
-        url: '/admin/index/addajax',
-        data: {
-            name: Name,
-            cost: TotalCost,
-            tacost: TotalTaCost,
-            desc: desc,
-            cat_id: Category
-        },
-        type: 'POST'
-    }).done(function (respone) {
+        $.ajax({
+            url: '/admin/index/addajax',
+            data: {
+                name: Name,
+                cost: TotalCost,
+                tacost: TotalTaCost,
+                desc: desc,
+                cat_id: Category
+            },
+            type: 'POST'
+        }).done(function (respone) {
             //new menu done
             $('#modal-example').modal('toggle');
             var row = renderRow(respone);
@@ -937,55 +965,55 @@ $(document).on('click', '#ajaxProductSave', function () {
             totalRealCost();
             //end init form
         });
-});
+    });
 
-$('#ajaxTotalCost').change(function () {
-    var val = $(this).val();
-    $('#ajaxTotalTaCost').val(val);
-});
-//end ajax new product
-function renderRow(respone) {
-    var paresrFloat = 1000;
-    var data = $.parseJSON(respone);
+    $('#ajaxTotalCost').change(function () {
+        var val = $(this).val();
+        $('#ajaxTotalTaCost').val(val);
+    });
+    //end ajax new product
+    function renderRow(respone) {
+        var paresrFloat = 1000;
+        var data = $.parseJSON(respone);
 
-    var child = $('#tableOrderDetail').attr('data-child');
-    child = parseInt(child) + 1;
-    $('#countChild').val(child);
-    $('#tableOrderDetail').attr('data-child', child);
+        var child = $('#tableOrderDetail').attr('data-child');
+        child = parseInt(child) + 1;
+        $('#countChild').val(child);
+        $('#tableOrderDetail').attr('data-child', child);
 
-    return  '<tr id="detailRow-' + child + '">' +
-        '<td>' +
-        '<div class="row-fluid">' +
-        '<div class="span12"> ' +
-        '<select name="detail[data' + child + '][menuid]"  data-parent="' + child + '" name="menu_id" class="input-block-level menu_select select2-icon-ajax" data-parent-id="">' +
+        return  '<tr id="detailRow-' + child + '">' +
+            '<td>' +
+            '<div class="row-fluid">' +
+            '<div class="span12"> ' +
+            '<select name="detail[data' + child + '][menuid]"  data-parent="' + child + '" name="menu_id" class="input-block-level menu_select select2-icon-ajax" data-parent-id="">' +
 //            '<option value="-1" data-cost="0">
-        <?php //echo $translator->translate('Select') ?>//</option>'+
-        '<option data-ta-cost="' + parseFloat((data.taCost).replace(',', "")) + '" data-cost="' + parseFloat((data.taCost).replace(',', "")) + '" value="' + data.id + '" selected >' + data.name + '</option>' +
-        '<?php
+            <?php //echo $translator->translate('Select') ?>//</option>'+
+            '<option data-ta-cost="' + parseFloat((data.taCost).replace(',', "")) + '" data-cost="' + parseFloat((data.taCost).replace(',', "")) + '" value="' + data.id + '" selected >' + data.name + '</option>' +
+            '<?php
                 //    $menu = \Velacolib\Utility\Utility::getMenu();
 //                    foreach($menus as $menu){
 //                        echo '<option data-ta-cost="'.$menu->getTakeAwayCost().'" data-cost="'.$menu->getCost().'" value="'.$menu->getId().'" >'.$menu->getName().'</option>';
 //                    }
                 ?></select></div></div></td>' +
-        '<td>' +
-        ' <input data-parent="' + child + '" class="menuOrderMenuCostType" type="radio" name="detail[data' + child + '][orderDetailType]" value="0"> <?php echo $translator->translate('Take away') ?> &nbsp' +
-        '<input data-parent="' + child + '" checked class="menuOrderMenuCostType" type="radio" name="detail[data' + child + '][orderDetailType]" value="1"><?php echo $translator->translate('Stay here') ?>' +
-        '</td>' +
-        '<td><span class="menucost">' + parseFloat((data.cost).replace(',', "")) + '</span>' +
-        '<input name="detail[data' + child + '][menuCost]" type="hidden" value="' + parseFloat((data.cost).replace(',', "")) + '" class="menucostInput"></td>' +
-        '<td>' +
-        '<select name="detail[data' + child + '][quantity]" data-parent="' + child + '"  class="quatity input-block-level  select2-icon-ajax">'
-        + '<?php
+            '<td>' +
+            ' <input data-parent="' + child + '" class="menuOrderMenuCostType" type="radio" name="detail[data' + child + '][orderDetailType]" value="0"> <?php echo $translator->translate('Take away') ?> &nbsp' +
+            '<input data-parent="' + child + '" checked class="menuOrderMenuCostType" type="radio" name="detail[data' + child + '][orderDetailType]" value="1"><?php echo $translator->translate('Stay here') ?>' +
+            '</td>' +
+            '<td><span class="menucost">' + parseFloat((data.cost).replace(',', "")) + '</span>' +
+            '<input name="detail[data' + child + '][menuCost]" type="hidden" value="' + parseFloat((data.cost).replace(',', "")) + '" class="menucostInput"></td>' +
+            '<td>' +
+            '<select name="detail[data' + child + '][quantity]" data-parent="' + child + '"  class="quatity input-block-level  select2-icon-ajax">'
+            + '<?php
                     for($i=1; $i<= $config['max_quantity_order']; $i++){
                         echo '<option value="'.$i.'">'.$i.'</option>';
                     }
                 ?>' +
-        '</select>' +
-        '</td>' +
-    '<td>' +
+            '</select>' +
+            '</td>' +
+            '<td>' +
 //        '<input style="width: 70px" data-parent="' + child + '" type="text" class="discount" name="detail[data' + child + '][discount]" id="discount_' + child + '" value="" />' +
-    '<select class="select2-icon-ajax input-block-level select_discount" class="input-block-level" name="detail[data' + child + '][discount]"  data-parent="'+child+'"  id="">'+
-    '<?php
+            '<select class="select2-icon-ajax input-block-level select_discount" class="input-block-level" name="detail[data' + child + '][discount]"  data-parent="'+child+'"  id="">'+
+            '<?php
 
         echo ' <option data-expride="0" value="-1" > ' . $translator->translate('Select coupon') . ' </option>';
         foreach ($coupons as $coupon) {
@@ -1004,34 +1032,36 @@ function renderRow(respone) {
             echo ' <option ' . $selected . ' data-reuse="' . $coupon->getReuse() . '" data-expride="' . $expride . '" data-coupon-desc="' . $coupon->getDescription() . '" data-coupon-type="' . $coupon->getType() . '" data-coupon-value="' . $coupon->getValue() . '" value="' . $coupon->getId() . '" >' . $name . '</option>';
         }
         ?>'+
-    '</select>'+
-    '</td>' +
-        '<td><span class="realcost">' + parseFloat((data.cost).replace(',', "")) + ' </span>' +
-        '<input type="hidden" value="' + parseFloat((data.cost).replace(',', "")) + '" name="detail[data' + child + '][realcost]"  class="realcostInput">' +
-        '</td>' +
-        '<td><div class="text-right">\
-            <a class="btn btn-danger btn-mini btn-remove-detail" data-parent="detailRow-' + child + '">\
+            '</select>'+
+            '</td>' +
+            '<td><span class="realcost">' + parseFloat((data.cost).replace(',', "")) + ' </span>' +
+            '<input type="hidden" value="' + parseFloat((data.cost).replace(',', "")) + '" name="detail[data' + child + '][realcost]"  class="realcostInput">' +
+            '</td>' +
+            '<td><div class="text-right">\
+                <a class="btn btn-danger btn-mini btn-remove-detail" data-parent="detailRow-' + child + '">\
                     <i class="icon-remove"></i>\
                     </a>\
             </div></td>' +
-        '</tr>';
-}
-$(document).on('click', '.btn-save-order', function () {
-    var count = $('#tableOrderDetail').children('tr').length;
-    if (count == 0) {
-        alert('Please insert order detail');
-        return false;
+            '</tr>';
     }
-    $(this).parent().submit();
-});
+    $(document).on('click', '.btn-save-order', function () {
+        var count = $('#tableOrderDetail').children('tr').length;
+        if (count == 0) {
+            alert('Please insert order detail');
+            return false;
+        }
+        $(this).parent().submit();
+    });
 
-function roundCalc(number){
+    function roundCalc(number){
 
-var n = parseInt(number);
-   number = (Math.ceil(n/1000))*1000;
-    return number;
+        console.log(number);
+        //  return parseFloat(number);
+        var n = parseInt(number);
+        number = number.toFixed(<?php echo $config['number_decimal'] ?>);
+        return number;
 
-}
+    }
 
 
 </script>

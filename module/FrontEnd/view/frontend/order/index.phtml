@@ -1,8 +1,9 @@
 <?php
-$data = $this->data;
-$title = $this->title;
 
-$table = $this->table;
+$title = array();
+$title['title'] = $this->title;
+$title['link'] =   $this->url('frontend/child', array('controller'=>'order','action' => 'index'));
 $this->titleHelper($title);
+$data = $this->data;
+$table = $this->table;
 $table->render();
-

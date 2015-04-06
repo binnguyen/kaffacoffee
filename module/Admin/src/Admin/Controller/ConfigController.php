@@ -45,7 +45,7 @@ class ConfigController extends AdminGlobalController
         );
 
         return new ViewModel(array('data'=>$data,
-            'title'=>$this->translator->translate('Config')));
+            'title'=>$this->translator->translate('Manage Config')));
     }
     public function addAction()
     {

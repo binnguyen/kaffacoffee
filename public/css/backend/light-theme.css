@@ -1,4 +1,4 @@
-/*
+    /*
  *  Font Awesome 3.1.0
  *  the iconic font designed for Bootstrap
  *  -------------------------------------------------------
@@ -2849,7 +2849,7 @@ body {
         box-shadow: none; }
 
 body.sign-in, body.sign-up, body.forgot-password {
-  padding-top: 100px;
+  /*padding-top: 100px;*/
   height: auto;
   position: relative; }
   @media screen and (max-width: 979px) {
@@ -2878,12 +2878,13 @@ body.sign-in, body.sign-up, body.forgot-password {
           margin-top: 10px;
           font-family: Montserrat; }
     body.sign-in #wrapper .controls, body.sign-up #wrapper .controls, body.forgot-password #wrapper .controls {
-      width: 100%;
-      position: relative;
-      background-color: white;
-      -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-      -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); }
+      /*width: 100%;*/
+      /*position: relative;*/
+      /*background-color: white;*/
+      /*-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);*/
+      /*-moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);*/
+      /*box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); */
+    }
       body.sign-in #wrapper .controls .caret, body.sign-up #wrapper .controls .caret, body.forgot-password #wrapper .controls .caret {
         position: absolute;
         margin-left: -10px;
@@ -4269,13 +4270,13 @@ div.jGrowl div.jGrowl-notification, div.jGrowl div.jGrowl-closer {
 .contrast-red #main-nav .navigation > .nav > li .nav > li > a:hover [class^="icon-"], .contrast-red #main-nav .navigation > .nav > li .nav > li > a:hover [class*=" icon-"], .contrast-red #main-nav .navigation > .nav > li .nav > li > a:focus [class^="icon-"], .contrast-red #main-nav .navigation > .nav > li .nav > li > a:focus [class*=" icon-"] {
   color: #f34541; }
 .contrast-red .box .box-header.contrast-background .actions .btn-link:hover {
-  color: #f34541 !important; }
+  color: #f34541}
 .contrast-red.contrast-background, .contrast-red .contrast-background {
-  background: #f34541 !important; }
+  background: #f34541  }
 .contrast-red .text-contrast, .contrast-red .contrast {
-  color: #f34541 !important; }
+  color: #f34541  }
 .contrast-red .contrast-border {
-  border-color: #f34541 !important; }
+  border-color: #f34541  }
 .contrast-red .accordion.accordion-contrast .accordion-group {
   border-color: #f34541;
   border-bottom-color: #f9a3a1; }

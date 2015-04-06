@@ -62,7 +62,7 @@ class UsersController extends AdminGlobalController
         //end config table
 
         return new ViewModel(array('table' => $table,
-            'title' => $this->translator->translate('Users')));
+            'title' => $this->translator->translate('Manage Users')));
     }
     public function addAction()
     {
