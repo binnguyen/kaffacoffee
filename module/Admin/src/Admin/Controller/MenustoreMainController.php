@@ -76,7 +76,7 @@ class MenustoreMainController extends    AdminGlobalController
                     return $output;
 
                 } ),
-            array('title' =>'In stock', 'db' => 'outOfStock','dt' => 5 , 'search'=>false, 'type' => 'number' ),
+            array('title' =>'In Stock', 'db' => 'outOfStock','dt' => 5 , 'search'=>false, 'type' => 'number' ),
             array('title' =>'Unit', 'db' => 'unit','dt' => 6 ,'search'=>false, 'type' => 'text' ),
 
             array('title' =>'Supplier', 'db' => 'supplier','dt' => 7, 'search'=>true, 'type' => 'text','formatter'=>
@@ -128,10 +128,6 @@ class MenustoreMainController extends    AdminGlobalController
 
 
     }
-
-
-
-
 
 
     public function addAction()
@@ -204,7 +200,7 @@ class MenustoreMainController extends    AdminGlobalController
 
             //insert new user
 
-            return new ViewModel(array('title' => $this->translator->translate('Add new menu store')));
+            return new ViewModel(array('title' => $this->translator->translate('Add New Menu Store')));
         } else {
             $menuStore = $this->menuStoreModel->findOneBy(array('id' => $id));
 
@@ -234,7 +230,7 @@ class MenustoreMainController extends    AdminGlobalController
                 $data['quantity'] = $data['quantity']*INSERT_STORE;
                 $data['action'] = INSERT_STORE_ACRION;
                 $data['unit'] = $data['unit'];
-                $data['note'] = $this->translator->translate('Import item into store');
+                $data['note'] = $this->translator->translate('Import Item Into Store');
                 TransactionUtility::insertTransaction($data,$data['supplier'],$data['cost'],MAIN_STORE);
 
                 $this->flashMessenger()->addSuccessMessage("Update Success");
@@ -243,7 +239,7 @@ class MenustoreMainController extends    AdminGlobalController
 
             return new ViewModel(array(
                 'data' => $menuStore,
-                'title' => $this->translator->translate('Edit menu store:')
+                'title' => $this->translator->translate('Edit Menu Store:')
             ));
 
         }
@@ -335,7 +331,7 @@ class MenustoreMainController extends    AdminGlobalController
     public function managerInOutAction(){
         $columns = array(
             array('title' =>'Id', 'db' => 'id', 'dt' => 0,'select'=>'id','prefix'=>'o', 'search'=>false, 'type' => 'number' ),
-            array('title' =>'Store name', 'db' => 'menuStoreId','dt' => 1,'select'=>'menuStoreId','prefix'=>'o', 'search'=>true, 'type' => 'text','formatter'=>function($d,$row){
+            array('title' =>'Store Name', 'db' => 'menuStoreId','dt' => 1,'select'=>'menuStoreId','prefix'=>'o', 'search'=>true, 'type' => 'text','formatter'=>function($d,$row){
                  $storeInfo = Utility::getMainStoreInfo( $d);
                 return $storeInfo->getName();
             } ),

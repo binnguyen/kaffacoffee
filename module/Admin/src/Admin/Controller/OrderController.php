@@ -44,15 +44,15 @@ class OrderController extends AdminGlobalController
             array('title' =>'Id', 'db' => 'id', 'dt' => 0,'select'=>'id','prefix'=>'o', 'search'=>false, 'type' => 'number' ),
             array('title' =>'Table', 'db' => 'name','dt' => 1,'select'=>'name','prefix'=>'t', 'search'=>true, 'type' => 'text' ),
             array('title' =>'User Name', 'db' => 'userName','dt' => 2,'select'=>'userName','prefix'=>'u', 'search'=>true, 'type' => 'text' ),
-            array('title' =>'Create date', 'db' => 'createDate','dt' => 3,'select'=>'createDate','prefix'=>'o', 'search'=>true, 'type' => 'text','formatter'=>function($d,$row){
+            array('title' =>'Create Date', 'db' => 'createDate','dt' => 3,'select'=>'createDate','prefix'=>'o', 'search'=>true, 'type' => 'text','formatter'=>function($d,$row){
                 return date('d-m-Y h:i:s',$d);
             } ),
-            array('title' =>'Total cost', 'db' => 'totalCost','dt' => 4,'select'=>'totalCost','prefix'=>'o', 'search'=>true, 'type' => 'text',
+            array('title' =>'Total Cost', 'db' => 'totalCost','dt' => 4,'select'=>'totalCost','prefix'=>'o', 'search'=>true, 'type' => 'text',
              'formatter' => function($d,$row){
         return Utility::formatCost($d);
     }
             ),
-            array('title' =>'Total real cost', 'db' => 'totalRealCost','select'=>'totalRealCost','prefix'=>'o','dt' => 5, 'search'=>true, 'type' => 'text' ,
+            array('title' =>'Total Real Cost', 'db' => 'totalRealCost','select'=>'totalRealCost','prefix'=>'o','dt' => 5, 'search'=>true, 'type' => 'text' ,
             'formatter' => function($d,$row){
                     return Utility::formatCost($d);
               }

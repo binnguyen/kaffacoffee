@@ -53,7 +53,10 @@ class ComController extends FrontEndController
         $this->tableAjaxRequest($table,$columns,$this->modelMenu);
         //end config table
         return new ViewModel(array('table' => $table,
-            'title' => $this->translator->translate('Combo')));
+            'title' =>
+                array('title'=> $this->translator->translate('Combo'))
+            )
+        );
     }
     public function addAction()
     {

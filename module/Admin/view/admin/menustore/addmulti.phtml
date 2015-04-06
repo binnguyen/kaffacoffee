@@ -6,6 +6,7 @@ $this->titleHelper($title);
 $data = $this->data;
 $translator = \Velacolib\Utility\Utility::translate();
 $menus  = \Velacolib\Utility\Utility::getMenuStoreArrayAutoComplete(false);
+
 ?>
 <form action="<?php echo $this->url('admin/child',array('controller'=>'menustore', 'action'=>'addmulti')) ?>" method="POST" >
 <div class="row-fluid">
@@ -18,13 +19,13 @@ $menus  = \Velacolib\Utility\Utility::getMenuStoreArrayAutoComplete(false);
                         <thead>
                             <tr>
                             <th>
-                                Tên
+                                <?php echo $translator->translate('Name'); ?>
                             </th>
                             <th>
-                                Số lượng
+                                <?php echo $translator->translate('Number'); ?>
                             </th>
                             <th>
-                               Đơn vị
+                                <?php echo $translator->translate('Unit'); ?>
                             </th>
                             <th></th>
                         </tr>
@@ -36,8 +37,8 @@ $menus  = \Velacolib\Utility\Utility::getMenuStoreArrayAutoComplete(false);
                         <tbody class="tableOrderDetailAction" id="tableOrderDetailAction">
                         <tr>
                             <td>
-                                <input type="button" class="btn btn-success  btn-default" value="Thêm chi tiết thực đơn" id="addMenuItem">
-                                <input type="submit" class="btn btn-primary btn-save-order" value="Lưu" id="">
+                                <input type="button" class="btn btn-success  btn-default" value="   <?php echo $translator->translate('Add New'); ?>" id="addMenuItem">
+                                <input type="submit" class="btn btn-primary btn-save-order" value="<?php echo $translator->translate('Save'); ?>" id="">
                             </td>
                             <td>
 

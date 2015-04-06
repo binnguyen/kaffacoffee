@@ -100,7 +100,7 @@ class CategoryController extends AdminGlobalController
             }
             //insert new user
             //$this->redirect()->toRoute('admin/child',array('controller'=>'category'));
-            return new ViewModel(array('title'=> $this->translator->translate('Add new category')));
+            return new ViewModel(array('title'=> $this->translator->translate('Add New Category')));
         }
         else{
 
@@ -114,7 +114,7 @@ class CategoryController extends AdminGlobalController
             }
             return new ViewModel(array(
                 'data' =>$cat,
-                'title' => $this->translator->translate('Edit category').': '.$cat->getName()
+                'title' => $this->translator->translate('Edit Category').': '.$cat->getName()
             ));
         }
     }

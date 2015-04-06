@@ -59,7 +59,7 @@ class IndexController extends AdminGlobalController
                 'dataSelect' => Utility::getCategoryForSelect()
             ),
             array('title' =>'Cost', 'db' => 'cost','dt' => 3, 'search'=>false, 'type' => 'number' ),
-            array('title' =>'Take Away cost', 'db' => 'taCost','dt' => 4, 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Take Away Cost', 'db' => 'taCost','dt' => 4, 'search'=>false, 'type' => 'number' ),
             array('title' =>'Action','db'=>'id','dt' => 5, 'search'=>false, 'type' => 'number',
                 'formatter' => function( $d, $row ) {
                     $actionUrl = '/admin/index';

@@ -62,12 +62,12 @@ $translator = \Velacolib\Utility\Utility::translate();
 
 
                 <div class="control-group">
-                    <label class="control-label" for="inputText1"><?php echo $translator->translate('reUse'); ?></label>
+                    <label class="control-label" for="inputText1"><?php echo $translator->translate('Coupon ReUser'); ?></label>
                     <div class="controls">
                         <?php
                         $selected = '';
 
-                        $arrayType = array(0=>'No re use',1 => 're use');
+                        $arrayType = array(0=>'No Reuse',1 => 'Reuse');
                         echo '<select  name="reuse">';
                         foreach($arrayType as $k => $reuse){
                             if($data){ if($data->getReuse() == $k){
@@ -91,7 +91,7 @@ $translator = \Velacolib\Utility\Utility::translate();
                     </div>
                 </div>
                 <div class="control-group">
-                    <label class="control-label"><?php echo $translator->translate('From date'); ?></label>
+                    <label class="control-label"><?php echo $translator->translate('From Date'); ?></label>
                     <div class="controls">
                         <input type="hidden" name="id" value="<?php if($data){ echo $data->getId();} ?>">
                         <input class="date-picker"  type="text" name="fromdate"  placeholder="From Date" value="<?php if($data){ echo date('d-m-Y',$data->getFromDate());} ?>">
@@ -99,7 +99,7 @@ $translator = \Velacolib\Utility\Utility::translate();
                 </div>
 
                 <div class="control-group">
-                    <label class="control-label"><?php echo $translator->translate('To date'); ?></label>
+                    <label class="control-label"><?php echo $translator->translate('To Date'); ?></label>
                     <div class="controls">
 
                         <input class="date-picker" type="text" name="todate" placeholder="To Date" value="<?php if($data){ echo date('d-m-Y',$data->getToDate());} ?>">
