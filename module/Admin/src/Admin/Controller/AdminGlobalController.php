@@ -33,6 +33,12 @@ abstract class AdminGlobalController extends AbstractActionController
         $user = Utility::checkLogin();
         if (!is_object($user) && $user == 0) {
             $this->redirect()->toRoute('frontend/child', array('controller' => 'login'));
+
+        }
+
+        if($user->userType != 1){
+            $this->redirect()->toRoute('frontend/child', array('controller' => 'login'));
+
         }
 
         $this->init();
