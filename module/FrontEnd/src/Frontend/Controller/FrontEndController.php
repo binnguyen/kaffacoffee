@@ -20,12 +20,10 @@ abstract class FrontEndController extends AbstractActionController{
     //not edit ini onDispatch
     public function onDispatch(\Zend\Mvc\MvcEvent $e)
     {
-
         $install = setupUtility::checkInstall();
         if($install == true){
             return $this->redirect()->toRoute('install');
         }
-
         //get doctrine service
         $this->serviceLocatorStr = 'doctrine';
         $this->sm = $this->getServiceLocator();
