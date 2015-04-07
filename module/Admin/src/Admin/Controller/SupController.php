@@ -184,7 +184,7 @@ class SupController extends AdminGlobalController
             }
             return new ViewModel(array(
                 'data' =>$event,
-                'title' => 'Edit event: '.$event->getCompanyName(),
+                'title' => 'Edit : '.$event->getCompanyName(),
                 'form' => $configForm
             ));
         }

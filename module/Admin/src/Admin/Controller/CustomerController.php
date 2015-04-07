@@ -112,7 +112,7 @@ class CustomerController extends AdminGlobalController
             }
             return new ViewModel(array(
                 'data' =>$customer,
-                'title' => 'Add customer: ',
+                'title' => 'Add Customer: ',
                 'form' => $customerForm
             ));
 
@@ -179,7 +179,7 @@ class CustomerController extends AdminGlobalController
             }
             return new ViewModel(array(
                 'data' =>$event,
-                'title' => 'Edit customer: '.$event->getFullname(),
+                'title' => 'Edit Customer: '.$event->getFullname(),
                 'form' => $configForm
             ));
 

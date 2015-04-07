@@ -449,6 +449,6 @@ class MenustoreController extends AdminGlobalController
             $this->flashMessenger()->addSuccessMessage("Insert Success");
             $this->redirect()->toRoute('admin/child',array('controller'=>'menustore'));
         }
-        return new ViewModel(array('title' => $this->translator->translate('Add new menu store multi')));
+        return new ViewModel(array('title' => $this->translator->translate('Add Menu Store Multi')));
     }
 }

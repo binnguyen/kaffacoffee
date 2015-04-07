@@ -249,6 +249,7 @@ class Utility extends AbstractActionController
                 $auth = $Auth_service->getIdentity();
 
                 if ($auth->userId) {
+                    $tableId = $param->fromPost('table_id');
                     $dataDetail = $param->fromPost('detail');
                     $totalRealCost = ($param->fromPost('total_real_cost'));
 
@@ -294,7 +295,7 @@ class Utility extends AbstractActionController
                         header("Location:" . $url);
                         exit();
                     } else {
-                        $url = "http://" . $_SERVER['HTTP_HOST'] . '/frontend/order/add/' . $catID;
+                        $url = "http://" . $_SERVER['HTTP_HOST'] . '/frontend/order/add/' . $catID. '?tbl=' . $tableId;
                         header("Location:" . $url);
                         exit();
                     }
