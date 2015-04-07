@@ -6,6 +6,7 @@ use Velacolib\Utility\Utility;
 use Velacolib\Utility\Imagemoo;
 use Velacolib\Utility\UnitCalcUtility;
 use Velacolib\Utility\DropboxUtility;
+use Velacolib\Utility\setupUtility;
 
 use Zend\EventManager\Event;
 
@@ -34,6 +35,7 @@ class Module
         TransactionUtility::setSM($app->getServiceManager());
         UnitCalcUtility::setSM($app->getServiceManager());
         DropboxUtility::setSM($app->getServiceManager());
+        setupUtility::setSM($app->getServiceManager());
 
 
     }
