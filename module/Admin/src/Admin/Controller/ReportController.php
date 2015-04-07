@@ -67,7 +67,124 @@ class ReportController extends AbstractActionController
         return parent::onDispatch($e);
     }
 
-    public function indexAction()
+
+    public function indexAction(){
+
+
+        if ($this->getRequest()->isPost()) {
+
+            $str = '';
+            $strOrder = '';
+            $fromDate = '';
+            $toDate = '';
+            $strUser = '';
+            $strMenu = '';
+            $strMenuForAllMenu = '';
+
+            $params = $this->params()->fromPost();
+            $fromDate = $params['formDate'];
+            $toDate = $params['toDate'];
+            $user = $params['user'];
+            $strUserOrder = '';
+            $userText = '';
+            $fromText = '';
+            $toText = '';
+            $menuText = '';
+
+            if ($fromDate) {
+                $fromDateTime = strtotime($fromDate . ' 00:00:00');
+                $str .= ' AND table.createDate >= ' . $fromDateTime;
+                $strOrder .= ' AND o.createDate >= ' . $fromDateTime;
+                $fromText = $this->translator->translate('from ') . date('d-m-Y',$fromDateTime);
+            }
+
+            if ($toDate) {
+                $toDateTime = strtotime($toDate . ' 23:59:00');
+                $str .= ' AND table.createDate <= ' . $toDateTime;
+                $strOrder .= ' AND o.createDate <= ' . $toDateTime;
+                $toText = $this->translator->translate(' to ') . date('d-m-Y',$toDateTime);
+            }
+            if (isset($params['user']) && $params['user'] != 0) {
+                $strUserOrder .= ' AND table.userId = ' . $user;
+                $strUser .= ' AND table.userId = ' . $user;
+                $userInfo = Utility::getUserInfo($user);
+                $userText = $this->translator->translate(' by '). $userInfo->getUserName();
+            }
+            if (isset($params['menu']) && $params['menu'] != 0) {
+
+                $strMenu .= ' AND mn.catId =' . $params['menu'];
+                $strMenuForAllMenu .= ' AND table.id = od.orderId AND od.menuId = mn.id ' . $strMenu;
+                $menuInfo = Utility::getCatInfo($params['menu']);
+                $menuText = $this->translator->translate(' in '). $menuInfo->getName();
+            }
+
+            // fetch data
+
+            $orderBy = "  ";
+
+            $reportMenu = $this->modelOrderDetail->createQueryMenu('table.isdelete = 0 ' . $strOrder . $strMenu);
+
+            $reportMenu = reportModel::convertMenuReportArray($reportMenu);
+
+            $reporAllOrder = $this->modelOrder->createQueryAllMenu('table.isdelete = 0 ' . $str . $strUser);
+
+            /*  report order and count cost by menu id  */
+            if (isset($params['menu']) && $params['menu'] != 0) {
+                $reporAllOrder = $this->modelOrder->createQueryByMenu('table.isdelete = 0 ' . $str . $strUser . $strMenuForAllMenu);
+            }
+
+
+//            echo '<pre>';
+//            print_r($reportMenu);
+//            echo '<hr/>';
+//            print_r($reporAllOrder);
+//            die;
+
+            // remove all report file
+            Utility::deleteAllFileInFolder('public/export/');
+
+            $link = renderExcel::renderMenuOrder($reportMenu);
+
+            $reportText = $this->translator->translate('Report ') .$fromText . $toText .$userText . $menuText ;
+
+            $dataMenu = array(
+                'tableTitle' => $this->translator->translate('Report menu'),
+                'link' => 'admin/order',
+                'data' => $reportMenu,
+                'heading' => array(
+                    'orderDetailId' => $this->translator->translate('Order Detail Id'),
+                    'OrderId' => $this->translator->translate('Order Id'),
+                    'menuId' => $this->translator->translate('Name'),
+                    'menuName' => $this->translator->translate('Menu'),
+                    'count_menu' => $this->translator->translate('Count number'),
+                    'realCost' => $this->translator->translate('Real cost'),
+                    'time' => $this->translator->translate('Time')
+                ),
+                'hideEditButton' => 1,
+                'hideDeleteButton' => 1,
+                'hideDetailButton' => 1
+            );
+
+
+            return new ViewModel(array(
+
+                'totalTable'=>$reporAllOrder[0]['count_table'],
+                'tCost'=>$reporAllOrder[0]['tCost'],
+                'tRCost'=>$reporAllOrder[0]['tRCost'],
+                'excelLink'=>$link,
+                'reportText' => $reportText,
+                'reportMenu' => $dataMenu,
+
+            ));
+
+
+        }
+
+
+
+    }
+
+    public function indexAction_bk()
     {
 
         $str = '';
@@ -261,6 +378,7 @@ class ReportController extends AbstractActionController
             )
         );
     }
+
 
 
     public function addAction()

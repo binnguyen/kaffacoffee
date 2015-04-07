@@ -64,7 +64,7 @@ class orderdetailModel extends globalModel {
             ->from(' Admin\Entity\Menu','mn')
             ->where($strQuery.' AND o.id = table.orderId AND table.menuId = mn.id')
             ->groupBy('table.menuId')
-            ->orderBy('count_menu','desc')
+            ->orderBy('table.id','DESC')
             ->getQuery()
             ->getResult();
 

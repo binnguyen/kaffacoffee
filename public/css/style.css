@@ -401,6 +401,74 @@ body.sign-in #wrapper .controls .form-wrapper.custom{
     left: 0px;
     width: 238px;
 }
+.icon-menustore{
+    background: url("../img/icon-inner/icon-config.png") no-repeat;
+    height: 29px;
+    width: 29px!important;
+    margin-bottom: -5px;
+    border-radius: 4px;
+}
+.icon-supplier{
+    background: url("../img/icon-inner/icon-config.png") no-repeat;
+    height: 29px;
+    width: 29px!important;
+    margin-bottom: -5px;
+    border-radius: 4px;
+}
+.icon-combo{
+    background: url("../img/icon-inner/icon-config.png") no-repeat;
+    height: 29px;
+    width: 29px!important;
+    margin-bottom: -5px;
+    border-radius: 4px;
+}
+.icon-users{
+    background: url("../img/icon-inner/icon-config.png") no-repeat;
+    height: 29px;
+    width: 29px!important;
+    margin-bottom: -5px;
+    border-radius: 4px;
+}
+
+.icon-surtax{
+    background: url("../img/icon-inner/icon-config.png") no-repeat;
+    height: 29px;
+    width: 29px!important;
+    margin-bottom: -5px;
+    border-radius: 4px;
+}
+
+.icon-accrued{
+    background: url("../img/icon-inner/icon-config.png") no-repeat;
+    height: 29px;
+    width: 29px!important;
+    margin-bottom: -5px;
+    border-radius: 4px;
+}
+
+.icon-property{
+    background: url("../img/icon-inner/icon-config.png") no-repeat;
+    height: 29px;
+    width: 29px!important;
+    margin-bottom: -5px;
+    border-radius: 4px;
+}
+.icon-tracking{
+    background: url("../img/icon-inner/icon-config.png") no-repeat;
+    height: 29px;
+    width: 29px!important;
+    margin-bottom: -5px;
+    border-radius: 4px;
+}
+.icon-history{
+    background: url("../img/icon-inner/icon-config.png") no-repeat;
+    height: 29px;
+    width: 29px!important;
+    margin-bottom: -5px;
+    border-radius: 4px;
+}
+
+
 
 @media screen and (min-width: 768px){
     .logo-header img{
