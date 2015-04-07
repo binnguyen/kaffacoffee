@@ -49,8 +49,9 @@ class ComboController extends AdminGlobalController
             array('title' =>'Action','db'=>'id','dt' => 4 , 'search'=>false, 'type' => 'number',
                 'formatter' => function( $d, $row ) {
                     $actionUrl = '/admin/combo';
+                    $actionUrlMain = '/admin/index';
                     return '
-                        <a class="btn-xs action action-detail btn btn-success btn-default" href="'.$actionUrl.'/add/'.$d.'"><i class="icon-edit"></i></a>
+                        <a class="btn-xs action action-detail btn btn-success btn-default" href="'.$actionUrlMain.'/add/'.$d.'"><i class="icon-edit"></i></a>
                         <a data-id="'.$d.'" id="'.$d.'" data-link="'.$actionUrl.'" class="btn-xs action action-detail btn btn-danger  btn-delete " href="javascript:void(0)"><i class="icon-remove"></i></a>
                     ';
 

@@ -95,7 +95,6 @@ class CustomerController extends AdminGlobalController
                if(!$fileUpload['status']){
 
                    $customerForm->setMessages($fileUpload['error']);
-                    print_r($customerForm->getMessages());die;
                }
 
                 $customer->setFullname($data['fullname']);
@@ -112,7 +111,7 @@ class CustomerController extends AdminGlobalController
             }
             return new ViewModel(array(
                 'data' =>$customer,
-                'title' => 'Add Customer: ',
+                'title' => 'Add Customer ',
                 'form' => $customerForm
             ));
 
@@ -193,24 +192,15 @@ class CustomerController extends AdminGlobalController
         $request = $this->getRequest();
         if($request->isPost()){
             $id = $this->params()->fromPost('id');
-            $menu = $this->modelCategories->findOneBy(array('id'=>$id));
+            $menu = $this->modelCustomer->findOneBy(array('id'=>$id));
             $menu->setIsdelete(1);
-            $this->modelCategories->edit($menu);
+            $this->modelCustomer->edit($menu);
             //$this->model->delete(array('id'=>$id));
             echo 1;
         }
         die;
 
     }
-    public function editAction()
-    {
-        //get user by id
-        $id = $this->params()->fromRoute('id');
-        $user = $this->model->findOneBy(array('id'=>$id));
-        $user->setFullName('tri 1234');
-        $this->model->edit($user);
-        //update user
 
-    }
 
 }

@@ -83,6 +83,11 @@ class OrderController extends FrontEndController
             )
 
         );
+        $d = date('d',time());
+        $m = date('m',time());
+        $y = date('Y',time());
+        $min = strtotime(' 0:0:0 '.$d.'-'.$m.'-'.$y);
+        $max = strtotime(' 23:59:59 '.$d.'-'.$m.'-'.$y);
         /////end column for table
         $table = new AjaxTableSum(array(), array(), 'frontend/order');
         $table->setTableColumns($columns);
@@ -97,7 +102,9 @@ class OrderController extends FrontEndController
         $table->setExtendSQl(
             array(
                 array('AND','o.isdelete','=','0'),
-                array('AND','o.userId','=',$currentUser->userId)
+                array('AND','o.userId','=',$currentUser->userId),
+                array('AND','o.createDate','>=',$min),
+                array('AND','o.createDate','<',$max),
             )
         );
         $table->setSumColumn(array('5','6'));

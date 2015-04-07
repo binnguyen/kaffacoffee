@@ -59,7 +59,7 @@ class OrderDetail
     /**
      * @var integer
      *
-     * @ORM\Column(name="real_cost", type="integer", nullable=false)
+     * @ORM\Column(name="real_cost", type="float", nullable=false)
      */
     private $realCost;
 
