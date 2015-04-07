@@ -66,7 +66,7 @@ class OrderDetail
     /**
      * @var integer
      *
-     * @ORM\Column(name="isdelete", type="integer", nullable=false)
+     * @ORM\Column(name="isdelete", type="float", nullable=false)
      */
     private $isdelete;
 

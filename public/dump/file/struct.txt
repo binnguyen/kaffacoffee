@@ -200,7 +200,7 @@ CREATE TABLE `order_detail` (
   `cost_type` int(11) NOT NULL,
   `quantity` int(11) NOT NULL,
   `menu_cost` double NOT NULL,
-  `real_cost` int(11) NOT NULL,
+  `real_cost` double NOT NULL,
   `isdelete` int(11) NOT NULL,
   `discount` int(11) DEFAULT NULL,
   `customer_id` int(11) NOT NULL,

@@ -28,6 +28,9 @@ class IndexController extends AbstractActionController
 
     public function indexAction()
     {
+        if(setupUtility::checkInstall()==false){
+            return $this->redirect()->toRoute('frontend/child',array('controller'=>'login'));
+        }
         $port = ini_get('mysql.default_port');
         $port = isset($port)?$port:'3306';
         $this->flashMessenger()->clearMessages();
@@ -83,16 +86,16 @@ class IndexController extends AbstractActionController
             }
         }
         return new ViewModel(
-            array(
-                'title' => array(
-                    'title'=>$this->translator->translate('Install')
-                ),
+            array( 'title' => $this->translator->translate('Install'),
                 'form' => $installForm,
                 'writeable' => $writeables)
         );
 
     }
     public function installstep2Action(){
+        if(setupUtility::checkInstall()==false){
+            return $this->redirect()->toRoute('frontend/child',array('controller'=>'login'));
+        }
         if(!setupUtility::checkConfigFile())
             return  $this->redirect()->toRoute('install');
         $installForm2 = new InstallForm2();
@@ -119,14 +122,20 @@ class IndexController extends AbstractActionController
             }
         }
         return  new ViewModel(
-            array(  'title' => array(
-                'title'=>$this->translator->translate('Install Step 2')
-            ),
+            array( 'title' => $this->translator->translate('Install Step 2'),
                 'form' => $installForm2));
     }
     public function installstep3Action(){
+
+
         if(!setupUtility::checkConfigFile())
             return  $this->redirect()->toRoute('install');
+
+        if(setupUtility::checkConfigFile() && setupUtility::checkDataBase() &&  setupUtility::checkHaveAdmin() && setupUtility::checkHaveConfig()){
+            return $this->redirect()->toRoute('frontend/child',array('controller'=>'login'));
+
+        }
+
         $installForm3 = new InstallForm3();
         $request = $this->getRequest();
         if($request->isPost()){
@@ -140,9 +149,7 @@ class IndexController extends AbstractActionController
             return $this->redirect()->toRoute('frontend/child',array('controller'=>'login'));
         }
         return  new ViewModel(
-            array(  'title' => array(
-                'title'=>$this->translator->translate('Install Step 3')
-            ),
+            array( 'title' => $this->translator->translate('Install Step 3'),
                 'form' =>$installForm3  ));
     }
 
