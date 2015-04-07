@@ -139,7 +139,7 @@ class SupplieritemController  extends AdminGlobalController {
             }
             return new ViewModel(array(
                 'data' =>$event,
-                'title' => 'Edit event: '.$event->getValue(),
+                'title' => 'Edit: '.$event->getValue(),
                 'form' => $configForm
             ));
         }

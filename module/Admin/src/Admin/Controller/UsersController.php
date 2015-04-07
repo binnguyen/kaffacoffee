@@ -91,7 +91,7 @@ class UsersController extends AdminGlobalController
             }
             //insert new user
             //$this->redirect()->toRoute('admin/child',array('controller'=>'category'));
-            return new ViewModel(array('title'=> $this->translator->translate('Add new user')));
+            return new ViewModel(array('title'=> $this->translator->translate('Add User')));
         }
         //update
         else{

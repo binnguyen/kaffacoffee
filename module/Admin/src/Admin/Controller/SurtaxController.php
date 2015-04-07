@@ -61,7 +61,7 @@ class SurtaxController extends AdminGlobalController {
             }
             //insert new user
 
-            return new ViewModel(array('title'=> $this->translator->translate('Add new surtax')));
+            return new ViewModel(array('title'=> $this->translator->translate('Add Surtax')));
         }
         else{
 
