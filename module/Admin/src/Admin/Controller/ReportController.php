@@ -174,13 +174,18 @@ class ReportController extends AbstractActionController
                 'excelLink'=>$link,
                 'reportText' => $reportText,
                 'reportMenu' => $dataMenu,
+                'title'=>$this->translator->translate('Report')
 
             ));
 
 
         }
 
+        return new ViewModel(array(
 
+            'title'=>$this->translator->translate('Report')
+
+        ));
 
     }
 
