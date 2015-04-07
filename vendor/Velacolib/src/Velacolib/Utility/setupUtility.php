@@ -28,7 +28,6 @@ class setupUtility extends Utility{
             PUBLIC_FOLDER => self::checkWriteExcute(PUBLIC_FOLDER)
         );
     }
-
     public static function checkWriteExcute($path){
 
 
@@ -36,7 +35,6 @@ class setupUtility extends Utility{
             return true;
         return false;
     }
-
     public static function checkConfigFile(){
         $filename = CONFIG_FILE_PATH;
         $isExistConfigFile = file_exists ($filename);
@@ -87,7 +85,6 @@ class setupUtility extends Utility{
         }
         return null;
     }
-
     public static function createConfigFile($fileInfo = array()){
         @unlink(CONFIG_FILE_PATH);
         $myfile = fopen(CONFIG_FILE_PATH, "w") or die("Unable to open file!");
@@ -132,6 +129,7 @@ class setupUtility extends Utility{
         self::importSqlFile(DATA_TABLE_DATA_PATH.'/config.config');
         //insert user
         $insertUser = 'INSERT INTO `user`(user_name, password, full_name, type ,isdelete) VALUES  ("'.$userInfo['adminName'].'","'.Sha1($userInfo['adminPassword1']).'","'.$userInfo['adminName'].'",1,0)';
+
         mysql_query($insertUser) or die(mysql_error());
         //end insert user
 
@@ -192,5 +190,40 @@ class setupUtility extends Utility{
             }
         }
         echo "Tables imported successfully";
+    }
+    public static function checkHaveAdmin(){
+        $dbInfo = self::getDbInfo();
+        if($dbInfo == null)
+            return false;
+        mysql_select_db($dbInfo['dbName'],$dbInfo['link']);
+        $selectAdmin = 'Select * From user where type = 1';
+        $res =  mysql_query($selectAdmin) or die(mysql_error());
+        $users = array();
+        while($row = mysql_fetch_row($res))
+        {
+            $users[] = $row[0];
+        }
+        if(count($users) != 0)
+            return true;
+        return false;
+
+    }
+    public static function checkHaveConfig(){
+        $dbInfo = self::getDbInfo();
+        if($dbInfo == null)
+            return false;
+        mysql_select_db($dbInfo['dbName'],$dbInfo['link']);
+        $selectAdmin = 'Select * From config';
+        $res =  mysql_query($selectAdmin) or die(mysql_error());
+        $users = array();
+        while($row = mysql_fetch_row($res))
+        {
+
+            $users[] = $row[0];
+        }
+        if(count($users) != 0)
+            return true;
+        return false;
+
     }
 }
