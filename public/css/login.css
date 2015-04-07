@@ -1,9 +1,8 @@
 
 /* start css login layout*/
 .sign-in{
-    background: url("../img/kaffa-bg-2.jpg") no-repeat !important;
-    background-size: cover !important;;
-
+    background: url("../img/bg.jpg") no-repeat !important;
+    background-size: cover !important;
 }
 #wrap-login{
     padding: 20px;
@@ -49,9 +48,13 @@
     border-radius: 5px !important;
     color: #ffffff;
 }
+.logo {
+    margin-left: 300px;
+    margin-top: 10px;
+}
 @media screen and (min-width: 980px){
     #wrap-login{
-        margin-top: 200px;
+        margin-top: 100px;
         min-height: inherit;
     }
 
@@ -64,4 +67,19 @@
     #wrap-login .login-form{
         width: 100%;
     }
+}
+@media screen  and (min-width: 769px) and (max-width: 1200px) {
+    .logo{
+        margin-left: 200px;
+        width: 150px;
+    }
+}
+
+@media screen and ( max-width: 768px ){
+    .logo{
+        width: 130px;
+        float: none;
+        margin:0 auto;
+    }
+
 }
