@@ -17,22 +17,14 @@ use Zend\View\Model\ViewModel;
 use Zend\Mvc\Controller\AbstractActionController;
 
 
-
 class CategoryController extends AdminGlobalController
 {
-    protected   $catModel;
-    protected  $translator;
-
-
-
+    protected  $catModel;
     public function init(){
         parent::init();
         $this->catModel = new categoryModel($this->doctrineService);
     }
-
-
-    public function indexAction()
-    {
+    public function indexAction(){
 
         //config table
         /////column for table
@@ -45,7 +37,7 @@ class CategoryController extends AdminGlobalController
                     return '
 
                         <a class="btn-xs action action-detail btn btn-success btn-default" href="'.$actionUrl.'/add/'.$d.'"><i class="icon-edit"></i></a>
-                         <a data-id="'.$d.'" id="'.$d.'" data-link="'.$actionUrl.'" class="btn-xs action action-detail btn btn-danger  btn-delete " href="javascript:void(0)"><i class="icon-remove"></i></a>
+                        <a data-id="'.$d.'" id="'.$d.'" data-link="'.$actionUrl.'" class="btn-xs action action-detail btn btn-danger  btn-delete " href="javascript:void(0)"><i class="icon-remove"></i></a>
                     ';
                 }
             )
@@ -62,14 +54,10 @@ class CategoryController extends AdminGlobalController
         $this->tableAjaxRequest($table,$columns,$this->catModel);
         //end config table
         return new ViewModel(array('table' => $table,
-            'title' => $this->translator->translate('Manage Menu Category'))
-        );
+            'title' => $this->translator->translate('Category')));
     }
-
-
     public function detailAction()
     {
-
         $id = $this->params()->fromRoute('id');
         $menuInfo = $this->catModel->findOneBy(array('id'=>$id));
         $dataRow = $this->catModel->convertSingleToArray($menuInfo);
@@ -83,65 +71,81 @@ class CategoryController extends AdminGlobalController
         return new ViewModel(array('detailTable' => $detailTable,'title'=> $dataRow['name'] ));
 
     }
-
-
-
-    public function addAction()
-    {
-        $request = $this->getRequest();
+    public function addAction(){
+        $menuForm = new categoryForm();
         $id = $this->params()->fromRoute('id');
-        //insert
-        if($id == ''){
-            if($request->isPost()) {
-                $cat = new Categories();
-                $cat->setName($this->params()->fromPost('name'));
-                $cat->setIsdelete(0);
-                $catInserted = $this->catModel->insert($cat);
-            }
-            //insert new user
-            //$this->redirect()->toRoute('admin/child',array('controller'=>'category'));
-            return new ViewModel(array('title'=> $this->translator->translate('Add New Category')));
-        }
-        else{
+        //set form values
 
-            $cat = $this->catModel->findOneBy(array('id'=>$id));
-            if($request->isPost()){
-                $idFormPost = $this->params()->fromPost('id');
-                $cat = $this->catModel->findOneBy(array('id'=>$idFormPost));
-                $cat->setName($this->params()->fromPost('name'));
-                $cat->setIsdelete(0);
-                $this->catModel->edit($cat);
-            }
-            return new ViewModel(array(
-                'data' =>$cat,
-                'title' => $this->translator->translate('Edit Category').': '.$cat->getName()
-            ));
+        if($id){
+            $menu = $this->catModel->findOneBy(array('id'=>$id));
+
+            $menuForm->get('id')->setValue($menu->getId());
+            $menuForm->get('name')->setValue($menu->getName());
+            $menuForm->setAttribute('action', '/admin/category/add/'.$id);
+
         }
+
+        if($this->getRequest()->isPost())
+        {
+            $data = $this->params()->fromPost();
+
+            //validate form, comming soon for form->getData
+            //$menuForm->setData($data);
+            //if($menuForm->isValid()){
+            //$data = $menuForm->getData();
+
+            $id = $data['id'];
+
+            if($id)
+            {
+
+                $category = $this->catModel->findOneBy(array('id' => $id));
+                $category->setName($data['name']);
+                $this->catModel->edit($category);
+                $this->flashMessenger()->addSuccessMessage($this->translator->translate("Update Success") );
+                return $this->redirect()->toRoute('admin/child',array('controller'=>'category'));
+            }
+            else
+            {
+
+                $category = new Categories();
+                $category->setName($data['name']);
+                $category->setIsdelete(0);
+                $this->catModel->insert($category);
+
+                $this->flashMessenger()->addSuccessMessage($this->translator->translate("Insert Success"));
+                return  $this->redirect()->toRoute('admin/child',array('controller'=>'category'));
+            }
+        }
+        return new ViewModel(
+            array('form' => $menuForm,
+                'title' => $this->translator->translate('Add New Category')));
+    }
+    public function deleteAllAction(){
+        if($this->getRequest()->isPost()){
+            $data = $this->params()->fromPost('data');
+            $data = json_decode($data);
+
+            foreach($data as $item){
+                $catModel = $this->catModel->findOneBy(array('id'=>$item));
+                $catModel->setIsdelete(1);
+                $this->catModel->edit($catModel);
+            }
+            die;
+        }
+        die;
     }
     public function deleteAction()
     {
-        //get user by id
-        $request = $this->getRequest();
-        if($request->isPost()){
-            $id = $this->params()->fromPost('id');
-            $menu = $this->catModel->findOneBy(array('id'=>$id));
-            $menu->setIsdelete(1);
-            $this->catModel->edit($menu);
-            //$this->model->delete(array('id'=>$id));
-            echo 1;
+        $id = $this->params()->fromPost('id');
+        if($id){
+            $cat = $this->catModel->findOneBy(array('id'=>$id));
+            $cat->setIsdelete(1);
+            $this->catModel->edit($cat);
+            echo 1;die;
         }
-        die;
+        $this->flashMessenger()->addSuccessMessage($this->translator->translate("Delete Success"));
+        $this->redirect()->toRoute('admin/child',array('controller'=>'category'));
 
     }
-    public function editAction()
-    {
-        //get user by id
-        $id = $this->params()->fromRoute('id');
-        $user = $this->model->findOneBy(array('id'=>$id));
-        $user->setFullName('tri 1234');
-        $this->model->edit($user);
-        //update user
-
-    }
-
 }
