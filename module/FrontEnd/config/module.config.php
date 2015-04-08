@@ -61,6 +61,12 @@ return array(
         'doctype'                  => 'HTML5',
         'not_found_template'       => 'error/404',
         'exception_template'       => 'error/index',
+        'template_map' => array(
+            'layout/layout'           => __DIR__ . '/../view/layout/frontend.phtml',
+            'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
+            'error/404'               => __DIR__ . '/../view/error/404.phtml',
+            'error/index'             => __DIR__ . '/../view/error/index.phtml',
+        ),
         'template_path_stack' => array(
             'frontend' => __DIR__ . '/../view',
         ),
@@ -69,8 +75,6 @@ return array(
         'Frontend' => 'layout/frontend',
         'print' => 'layout/print',
         'login' => 'layout/login',
-        'error/404'               => __DIR__ . '/../view/error/404.phtml',
-        'error/index'             => __DIR__ . '/../view/error/index.phtml',
     ),
 
 );
