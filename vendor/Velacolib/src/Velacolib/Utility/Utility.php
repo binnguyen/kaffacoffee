@@ -236,13 +236,6 @@ class Utility extends AbstractActionController
         if ($id == '') {
             if ($request->isPost()) {
 
-//                if (!self::checkExistOrderDetail($param->fromPost())) {
-//                    $param = '?error=1&message=1';
-//                    $url = "http://" . $_SERVER['HTTP_HOST'] . '/frontend/order/add' . $param;
-//                    header("Location:" . $url);
-//                    exit();
-//                }
-                //$detailRow = $param->fromPost('countChild');
 
 
                 $Auth_service = new AuthenticationService();
@@ -963,7 +956,7 @@ class Utility extends AbstractActionController
             $return['id'] = $checkStatus->getId();
             $return['link'] = $link . '/' . $checkStatus->getId() . '?tbl=' . $tableId;
             $return['background'] = 'red-background';
-            $return['cost'] = number_format($checkStatus->getTotalRealCost());
+            $return['cost'] = self::formatCost($checkStatus->getTotalRealCost());
         }
         return $return;
     }
@@ -1339,6 +1332,10 @@ class Utility extends AbstractActionController
                     <div class="text-error icon-inbox align-right"></div>
                 </div>
             </a>
+
+
+
+
 
         </div>
     <?php
