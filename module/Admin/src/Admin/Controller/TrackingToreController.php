@@ -85,7 +85,7 @@ class TrackingToreController extends AdminGlobalController {
             //insert new user
 
             return new ViewModel(array(
-                'title'=> $this->translator->translate('Add new tracking'),
+                'title'=> $this->translator->translate('Add Tracking'),
                 'form'=>$configForm
             ));
         }

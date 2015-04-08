@@ -295,7 +295,7 @@ class Utility extends AbstractActionController
                         header("Location:" . $url);
                         exit();
                     } else {
-                        $url = "http://" . $_SERVER['HTTP_HOST'] . '/frontend/order/add/';
+                        $url = "http://" . $_SERVER['HTTP_HOST'] . '/frontend/order/add';
                         header("Location:" . $url);
                         exit();
                     }
@@ -380,7 +380,7 @@ class Utility extends AbstractActionController
                     header("Location:" . $url);
                     exit();
                 } else {
-                    $url = "http://" . $_SERVER['HTTP_HOST'] . '/frontend/order/add/' ;
+                    $url = "http://" . $_SERVER['HTTP_HOST'] . '/frontend/order/add' ;
                     header("Location:" . $url);
                     exit();
                 }
