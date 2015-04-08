@@ -1,0 +1,13 @@
+INSERT INTO `categories` (`id`, `name`, `isdelete`) VALUES
+(1, 'Soup', 0),
+(2, 'Vegetarian With Steam Rice', 0),
+(3, 'Chicken With Steam Rice', 0),
+(4, 'Beef With Steam Rice', 0),
+(5, 'Shrimp With Steam Rice', 0),
+(6, 'Appertizer', 0),
+(7, 'Beef Rice Noddle Soup', 0),
+(8, 'Rice Noddle With Pork Broth', 0),
+(9, 'Egg Noddle With Pork Broth', 0),
+(10, 'Rice ', 0),
+(11, 'Chicken', 0),
+(12, 'Drink', 0);

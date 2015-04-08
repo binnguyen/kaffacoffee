@@ -1,0 +1,16 @@
+INSERT INTO `config` (`id`, `name`, `value`, `type`) VALUES
+(1, 'logo', '/img/upload/config/logo-inner.png', 'file'),
+(2, 'logo_printer', '/img/upload/config/logo-KAFFA.png', 'file'),
+(3, 'print_phone', '08.66 8484 91', 'text'),
+(4, 'print_address', '47 - Ho Ba Kien - P.15 - Q10 - TP HCM', 'text'),
+(5, 'max_quantity_order', '22', 'text'),
+(6, 'thank_text', 'Cáº£m Æ¡n quÃ½ khÃ¡ch. Háº¹n gáº·p láº¡i!', 'text'),
+(7, 'currency', 'VND', 'text'),
+(8, 'end_year', '2030', 'text'),
+(9, 'emailId', 'kaffacoffee47@gmail.com', 'text'),
+(10, 'emailPassword', 'vela2013#', 'text'),
+(11, 'sitename', 'Kaffa Coffe', 'text'),
+(12, 'print_number', '1', 'text'),
+(13, 'key_note', 'Key note', 'text'),
+(14, 'number_decimal', '2', 'text'),
+(15, 'currency_before', '0', 'text');
