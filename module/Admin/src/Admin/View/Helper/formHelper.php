@@ -15,9 +15,10 @@ use Zend\View\Helper\AbstractHelper;
 //example helper
 //config in module getViewHelperConfig
 class formHelper extends AbstractHelper {
-    public function __invoke($form,$title =array()) {
+    public function __invoke($form,$title =array(),$extraText = '',$extraNote = array()) {
         $titles = $title['title'];
         $form->prepare();
+        $extraNoteHtml = $this->renderExtraNote($extraNote);
         $html1 = $this->view->form()->openTag($form) . PHP_EOL;
         $html1 .= $this->renderFieldsets($form->getFieldsets());
         $html1 .= $this->renderElements($form->getElements());
@@ -40,11 +41,32 @@ class formHelper extends AbstractHelper {
                 </div>
             </div>
             <div class="box-content">
+            '.$extraNoteHtml.'
+            '.$extraText.'
               '.$html1.'
             </div>
         </div>
     </div>';
 
+        return $html;
+    }
+
+    public function renderExtraNote($notes){
+        $html = '<div class="row-fluid">';
+        $html .= '<div class="span12 ">';
+        $html .= '<div class="">';
+        foreach($notes as $k => $value){
+            $class = "text-success";
+            $message = 'yes';
+            if(!$value){
+                $class = "text-error";
+                $message = 'no';
+            }
+            $html .= '<p class="'.$class.'"> Make '.$k.' writeable ( '.$message.' ) </p>';
+        }
+        $html .= '</div>';
+        $html .= '</div>';
+        $html .= '</div>';
         return $html;
     }
 
