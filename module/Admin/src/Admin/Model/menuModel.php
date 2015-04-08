@@ -51,8 +51,8 @@ class menuModel extends globalModel {
         $array['desc'] = $data->getDescription();
         $array['image'] = $data->getImage();
         $array['catId'] = $catInfo->getName();
-        $array['cost'] = number_format($data->getCost());
-        $array['taCost'] = number_format($data->getTakeAwayCost());
+        $array['cost'] = ($data->getCost());
+        $array['taCost'] = ($data->getTakeAwayCost());
         $array['isCombo'] = Utility::getCombo(number_format($data->getIsCombo()));
         return $array;
     }

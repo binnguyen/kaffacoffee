@@ -442,7 +442,7 @@ class Utility extends AbstractActionController
         $orderDetail->setCostType($data['orderDetailType']);
         $orderDetail->setDiscount($data['discount']);
         $orderDetail->setCustomerId(0);
-        $orderDetail->setTime(time());
+        $orderDetail->setTime(date('Y-m-d H:i:s',time()));
         $orderDetailInserted = $table->insert($orderDetail);
         //insert transaction
 
@@ -1401,6 +1401,8 @@ class Utility extends AbstractActionController
         }
 
     }
+
+
 
 }
 

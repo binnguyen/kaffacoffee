@@ -543,6 +543,17 @@ $(document).on('click','.cancel-order',function(){
     });
 
 });
+$(document).on('change','.disable-alphabet',function(){
+       var number = $(this).val();
+        if(number < 0){
+            $("#submit-split").prop("disabled", true);
+            $(this).val(0);
+            alert('The number must be greater than 0 ');
+
+        }else{
+            $("#submit-split").prop("disabled", false);
+        }
+});
 
 
 

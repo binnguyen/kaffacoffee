@@ -13,7 +13,7 @@ function activeMenu(){
         var className = "";
         if(href == url){
             className = "in"
-            console.log(href+'--'+url+'--'+className);
+           // console.log(href+'--'+url+'--'+className);
             //parent
 
             //children

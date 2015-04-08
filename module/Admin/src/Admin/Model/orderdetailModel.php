@@ -171,4 +171,17 @@ class orderdetailModel extends globalModel {
         return $rs;
     }
     //Tri end query menu date range
+
+    public function createQuerySumOrderDetail($orderId){
+
+        $querybuilder = $this->objectManager->getRepository($this->entityName)
+            ->createQueryBuilder('table');
+        $rs = $querybuilder
+            ->select('  SUM(table.realCost) as realCost ')
+            ->where('table.orderId = '.$orderId)
+            ->getQuery()
+            ->getResult();
+        return $rs;
+
+    }
 }

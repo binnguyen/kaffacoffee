@@ -369,7 +369,7 @@ class OrderController extends FrontEndController
 
                             </td>
                             <td>
-                            <input type="text" name="data' . $orderDetail->getId() . '[qty]" class="input-small" />
+                            <input type="number" name="data' . $orderDetail->getId() . '[qty]" class="input-small disable-alphabet" value="0" />
                             </td>
 
 
@@ -403,7 +403,6 @@ class OrderController extends FrontEndController
             unset($post['table-new']);
             unset($post['discount']);
             unset($post['oldOrder']);
-
             if (!empty($post)) {
                 $Auth_service = new AuthenticationService();
                 $auth = $Auth_service->getIdentity();
@@ -418,7 +417,7 @@ class OrderController extends FrontEndController
                 $orderEntity->setSurtaxId(0);
                 $orderEntity->setIsdelete(0);
                 $orderEntity->setStatus($status);
-                $orderEntity->setNewDate(date('d-m-Y',time()));
+                $orderEntity->setNewDate(date('Y-m-d H:i:s',time()));
                 $orderLastInsert = $this->modelOrder->insert($orderEntity);
                 $lastOrderId = $orderLastInsert->getId();
 
@@ -427,9 +426,12 @@ class OrderController extends FrontEndController
                 $oldPrice = 0;
 
                 $newRealCost = 0;
-
+//                echo '<pre>';
+//                print_r($post);die;
                 foreach ($post as $order) {
+
                     $order['newCoupon'] = -1;
+
                     $orderDetailId = $order['orderDetailId'];
 
                     $oldQty = $order['oldQty'];
@@ -437,6 +439,7 @@ class OrderController extends FrontEndController
                     $qty = $order['qty'];
 
                     $totalRealCost = $order['menuCost'] * $order['oldQty'];
+
 
                     ($qty >= $oldQty) ? $qty = $oldQty : $qty = $qty;
 
@@ -482,13 +485,6 @@ class OrderController extends FrontEndController
 
                             $lastQuantity = $order['oldQty'] - $order['qty'];
 
-//                            if ($order['discountType'] != '' && $order['discountType'] == 0) {
-//                                $newRealCost = ($lastQuantity * $order['menuCost']) - $order['discountValue'];
-//                            } elseif ($order['discountType'] != '' && $order['discountType'] == 1) {
-//                                $newRealCost = Utility::roundCost(($lastQuantity * $order['menuCost']) - ((($lastQuantity * $order['menuCost']) * $order['discountValue']) / 100));
-//                            } else {
-//                                $newRealCost = ($lastQuantity * $order['menuCost']);
-//                            }   this code replace by static function Utility::getPriceUseCoupon(price,discountId);
 
                             $newRealCost = Utility::getPriceUseCoupon($lastQuantity * $order['menuCost'],$order['discountId']) ;
 
@@ -514,8 +510,15 @@ class OrderController extends FrontEndController
                 $oldOrderModel =     $this->modelOrder->findOneBy(array(
                     'id'=>$oldOrder
                 ));
-                $oldTotalCost = $oldPrice;
-                $oldPrice = Utility::getPriceUseCoupon($oldPrice,$oldOrderModel->getCouponId());
+
+                $sumCost = $this->modelOrderDetail->createQuerySumOrderDetail($oldOrder);
+
+
+                $returnCost = $sumCost[0]['realCost'];
+
+                $oldTotalCost = $returnCost;
+
+                $oldPrice = Utility::getPriceUseCoupon($oldTotalCost,$oldOrderModel->getCouponId());
 
                 $oldPrice = Utility::getPriceUseSurtax($oldPrice,$oldOrderModel->getSurtaxId());
 
@@ -529,23 +532,13 @@ class OrderController extends FrontEndController
 
                 $newTotalPrice = $totalPrice;
 
-//                $coupon = Utility::getCouponInfo($discount);
-//
-//                if ($coupon->getType() == 0) {
-//
-//                    $realCostAfter = Utility::roundCost($newTotalPrice - $coupon->getValue());
-//
-//                } elseif ($coupon->getType() == 1) {
-//
-//                    $realCostAfter = Utility::roundCost($newTotalPrice - ($newTotalPrice * $coupon->getValue()) / 100);
-//
-//                } else {
-//
-//                    $realCostAfter = $newTotalPrice;
-//
-//                } this code replace by function Utility::getPriceUseCoupon(price,discountId);
 
-                $realCostAfter = Utility::getPriceUseCoupon($newTotalPrice,$discount)  ;
+                $sumCostLast = $this->modelOrderDetail->createQuerySumOrderDetail($lastOrderId);
+
+                $returnCostLast = $sumCostLast[0]['realCost'];
+
+
+                $realCostAfter = Utility::getPriceUseCoupon($returnCostLast,$discount)  ;
 
 
                 //update last order
