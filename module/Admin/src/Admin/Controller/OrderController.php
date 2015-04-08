@@ -196,6 +196,7 @@ class OrderController extends AdminGlobalController
             $orderId = $this->params()->fromPost('orderId');
             $orderModel = $this->modelOrder;
             $orderModel->delete(array('id'=>$orderId));
+            $this->modelOrderDetail->deleteAll(array('orderId' => $orderId));
             echo 1;
             die;
         }
