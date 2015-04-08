@@ -106,10 +106,12 @@ class OrderController extends AdminGlobalController
     {
         //get user by id
         $request = $this->getRequest();
+
         if($request->isPost()){
             $id = $this->params()->fromPost('id');
             $menu = $this->modelOrder->findOneBy(array('id'=>$id));
             $menu->setIsdelete(1);
+
             $this->modelOrder->edit($menu);
             //$this->model->delete(array('id'=>$id));
             echo 1;
