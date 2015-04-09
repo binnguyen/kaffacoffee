@@ -387,26 +387,31 @@ class MenustoreMainController extends    AdminGlobalController
 
     public function unitcalcAction(){
 
+
+
         $number_before = $this->params()->fromPost('number_before');
         $unit_store = $this->params()->fromPost('unit_store');
         $unit_input = $this->params()->fromPost('unit_input');
         $response = false;
+
+
+
         if($number_before != '' && $unit_store != '' && $unit_store != '' ){
+
             if($unit_store == $unit_input){
                 $response = $number_before;
             } else {
+
                 $calc = UnitCalcUtility::unitCalc();
-                if(isset($calc[$unit_input][$unit_store]))   {
-
-                    $unitConvert = $calc[$unit_input][$unit_store];
-                    $response =  $number_before*$unitConvert;
-
+                $unitInputInfo = Utility::getUnit($unit_input);
+                $unitStoreInfo = Utility::getUnit($unit_store);
+                if(isset($calc[$unitInputInfo->getShortName()][$unitStoreInfo->getShortName()]))   {
+                    $unitConvert = $calc[$unitInputInfo->getShortName()][$unitStoreInfo->getShortName()];
+                    $response =  $number_before*(float)$unitConvert;
                 }else{
                     $response = false;
                 }
-
             }
-
         }
         echo $response;
         die;

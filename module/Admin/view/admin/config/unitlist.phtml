@@ -1,0 +1,8 @@
+<?php
+$title = array();
+$title['title'] = $this->title;
+$title['link'] =   $this->url('admin/child', array('controller'=>'config','action' => 'additemunit'));
+$this->titleHelper($title);
+$data = $this->data;
+$table = $this->table;
+$table->render();
