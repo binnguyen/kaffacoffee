@@ -26,31 +26,32 @@ class UnitCalcUtility extends AbstractActionController {
     }
 
     static  function unitCalc(){
-        $unitCalc = array(
-            'L'=>array(
-                'ML'=>1000,
-                'M3'=>0.001
-            ),
-            'ML'=> array(
-              'L'=>0.001,
-              'M3'=>0.000001
-            ),
-            'KG'=>array(
-                'G'=>1000,
-                'MG'=>1000000,
-                'TON'=>0.001
-            ),
-            'G'=>array(
-                'KG'=>0.001,
-                'MG'=>1000,
-                'TON'=> 0.000001
-            ),
-            'MG'=>array(
-                'KG'=>0.000001,
-                'G'=>0.001,
-                'TON'=> 0.000001
-            ),
-        );
+        $unitCalc = Utility::convertUnitConfig();
+//        $unitCalc = array(
+//            'L'=>array(
+//                'ML'=>1000,
+//                'M3'=>0.001
+//            ),
+//            'ML'=> array(
+//              'L'=>0.001,
+//              'M3'=>0.000001
+//            ),
+//            'KG'=>array(
+//                'G'=>1000,
+//                'MG'=>1000000,
+//                'TON'=>0.001
+//            ),
+//            'G'=>array(
+//                'KG'=>0.001,
+//                'MG'=>1000,
+//                'TON'=> 0.000001
+//            ),
+//            'MG'=>array(
+//                'KG'=>0.000001,
+//                'G'=>0.001,
+//                'TON'=> 0.000001
+//            ),
+//        );
 
         return $unitCalc;
     }

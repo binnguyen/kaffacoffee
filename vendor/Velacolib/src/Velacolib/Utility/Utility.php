@@ -9,6 +9,7 @@
 namespace Velacolib\Utility;
 
 use Admin\Entity\Coupon;
+use Admin\Entity\ItemUnit;
 use Admin\Entity\Managetable;
 use Admin\Entity\Menu;
 use Admin\Entity\MenuStore;
@@ -38,6 +39,8 @@ use Admin\Model\supplyItemModel;
 use Admin\Model\surTaxModel;
 use Admin\Model\tableModel;
 use Admin\Model\transactionModel;
+use Admin\Model\unitConvertModel;
+use Admin\Model\unitModel;
 use Admin\Model\userHistoryModel;
 use Admin\Model\userModel;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -916,17 +919,7 @@ class Utility extends AbstractActionController
 
     public static function getUnitArray()
     {
-        return array(
-            'KG' => 'Kilograms',
-            'G' => 'Grams',
-            'MG' => 'Milligram',
-            'L' => 'Liter',
-            'ML' => 'Milliliter',
-            'Goi' => 'Goi',
-            'Hu' => 'Hu',
-            'Cai' => 'Cai',
-            'Trai' => 'Trai'
-        );
+        return self::getUnitListForSelect();
     }
 
 
@@ -1399,8 +1392,48 @@ class Utility extends AbstractActionController
 
     }
 
-
-
+    static function getUnitList(){
+        $doctrineService = self::$servicelocator->get('doctrine');
+        $userModel = new unitModel($doctrineService);
+        return $userModel->findAll();
+    }
+    static function getUnitListForSelect(){
+        $unitList = self::getUnitList();
+        $returnArray = array();
+        foreach($unitList as $unit){
+            $returnArray[$unit->getId()] = $unit->getName();
+        }
+        return $returnArray;
+    }
+    static function getUnit($unitId){
+        $doctrineService = self::$servicelocator->get('doctrine');
+        $unitModel = new unitModel($doctrineService);
+        $unit = $unitModel->findOneBy(array('id'=>$unitId));
+        if($unit)
+            return $unit;
+        return new ItemUnit();
+    }
+    static function getUnitConverted($unitId){
+        $doctrineService = self::$servicelocator->get('doctrine');
+        $unitConvertModel = new unitConvertModel($doctrineService);
+        $unitConvert = $unitConvertModel->findBy(array('unitItemOne'=>$unitId));
+        $list = array();
+        foreach($unitConvert as $item){
+            $unitInfo = self::getUnit($item->getUnitItemTwo());
+            $list[$unitInfo->getShortName()] = $item->getValue();
+        }
+        return $list;
+    }
+    static function convertUnitConfig(){
+        $unitList = self::getUnitList();
+        $arrayReturn = array();
+        foreach($unitList as $item){
+            $unitConverted = self::getUnitConverted($item->getId());
+            $arrayReturn[$item->getShortName()] = $unitConverted;
+        }
+     
+        return $arrayReturn;
+    }
 }
 
 
