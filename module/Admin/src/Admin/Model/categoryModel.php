@@ -19,10 +19,6 @@ class categoryModel extends globalModel {
         $this->entityName = 'Admin\Entity\Categories';
         parent::__construct($controller);
     }
-
-
-
-
     public function hydrator($data = array()){
 
         $cat = new Categories();
@@ -34,7 +30,6 @@ class categoryModel extends globalModel {
         die;
         return $user->getName();
     }
-
     public  function convertToArray($datas){
         $return = array();
         foreach($datas as $data){
@@ -45,7 +40,6 @@ class categoryModel extends globalModel {
         }
         return $return;
     }
-
     public function reportCategories($startDate = '',$endDate = ''){
         $strQuery = '';
 
