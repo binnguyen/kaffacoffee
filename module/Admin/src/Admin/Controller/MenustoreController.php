@@ -106,7 +106,7 @@ class MenustoreController extends AdminGlobalController
 
         return new ViewModel(array(
             'table' => $table,
-            'title' => $this->translator->translate('Manage Menu Store')));
+            'title' => $this->translator->translate('Manage Inventory')));
 
 
     }
@@ -176,7 +176,7 @@ class MenustoreController extends AdminGlobalController
 
             //insert new user
 
-            return new ViewModel(array('title' => $this->translator->translate('Add New Menu Store')));
+            return new ViewModel(array('title' => $this->translator->translate('Add Inventory')));
         } else {
             $menuStore = $this->menuStoreModel->findOneBy(array('id' => $id));
 
@@ -223,7 +223,7 @@ class MenustoreController extends AdminGlobalController
 
             return new ViewModel(array(
                 'data' => $menuStore,
-                'title' => $this->translator->translate('Edit menu store:')
+                'title' => $this->translator->translate('Edit Inventory:')
             ));
 
         }
@@ -452,6 +452,6 @@ class MenustoreController extends AdminGlobalController
             $this->flashMessenger()->addSuccessMessage("Insert Success");
             $this->redirect()->toRoute('admin/child',array('controller'=>'menustore'));
         }
-        return new ViewModel(array('title' => $this->translator->translate('Add Menu Store Multi')));
+        return new ViewModel(array('title' => $this->translator->translate('Add Inventory Multi')));
     }
 }
