@@ -89,9 +89,12 @@ class MenustoreMainController extends    AdminGlobalController
 
             array('title' =>'Action','db'=>'id','dt' => 8 , 'search'=>false, 'type' => 'number',
                 'formatter' => function( $d, $row ) {
-                    $actionUrl = '/admin/index';
+                    $actionUrl = '/admin/menustore';
+                    $actionTransactionUrl = '/admin/transaction';
+
                     return '
                         <a class="btn-xs action action-detail btn btn-success btn-default" href="'.$actionUrl.'/add/'.$d.'"><i class="icon-edit"></i></a>
+                         <a data-id="'.$d.'" id="'.$d.'" href="'.$actionTransactionUrl.'/inserttransaction/'.$d.'" class="btn-xs action action-detail btn btn-danger"><i class="icon-edit"></i></a>
                         <a data-id="'.$d.'" id="'.$d.'" data-link="'.$actionUrl.'" class="btn-xs action action-detail btn btn-danger  btn-delete " href="javascript:void(0)"><i class="icon-remove"></i></a>
                     ';
 

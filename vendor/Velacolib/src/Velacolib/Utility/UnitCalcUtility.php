@@ -25,22 +25,6 @@ class UnitCalcUtility extends AbstractActionController {
         self::$servicelocator = $val;
     }
 
-
-//    public static  function getUnitArray(){
-//        return array(
-//            'KG' => 'Kilograms',
-//            'G' => 'Grams',
-//            'MG' => 'Milligram',
-//            'L' => 'Liter',
-//            'ML' => 'Milliliter',
-//            'Goi' => 'Goi',
-//            'Hu' => 'Hu',
-//            'Cai' => 'Cai',
-//            'Trai' => 'Trai1'
-//        );
-//    }
-
-
     static  function unitCalc(){
         $unitCalc = array(
             'L'=>array(
