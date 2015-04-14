@@ -18,33 +18,16 @@ use Zend\Mvc\Controller\AbstractActionController;
 
 
 
-class TransactionController extends BaseController
+class TransactionController extends AdminGlobalController
 {
     protected  $modelTransaction;
     protected  $modelMenuStore;
     protected  $modelMenuStoreMain;
     protected  $translator;
-    public function onDispatch(\Zend\Mvc\MvcEvent $e){
-
-        $service_locator_str = 'doctrine';
-        $this->sm = $this->getServiceLocator();
-        $CategoriesTable = $this->sm->get($service_locator_str);
-        $this->modelTransaction = new transactionModel($CategoriesTable);
-        $this->modelMenuStore = new menuStoreModel($CategoriesTable);
-        $this->modelMenuStoreMain = new menuStoreMainModel($CategoriesTable);
-        $this->translator = Utility::translate();
-        //check login
-        $user = Utility::checkLogin($this);
-        if(! is_object($user) && $user == 0){
-            $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }else{
-            $isPermission = Utility::checkRole($user->userType,ROLE_ADMIN);
-            if( $isPermission == false)
-                $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
-        }
-        //end check login
-
-        return parent::onDispatch($e);
+    public function init(){
+        $this->modelTransaction = new transactionModel($this->doctrineService);
+        $this->modelMenuStore = new menuStoreModel($this->doctrineService);
+        $this->modelMenuStoreMain = new menuStoreMainModel($this->doctrineService);
     }
     public function indexAction()
     {

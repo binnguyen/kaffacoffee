@@ -47,9 +47,14 @@ class configModel extends globalModel {
         $configName = $config->getName();
         $configValue = $config->getValue();
 
-        //img
+
         if($configType == 'file')
             $configValue ='<img style="width:100px" src="'.$configValue.'">';
+
+        if($configName == 'currency_before'){
+            $selectArray = array('After','Before');
+             $configValue = $selectArray[$configValue];
+        }
 
         //email pass word
         if($configName =='emailPassword')

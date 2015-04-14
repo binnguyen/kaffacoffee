@@ -84,7 +84,7 @@ class SupplieritemController  extends AdminGlobalController {
 
         return new ViewModel(array(
             'table' => $table,
-            'title' => $this->translator->translate('Supplier Item')));
+            'title' => $this->translator->translate('Raw Material')));
     }
 
 

@@ -8,6 +8,7 @@
 
 namespace Admin\Controller;
 
+use Admin\Model\unitModel;
 use Velacolib\Utility\Table;
 use Velacolib\Utility\Table\AjaxTable;
 use Velacolib\Utility\Table\Detail;
@@ -32,6 +33,7 @@ class MenustoreController extends AdminGlobalController
     protected $menuStoreModel;
     protected $transactionModel;
     protected $translator;
+    protected $unitModel;
     protected $config;
 
 
@@ -41,6 +43,7 @@ class MenustoreController extends AdminGlobalController
         parent::init();
         $this->menuStoreModel = new menuStoreModel($this->doctrineService);
         $this->transactionModel = new transactionModel($this->doctrineService);
+        $this->unitModel = new unitModel($this->doctrineService);
     }
 
     public function indexAction()
@@ -64,26 +67,28 @@ class MenustoreController extends AdminGlobalController
                     return $output;
                 }
             ),
-            array('title' =>'In Stock', 'db' => 'id','dt' => 4, 'search'=>true, 'type' => 'number','formatter'=>
-                function($d,$row){
+            array('title' =>'In Stock', 'db' => 'id','dt' => 4, 'search'=>true, 'type' => 'number'
 
-                 return     TransactionUtility::getMenuItemQuantityInStore($d);
+                ),
 
-                } ),
+            array('title' =>'Unit', 'db' => 'unit','dt' => 5 , 'select'=>'unit','prefix'=>'m','search'=>false, 'type' => 'text',
+                'formatter'=>
+                    function($d,$row){
 
-            array('title' =>'Unit', 'db' => 'unit','dt' => 5 , 'select'=>'unit','prefix'=>'m','search'=>false, 'type' => 'text' ),
+                        $unitList = Utility::getUnitListForSelect();
+                        return $unitList[$d];
+                    }),
 
-            array('title' =>'Supply item', 'db' => 'id','dt' => 6, 'search'=>true, 'type' => 'text'),
 
-            array('title' =>'Action','db'=>'id','dt' => 7 , 'search'=>false, 'type' => 'number',
+            array('title' =>'Action','db'=>'id','dt' => 6 , 'search'=>false, 'type' => 'number',
                 'formatter' => function( $d, $row ) {
                     $actionUrl = '/admin/menustore';
                     $actionTransactionUrl = '/admin/transaction';
                     return '
                         <a class="btn-xs action action-detail btn btn-success btn-default" href="'.$actionUrl.'/add/'.$d.'"><i class="icon-edit"></i></a>
-                          <a data-id="'.$d.'" id="'.$d.'" href="'.$actionTransactionUrl.'/inserttransaction/'.$d.'" class="btn-xs action action-detail btn btn-danger"><i class="icon-edit"></i></a>
+                        <a class="btn-xs action action-detail btn btn-success btn-default" href="'.$actionUrl.'/detail/'.$d.'"><i class="icon-info-sign"></i></a>
+                         <a data-id="'.$d.'" id="'.$d.'" href="'.$actionTransactionUrl.'/inserttransaction/'.$d.'" class="btn-xs action action-detail btn btn-danger"><i class="icon-signin"></i></a>
                         <a data-id="'.$d.'" id="'.$d.'" data-link="'.$actionUrl.'" class="btn-xs action action-detail btn btn-danger  btn-delete " href="javascript:void(0)"><i class="icon-remove"></i></a>
-
                     ';
 
                 }
@@ -124,10 +129,12 @@ class MenustoreController extends AdminGlobalController
                 // if exists update
                 $name = $data['name'];
                 $menuStoreId = 0;
+                $unit = $this->unitModel->findOneBy(array('name'=>$data['unit']));
                 $menuStore = $this->menuStoreModel->findOneBy(array('name' => $name));
                 if($menuStore){
+
                     $menuStore->setName($data['name']);
-                    $menuStore->setUnit($data['unit']);
+                    $menuStore->setUnit($unit->getId());
                     $menuStore->setDes($data['des']);
                     $menuStore->setOutOfStock($data['OutOfStock']);
                     $menuStore->setCost(0);
@@ -141,7 +148,7 @@ class MenustoreController extends AdminGlobalController
                 //else add
                     $menuStore = new MenuStore();
                     $menuStore->setName($data['name']);
-                    $menuStore->setUnit($data['unit']);
+                    $menuStore->setUnit($unit->getId());
                     $menuStore->setDes($data['des']);
                     $menuStore->setOutOfStock($data['OutOfStock']);
                     $menuStore->setCost(0);
@@ -156,7 +163,7 @@ class MenustoreController extends AdminGlobalController
                 $data['menuStoreId'] = $menuStoreId;
                 $data['quantity'] = $data['quantity']*INSERT_STORE;
                 $data['action'] = INSERT_STORE_ACRION;
-                $data['unit'] = $data['unit'];
+                $data['unit'] = $unit->getId();
                 $data['note'] = $this->translator->translate('Import item into store');
                 TransactionUtility::insertTransaction($data,0,0);
 
@@ -164,7 +171,7 @@ class MenustoreController extends AdminGlobalController
                 $data['menuStoreId'] = $data['mainMenuStoreId'];
                 $data['quantity'] = $data['quantity']*ADD_ORDER;
                 $data['action'] = ADD_ORDER_ACTION;
-                $data['unit'] = $data['unit'];
+                $data['unit'] = $unit->getId();
                 $data['note'] = $this->translator->translate('Insert sub store');
                 TransactionUtility::insertTransaction($data,0,0,MAIN_STORE);
 
@@ -204,7 +211,9 @@ class MenustoreController extends AdminGlobalController
                 $data['action'] = INSERT_STORE_ACRION;
                 $data['unit'] = $data['unit'];
                 $data['note'] = $this->translator->translate('Import item into store');
-                TransactionUtility::insertTransaction($data,$data['supplier'],$data['cost']);
+                $dataCost = isset($data['cost'])?$data['cost']:0;
+                $dataSupplier = isset($data['supplier'])?$data['supplier']:'';
+                TransactionUtility::insertTransaction($data,$dataSupplier,$dataCost);
 
 
                 //transaction main store
@@ -330,7 +339,9 @@ class MenustoreController extends AdminGlobalController
                 return $d;
             } ),
             array('title' =>'Quantity', 'db' => 'quantity','dt' => 2, 'search'=>true, 'type' => 'number'),
-            array('title' =>'Unit', 'db' => 'unit','dt' => 3, 'search'=>false, 'type' => 'text' ),
+            array('title' =>'Unit', 'db' => 'unit','dt' => 3, 'search'=>false, 'type' => 'text'
+
+            ),
             array('title' =>'Cost', 'db' => 'cost','dt' => 4, 'search'=>true, 'type' => 'number'),
 
             array('title' =>'Action', 'db' => 'action','dt' => 5 ,'search'=>false, 'type' => 'text' ),

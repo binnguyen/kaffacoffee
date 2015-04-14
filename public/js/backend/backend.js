@@ -176,3 +176,6 @@ $(document).on('change','#supplierItemId',function(){
 })  ;
 
 
+$(document).on('click','.btn-primary',function(){
+    $(this).hide();
+})

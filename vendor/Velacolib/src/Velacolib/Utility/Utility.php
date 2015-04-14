@@ -1434,6 +1434,46 @@ class Utility extends AbstractActionController
      
         return $arrayReturn;
     }
+
+    public static function getRawMaterialInfo($id)
+    {
+        $doctrine = self::$servicelocator->get('doctrine');
+        $menusStoreModel = new supplyItemModel($doctrine);
+        $menusStore = $menusStoreModel->findOneBy(array('id' => $id));
+        if($menusStore)
+            return $menusStore;
+        return new SupplierItem();
+    }
+
+    public static function getRawMaterial()
+    {
+        $doctrine = self::$servicelocator->get('doctrine');
+        $menusStoreModel = new supplyItemModel($doctrine);
+        $menusStore = $menusStoreModel->findBy(array('isdelete' => 0));
+        $menusStore = $menusStoreModel->convertToArray($menusStore);
+        return $menusStore;
+    }
+
+    public static function getRawMaterialArrayAutoComplete($isAutoComplate = true)
+    {
+        $menu = self::getRawMaterial();
+
+        $return = array();
+        if ($isAutoComplate == false) {
+            foreach ($menu as $item) {
+                $itemArray = array(
+                    'name' => $item['value'],
+                    'id' => $item['id'],
+                );
+                $return[] = $itemArray;
+            }
+        } else {
+            foreach ($menu as $item) {
+                $return[] = $item['value'];
+            }
+        }
+        return $return;
+    }
 }
 
 

@@ -93,6 +93,26 @@ class ConfigController extends AdminGlobalController
                 );
             }
 
+            if($config->getName() == 'currency_before'){
+                $configForm->add(
+                    array(
+                        'type' => 'Zend\Form\Element\Select',
+                        'name' => 'value',
+                        'attributes' =>  array(
+                            'id' => $config->getName(),
+                            'value' => $config->getValue(),
+                            'options' => array(
+                                0 =>'After',
+                                1 => 'Before',
+                            ),
+                        ),
+                        'options' => array(
+
+                        ),
+                    )
+                );
+            }
+
             if($request->isPost()){
                 $data = $this->params()->fromPost();
                 $value = $config->getValue();
