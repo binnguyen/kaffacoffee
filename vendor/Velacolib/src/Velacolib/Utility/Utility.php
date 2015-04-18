@@ -9,6 +9,7 @@
 namespace Velacolib\Utility;
 
 use Admin\Entity\Coupon;
+use Admin\Entity\ItemUnit;
 use Admin\Entity\Managetable;
 use Admin\Entity\Menu;
 use Admin\Entity\MenuStore;
@@ -38,6 +39,8 @@ use Admin\Model\supplyItemModel;
 use Admin\Model\surTaxModel;
 use Admin\Model\tableModel;
 use Admin\Model\transactionModel;
+use Admin\Model\unitConvertModel;
+use Admin\Model\unitModel;
 use Admin\Model\userHistoryModel;
 use Admin\Model\userModel;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -422,7 +425,6 @@ class Utility extends AbstractActionController
 
     static function  insertOrderDetail($data, $orderID)
     {
-
         $table = self::$servicelocator->get('doctrine');
         $table = new orderdetailModel($table);
         $orderDetail = new OrderDetail();
@@ -917,17 +919,7 @@ class Utility extends AbstractActionController
 
     public static function getUnitArray()
     {
-        return array(
-            'KG' => 'Kilograms',
-            'G' => 'Grams',
-            'MG' => 'Milligram',
-            'L' => 'Liter',
-            'ML' => 'Milliliter',
-            'Goi' => 'Goi',
-            'Hu' => 'Hu',
-            'Cai' => 'Cai',
-            'Trai' => 'Trai'
-        );
+        return self::getUnitListForSelect();
     }
 
 
@@ -1224,21 +1216,21 @@ class Utility extends AbstractActionController
     static function getPaymentCateInfo($id){
         $doctrine = self::$servicelocator->get('doctrine');
         $customerModel = new paymentCategoryModel($doctrine);
-        $result  = $customerModel->findOneBy(array(
-            'id'=>$id
-        ));
+       $result  = $customerModel->findOneBy(array(
+           'id'=>$id
+       ));
         if($result)
-            return $result;
+        return $result;
         return new PaymentCategory();
     }
 
     static function messageErrorArray($message){
 
         $messageArray = array(
-            'Please insert order detail !',
-            'Please insert order detail !',
-            'Please insert order detail !',
-            'Please insert order detail !',
+           'Please insert order detail !',
+           'Please insert order detail !',
+           'Please insert order detail !',
+           'Please insert order detail !',
         );
         if(isset($messageArray[$message])){
             return $messageArray[$message];
@@ -1410,9 +1402,75 @@ class Utility extends AbstractActionController
         return $class;
 
     }
+    static function getUnit($unitId){
+        $doctrineService = self::$servicelocator->get('doctrine');
+        $unitModel = new unitModel($doctrineService);
+        $unit = $unitModel->findOneBy(array('id'=>$unitId));
+        if($unit)
+            return $unit;
+        return new ItemUnit();
+    }
+    static function getUnitConverted($unitId){
+        $doctrineService = self::$servicelocator->get('doctrine');
+        $unitConvertModel = new unitConvertModel($doctrineService);
+        $unitConvert = $unitConvertModel->findBy(array('unitItemOne'=>$unitId));
+        $list = array();
+        foreach($unitConvert as $item){
+            $unitInfo = self::getUnit($item->getUnitItemTwo());
+            $list[$unitInfo->getShortName()] = $item->getValue();
+        }
+        return $list;
+    }
+    static function convertUnitConfig(){
+        $unitList = self::getUnitList();
+        $arrayReturn = array();
+        foreach($unitList as $item){
+            $unitConverted = self::getUnitConverted($item->getId());
+            $arrayReturn[$item->getShortName()] = $unitConverted;
+        }
+     
+        return $arrayReturn;
+    }
 
+    public static function getRawMaterialInfo($id)
+    {
+        $doctrine = self::$servicelocator->get('doctrine');
+        $menusStoreModel = new supplyItemModel($doctrine);
+        $menusStore = $menusStoreModel->findOneBy(array('id' => $id));
+        if($menusStore)
+            return $menusStore;
+        return new SupplierItem();
+    }
 
+    public static function getRawMaterial()
+    {
+        $doctrine = self::$servicelocator->get('doctrine');
+        $menusStoreModel = new supplyItemModel($doctrine);
+        $menusStore = $menusStoreModel->findBy(array('isdelete' => 0));
+        $menusStore = $menusStoreModel->convertToArray($menusStore);
+        return $menusStore;
+    }
 
+    public static function getRawMaterialArrayAutoComplete($isAutoComplate = true)
+    {
+        $menu = self::getRawMaterial();
+
+        $return = array();
+        if ($isAutoComplate == false) {
+            foreach ($menu as $item) {
+                $itemArray = array(
+                    'name' => $item['value'],
+                    'id' => $item['id'],
+                );
+                $return[] = $itemArray;
+            }
+        } else {
+            foreach ($menu as $item) {
+                $return[] = $item['value'];
+            }
+        }
+        return $return;
+    }
 }
 
 

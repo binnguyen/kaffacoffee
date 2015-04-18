@@ -258,74 +258,61 @@ class MenustoreMainController extends    AdminGlobalController
 
         $request = $this->getRequest();
         $id = $this->params()->fromRoute('id');
-        $filter = $this->params()->fromRoute('filter_action');
+        $columns = array(
+            array('title' =>'Id', 'db' => 'id', 'dt' => 0,'select'=>'id','prefix'=>'o', 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Store name', 'db' => 'menuStoreId','dt' => 1,'select'=>'menuStoreId','prefix'=>'o', 'search'=>true, 'type' => 'text','formatter'=>function($d,$row){
+                $storeInfo = Utility::getMainStoreInfo( $d);
+                return $storeInfo->getName();
+            } ),
+            array('title' =>'Action', 'db' => 'action','dt' => 2,'select'=>'action','prefix'=>'o', 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Quantity', 'db' => 'quantity','dt' => 3,'select'=>'quantity','prefix'=>'o', 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Cost', 'db' => 'cost','dt' => 4,'select'=>'cost','prefix'=>'o', 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Note', 'db' => 'note','dt' => 5,'select'=>'note','prefix'=>'o', 'search'=>true, 'type' => 'text','formatter'=>
+                function($d,$row){
+                    $note = TransactionUtility::getStoreItemInOrder($d);
+                    if($note == ''){
+                        $note = $d;
+                    }
+                    return $note;
+                }),
 
-        $menuStore = array();
-        if($id != ''){
-            $menuStore = $this->menuStoreModel->findOneBy(array('id' => $id));
-            $menuStore = $this->menuStoreModel->convertSingleToArray($menuStore);
-        }
+            array('title' =>'Date', 'db' => 'date','dt' => 6,'select'=>'date','prefix'=>'o', 'search'=>true, 'type' => 'text','formatter'=>
+                function($d,$row){
+                    return date('d-m-Y',$d);
+                }),
 
-        //fileter transaction
-        $transactios = $this->transactionModel->findBy(
-            array('menuStoreId'=>$id,'store'=>MAIN_STORE),
-            array('id'=>'DESC')
-        );
-        if($filter != '') {
-            $transactios = $this->transactionModel->findBy(
-                array('menuStoreId' => $id, 'action' => $filter, 'store' => MAIN_STORE),
-                array('id' => 'DESC')
-            );
-        }
+            array('title' =>'Action', 'db' => 'orderId','dt' => 7, 'select'=>'id','prefix'=>'o', 'search'=>false, 'type' => 'number',
+                'formatter' => function( $d, $row ) {
 
+                    $actionUrl = '/admin/menustoremain';
+                    return '
+                        <a class="btn-xs action action-detail btn btn-info btn-default" href="'.$actionUrl.'/detail/'.$d.'"><i class="icon-info-sign"></i></a>
+                        <a class="btn-xs action action-detail btn btn-success btn-default" href="'.$actionUrl.'/add/'.$d.'"><i class="icon-edit"></i></a>
+                        <a data-id="'.$d.'" id="'.$d.'" data-link="'.$actionUrl.'" class="btn-xs action action-detail btn btn-danger  btn-delete " href="javascript:void(0)"><i class="icon-remove"></i></a>
+                    ';
 
-        $transactios = $this->transactionModel->convertToArray($transactios);
-
-        //setup stote item detail
-        $storeItemDetail =  array(
-            'link' => 'admin/index',
-            'data' =>$menuStore,
-            'heading' => array(
-                'id' => 'Id',
-                'name' => $this->translator->translate('Name'),
-                'quantityInput' => $this->translator->translate('Quantity input'),
-                'quantityOutput' => $this->translator->translate('Quantity out put'),
-                'quantityInStock' => $this->translator->translate('Quantity in stock'),
-                'outOfStock' => $this->translator->translate('Out of stock config'),
-                'unit' => $this->translator->translate('Unit'),
-                'cost' => $this->translator->translate('Cost'),
-                'supplier' => $this->translator->translate('Supplier'),
-                'des' => $this->translator->translate('Description'),
-//                'image' => 'Image',
+                }
             )
-        );
 
-        //set up manager transaction
-        $dataTransactios =  array(
-            'tableTitle'=> $this->translator->translate('Manage transaction'),
-            'link' => 'admin/menustore',
-            'data' =>$transactios,
-            'heading' => array(
-                'id' =>  'Id',
-                'menuStoreId' => $this->translator->translate('Menu store id'),
-                'action' => $this->translator->translate('Action'),
-                'quantity' => $this->translator->translate('Quantity'),
-                'unit' => $this->translator->translate('Unit'),
-                'cost' => $this->translator->translate('Cost'),
-                'date' => $this->translator->translate('Date'),
-                'supplier' => $this->translator->translate('Supplier'),
-                'note' => $this->translator->translate('Note'),
-            ),
-            'hideDetailButton' => 1,
-            'hideDeleteButton' => 1,
-            'hideEditButton' => 1,
         );
-        return new ViewModel(array(
-            'storeDetail'=>$storeItemDetail,
-            'transactionTable' =>$dataTransactios,
-            'title' => $this->translator->translate('Detail Store Item').': '.$storeItemDetail['data']['name'],
-            'id' => $id
+        /////end column for table
+        $table = new AjaxTable(array(), array(), 'admin/menustoremain/detail');
+        $table->setTableColumns($columns);
+        $table->setTablePrefix('o');
+        $table->setExtendSQl(array(
+            array('AND','o.id','=',$id),
         ));
+
+        $table->setAjaxCall('/admin/menustoremain/detail/'.$id);
+        $table->setActionDeleteAll('deleteall');
+
+
+        $this->tableAjaxRequest($table,$columns,$this->transactionModel);
+
+
+        return new ViewModel(
+            array('table' => $table,
+                'title' => $this->translator->translate('Detail Warehouse')));
 
 
     }

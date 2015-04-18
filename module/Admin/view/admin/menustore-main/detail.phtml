@@ -1,9 +1,48 @@
 <?php
+$traslate = \Velacolib\Utility\Utility::translate();
+$dataDetail = $this->storeDetail;
+$dataTransaction = $this->transactionTable;
 
+$id = $this->id;
 $title = array();
 $title['title'] = $this->title;
-$title['link'] =   $this->url('admin/child', array('controller'=>'menustoremain','action' => 'add'));
+$title['link'] =   $this->url('admin/child', array('controller'=>'menustore','action' => 'add'));
 $this->titleHelper($title);
-$data = $this->data;
-$table = $this->table;
-$table->render();
+?>
+
+<div class="row-fluid">
+
+</div>
+
+<div class="row-fluid">
+    <div class="span3">
+        <?php $this->detailHelper($dataDetail); ?>
+    </div>
+    <div class="span9 box">
+        <div class="box-content">
+            <a href="<?php echo $this->url('admin/child', array(
+                'controller' => 'menustore',
+                'action' => 'detail',
+                'id' => $id,
+            )) ?>" class="btn btn-primary"><?php echo $traslate->translate('All'); ?></a>
+            <a href="
+            <?php echo $this->url('admin/child', array(
+                'controller' => 'menustore',
+                'action' => 'detail',
+                'id' => $id,
+                'filter_action' => 'N'
+            )) ?>
+            " class="btn btn-primary"><?php echo $traslate->translate('Input'); ?></a>
+            <a href="<?php echo $this->url('admin/child', array(
+                'controller' => 'menustore',
+                'action' => 'detail',
+                'id' => $id,
+                'filter_action' => 'X'
+            )) ?>" class="btn btn-primary"><?php echo $traslate->translate('Output'); ?></a>
+            </a>
+        </div>
+    </div>
+    <div class="span9">
+        <?php $this->tableHelper($dataTransaction); ?>
+    </div>
+</div>

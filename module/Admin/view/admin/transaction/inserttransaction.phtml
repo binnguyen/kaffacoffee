@@ -1,8 +1,8 @@
 <?php
 $title = array();
-$title['title'] = $this->title;
+$title['title'] = 'Insert Transaction';
 $title['link'] =   $this->url('admin/child', array('controller'=>'transaction','action' => 'inserttransaction'));
-$this->titleHelper($title);
+echo $this->titleHelper($title);
 $data = $this->data;
 $translator = \Velacolib\Utility\Utility::translate();
 $menStoreId = $this->menuStoreId;
@@ -13,7 +13,7 @@ $menuStore = $this->menuStore;
         <div class="box-header blue-background">
             <div class="title">
                 <div class="icon-edit"></div>
-                <?php echo $this->title; ?>
+                <?php echo $this->translate('Insert  Transaction'); ?>
             </div>
             <div class="actions">
                 <a href="#" class="btn box-remove btn-mini btn-link"><i class="icon-remove"></i>

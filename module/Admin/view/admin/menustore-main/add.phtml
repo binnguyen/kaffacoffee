@@ -30,21 +30,35 @@ $translator = \Velacolib\Utility\Utility::translate();
                   style="margin-bottom: 0;">
                 <input type="hidden" name="id" value="<?php if($data){ echo $data->getId();} ?>">
 
-                <div class="control-group">
+
+                <div class="control-group" >
                     <label class="control-label" for="inputText1"><?php echo $translator->translate('Name'); ?></label>
                     <div class="controls">
-<!--                        <input id="" placeholder="Name" name="name" type="text" value="--><?php //if($data){echo $data->getName();} ?><!--">-->
 
                         <?php
-                            $menuStore = \Velacolib\Utility\Utility::getMenuStoreArrayAutoComplete(true);
+                        $suppliers =   \Velacolib\Utility\Utility::getAllSuplyItemsArray();
                         ?>
-                        <input  name="name" data-items='4' data-provide='typeahead' data-source='<?php echo json_encode($menuStore) ?>'
-                               placeholder='Tên nguyên liệu'
-                               style='margin: 0 auto;'
-                               type='text'
-                               value="<?php if($data){echo $data->getName();} ?>"/>
+                        <select name="supplyType"  id="supplyType">
+                            <?php
+                            foreach($suppliers as $k => $supplier){
+                                $slected = '';
+                                if($data){
+                                    if($k == $data->getSupplyItem())
+                                    {
+                                        $slected = 'selected';
+                                    }
+                                }
+                                ?>
+                                <option <?php echo $slected; ?> value="<?php echo $k; ?>"><?php echo $supplier ?></option>
+                                <?php
+                            }
+                            ?>
+                        </select>
                     </div>
                 </div>
+
+
+
 
 
                 <!-- Quantity -->
@@ -89,28 +103,24 @@ $translator = \Velacolib\Utility\Utility::translate();
                         <select name="unit" id="unit_store" >
                             <?php
                             $unitArray = Velacolib\Utility\Utility::getUnitArray();
+
                             if($data){$cUnit = $data->getUnit();}
                             ?>
 
                             <?php
                             $selected = '';
-                            if(!$data){
-                            foreach($unitArray as $k => $unit){
-                                $selected = '';
-                                if( isset($cUnit) && $cUnit == $k ){
-                                    $selected = 'selected';
+
+                                foreach($unitArray as $k => $unit){
+                                    $selected = '';
+                                    if( isset($cUnit) && $cUnit == $k ){
+                                        $selected = 'selected';
+                                    }
+                                    ?>
+                                    <option <?php echo $selected ?> value="<?php echo $k; ?>" >                                     <?php echo $unit; ?>
+                                    </option>
+                                <?php
                                 }
-                                ?>
-                                <option <?php echo $selected ?> value="<?php echo $k; ?>" >                                     <?php echo $unit; ?>
-                                </option>
-                            <?php
-                            }
-                            }else{
-                                ?>
-                                <option <?php echo 'selected' ?> value="<?php echo $cUnit ?>" >                                     <?php echo $cUnit; ?>
-                                </option>
-                            <?php
-                            }
+
                             ?>
 
                         </select>
@@ -131,31 +141,7 @@ $translator = \Velacolib\Utility\Utility::translate();
 
 
                 <!-- loai san pham cung cap -->
-                <div class="control-group">
-                    <label class="control-label" for="inputText1"><?php echo $translator->translate('Supply Item Type'); ?></label>
-                    <div class="controls">
 
-                        <?php
-                        $suppliers =   \Velacolib\Utility\Utility::getAllSuplyItemsArray();
-                        ?>
-                        <select name="supplyType"  id="supplyType">
-                            <?php
-                            foreach($suppliers as $k => $supplier){
-                                $slected = '';
-                                if($data){
-                                    if($k == $data->getSupplyItem())
-                                    {
-                                        $slected = 'selected';
-                                    }
-                                }
-                                ?>
-                                <option <?php echo $slected; ?> value="<?php echo $k; ?>"><?php echo $supplier ?></option>
-                            <?php
-                            }
-                            ?>
-                        </select>
-                    </div>
-                </div>
 
 
 

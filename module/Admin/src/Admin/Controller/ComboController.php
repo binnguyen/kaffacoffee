@@ -42,11 +42,11 @@ class ComboController extends AdminGlobalController
         $columns = array(
 
             array('title' =>'ID', 'db' => 'id', 'dt' => 0,'search'=>false, 'type' => 'number' ),
-            array('title' =>'Parent', 'db' => 'menu_parent_id','dt' => 1, 'search'=>true, 'type' => 'text' ),
-            array('title' =>'Name', 'db' => 'menu_child_id','dt' => 2, 'search'=>true, 'type' => 'text' ),
-            array('title' =>'Quantity', 'db' => 'menu_quantity','dt' => 3, 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Name', 'db' => 'menu_parent_id','dt' => 1, 'search'=>true, 'type' => 'text' ),
 
-            array('title' =>'Action','db'=>'id','dt' => 4 , 'search'=>false, 'type' => 'number',
+            array('title' =>'Quantity', 'db' => 'menu_quantity','dt' => 2, 'search'=>true, 'type' => 'text' ),
+
+            array('title' =>'Action','db'=>'id','dt' => 3 , 'search'=>false, 'type' => 'number',
                 'formatter' => function( $d, $row ) {
                     $actionUrl = '/admin/combo';
                     $actionUrlMain = '/admin/index';

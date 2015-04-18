@@ -45,7 +45,11 @@ $translator = \Velacolib\Utility\Utility::translate();
                             <option data-unit="0">Please select...</option>
                             <?php foreach($menuStoreMains as $itemMenuStore){
                                 ?>
-                                <option data-unit="<?php echo $itemMenuStore['unit'] ?>"
+                                <option data-unit="<?php
+                                    $unitList = Velacolib\Utility\Utility::getUnitListForSelect();
+
+                                    echo $unitList[$itemMenuStore['unit']];
+                                ?>"
                                         data-id="<?php echo $itemMenuStore['id'] ?>"
                                         data-quantityInStock="<?php echo $itemMenuStore['quantityInStock'] ?>"
                                         data-outOfStock="<?php echo $itemMenuStore['outOfStock'] ?>"

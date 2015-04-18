@@ -83,7 +83,7 @@ class supplierForm extends Form
             ),
             'name' => 'supply_for',
             'options' => array(
-                'label' => $translator->translate('Product'),
+                'label' => $translator->translate('Raw Material'),
                 'value_options' => $supArray
             ),
         ));
@@ -126,7 +126,7 @@ class supplierForm extends Form
         $this->add(array(
             'name' => 'addr',
             'options' => array(
-                'label' => $translator->translate('addr')
+                'label' => $translator->translate('Address')
             ),
             'attributes' => array(
                 'type' => 'textarea',
