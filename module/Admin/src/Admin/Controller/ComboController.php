@@ -41,17 +41,24 @@ class ComboController extends AdminGlobalController
 
         $columns = array(
 
-            array('title' =>'ID', 'db' => 'id', 'dt' => 0,'search'=>false, 'type' => 'number' ),
-            array('title' =>'Name', 'db' => 'menu_parent_id','dt' => 1, 'search'=>true, 'type' => 'text' ),
-
-            array('title' =>'Quantity', 'db' => 'menu_quantity','dt' => 2, 'search'=>true, 'type' => 'text' ),
-
-            array('title' =>'Action','db'=>'id','dt' => 3 , 'search'=>false, 'type' => 'number',
+            array('title' =>'Id', 'db' => 'id', 'dt' => 0, 'search'=>false, 'type' => 'number' ),
+            array('title' =>'Name', 'db' => 'name','dt' => 1, 'search'=>true, 'type' => 'text' ),
+            array('title' =>'Category', 'db' => 'catId','dt' => 2, 'search'=>false, 'type' => 'number',
+                'dataSelect' => Utility::getCategoryForSelect()
+            ),
+            array('title' =>'Cost', 'db' => 'cost','dt' => 3, 'search'=>false, 'type' => 'number',
+                'formatter' => function($d, $row){
+                    return Utility::formatCost($d);
+                }
+            ),
+            array('title' =>'Take Away Cost', 'db' => 'taCost','dt' => 4, 'search'=>false, 'type' => 'number','formatter' => function($d, $row){
+                return Utility::formatCost($d);
+            } ),
+            array('title' =>'Action','db'=>'id','dt' => 5, 'search'=>false, 'type' => 'number',
                 'formatter' => function( $d, $row ) {
-                    $actionUrl = '/admin/combo';
-                    $actionUrlMain = '/admin/index';
+                    $actionUrl = '/admin/index';
                     return '
-                        <a class="btn-xs action action-detail btn btn-success btn-default" href="'.$actionUrlMain.'/add/'.$d.'"><i class="icon-edit"></i></a>
+                        <a class="btn-xs action action-detail btn btn-success btn-default" href="'.$actionUrl.'/add/'.$d.'"><i class="icon-edit"></i></a>
                         <a data-id="'.$d.'" id="'.$d.'" data-link="'.$actionUrl.'" class="btn-xs action action-detail btn btn-danger  btn-delete " href="javascript:void(0)"><i class="icon-remove"></i></a>
                     ';
 
@@ -67,11 +74,12 @@ class ComboController extends AdminGlobalController
         $table->setTablePrefix('m');
         $table->setExtendSQl(array(
             array('AND','m.isdelete','=','0'),
+            array('AND','m.isCombo','=','1'),
         ));
 
         $table->setAjaxCall('/admin/combo');
         $table->setActionDeleteAll('deleteall');
-        $this->tableAjaxRequest($table,$columns,$this->modelCombo);
+        $this->tableAjaxRequest($table,$columns,$this->modelMenu);
         //end config table
 
 
