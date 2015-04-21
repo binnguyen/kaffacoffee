@@ -64,19 +64,6 @@ class ReportnewController extends AdminGlobalController
             $toDate = date('Y-m-d');
             // $user = $params['user'];
             $strUserOrder = '';
-            $userText = '';
-            $fromText = '';
-            $toText = '';
-            $menuText = '';
-
-       // if ($this->getRequest()->isPost()) {
-
-//            $params = $this->params()->fromPost();
-//            $fromDate = $params['formDate'];
-//            $toDate = $params['toDate'];
-//            $user = $params['user'];
-//            $strUserOrder = '';
-
             if ($fromDate) {
                 $fromDateTime = strtotime($fromDate . ' 00:00:00');
                 $str .= ' AND table.createDate >= ' . $fromDateTime;
