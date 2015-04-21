@@ -3,6 +3,7 @@ $title = array();
 $excelLink = $this->excelLink;
 $data = $this->data_table;
 $dataUser = $this->data_user;
+$dataUserCountOrder = $this->data_user_count_order;
 $dataMenu = $this->data_menu;
 $dataMenuCostType = $this->data_menu_costtype;
 $title['title'] = $this->title;
@@ -20,7 +21,7 @@ $allMenu = \Velacolib\Utility\Utility::getCategories();
 
 <!--control box -->
 <div class="row-fluid">
-    <div class="span6 box bordered-box blue-border ">
+    <div class="span4 box bordered-box blue-border ">
         <div class="box-header red-background">
             <div class="title">
                 <?php echo $dateTimeReport; ?>
@@ -61,9 +62,16 @@ $allMenu = \Velacolib\Utility\Utility::getCategories();
         </div>
     </div>
     <!-- bar chart count order -->
-    <div class="span6 box bordered-box blue-border ">
+    <div class="span4 box bordered-box blue-border ">
         <div class='box-content'>
-            <?php  $this->pieChartHelper($dataUser,'Report user'); ?>
+            <?php  $this->pieChartHelper($dataUserCountOrder,'Count order of user','reportCountOrderOfUser'); ?>
+        </div>
+    </div>
+    <!--end bar count order  -->
+    <!-- bar chart count order -->
+    <div class="span4 box bordered-box blue-border ">
+        <div class='box-content'>
+            <?php  $this->pieChartHelper($dataUser,'Report number order of user','reportOrderOfUser'); ?>
         </div>
     </div>
     <!--end bar count order  -->
@@ -88,44 +96,6 @@ $allMenu = \Velacolib\Utility\Utility::getCategories();
             ?>
         </div>
     </div>
-</div>
-<div class="row-fluid">
-    <!--Cost type -->
-    <div class="span12 box">
-        <div class="box-content">
-            <?php
-            $this->tableHelper($dataMenuCostType);
-            ?>
-        </div>
-    </div>
-    <!--end cost type-->
-</div>
-<div class="row-fluid">
-    <!-- menu box -->
-    <div class="span12 box">
-        <div class="box-content">
-            <?php
-            $this->tableHelper($dataMenu);
-            ?>
-        </div>
-    </div>
-    <!--end table box -->
-
-
-</div>
-<div class="row-fluid">
-    <!-- menu box -->
-    <div class="span12 box">
-
-        <div class="box-content">
-            <?php
-            $this->tableHelper($this->data_payment);
-            ?>
-        </div>
-    </div>
-    <!--end table box -->
-
-
 </div>
 
 

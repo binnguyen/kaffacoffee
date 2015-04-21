@@ -15,12 +15,12 @@ use Zend\View\Helper\AbstractHelper;
 //example helper
 //config in module getViewHelperConfig
 class pieChartHelper extends AbstractHelper {
-    public function __invoke($data = array(),$title='')
+    public function __invoke($data = array(),$title='',$contentDiv='')
     {
 
         echo $this->getView()
             ->render('layout/helper/backend/chart/pieChartHelper.phtml',
-            array('data'=>$data,'title'=>$title));
+            array('data'=>$data,'title'=>$title,'contentDiv'=>$contentDiv));
     }
 }
 //end example helper
