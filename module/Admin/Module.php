@@ -89,6 +89,7 @@ class Module
                 'reportHelper' => 'Admin\View\Helper\reportUserEndDay',
                 'manageTableHelper' => 'Admin\View\Helper\manageTableHelper',
                 'flashHelper' => 'Admin\View\Helper\flashHelper',
+                'pieChartHelper'   => 'Admin\View\Helper\chart\pieChartHelper'
             )
         );
     }

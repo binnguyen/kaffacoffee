@@ -1,77 +1,65 @@
-ZendSkeletonApplication
-=======================
+DoctrineExtensions
+==================
 
-Introduction
-------------
-This is a simple, skeleton application using the ZF2 MVC layer and module
-systems. This application is meant to be used as a starting place for those
-looking to get their feet wet with ZF2.
+[![Build Status](https://img.shields.io/badge/branch-master-blue.svg)](https://github.com/beberlei/DoctrineExtensions/tree/master)
+[![Build Status](https://travis-ci.org/beberlei/DoctrineExtensions.svg?branch=master)](https://travis-ci.org/beberlei/DoctrineExtensions)
+[![Build Status](https://img.shields.io/badge/version-1.0-orange.svg)](https://github.com/beberlei/DoctrineExtensions/tree/1.0)
+[![Travis branch](https://img.shields.io/travis/beberlei/DoctrineExtensions/1.0.svg)](https://travis-ci.org/beberlei/DoctrineExtensions)
+[![Build Status](https://img.shields.io/badge/version-0.3-orange.svg)](https://github.com/beberlei/DoctrineExtensions/tree/0.3)
+[![Travis branch](https://img.shields.io/travis/beberlei/DoctrineExtensions/0.3.svg)](https://travis-ci.org/beberlei/DoctrineExtensions)
+
+[![Packagist](https://img.shields.io/packagist/v/beberlei/DoctrineExtensions.svg?label=stable)](https://packagist.org/packages/beberlei/DoctrineExtensions)
+[![Packagist](https://img.shields.io/packagist/vpre/beberlei/DoctrineExtensions.svg?label=unstable)](https://packagist.org/packages/beberlei/DoctrineExtensions)
+[![Packagist](https://img.shields.io/packagist/dd/beberlei/DoctrineExtensions.svg?label=⬇)](https://packagist.org/packages/beberlei/DoctrineExtensions)
+[![Packagist](https://img.shields.io/packagist/dm/beberlei/DoctrineExtensions.svg?label=⬇)](https://packagist.org/packages/beberlei/DoctrineExtensions)
+[![Packagist](https://img.shields.io/packagist/dt/beberlei/DoctrineExtensions.svg?label=⬇)](https://packagist.org/packages/beberlei/DoctrineExtensions)
+
+A set of extensions to Doctrine 2 that add support for additional query
+functions available in MySQL and Oracle.
+
+| DB | Functions |
+|:--:|:---------:|
+| MySQL | `ACOS, ASIN, ATAN, ATAN2, BINARY, CHAR_LENGTH, CONCAT_WS, COS, COT, COUNTIF, CRC32, DATE, DATE_FORMAT, DATEADD, DATEDIFF, DAY, DAYNAME, DEGREES, FIELD, FIND_IN_SET, GROUP_CONCAT, HOUR, IFELSE, IFNULL, LAST_DAY, MATCH_AGAINST, MD5, MINUTE, MONTH, MONTHNAME, NULLIF, PI, POWER, QUARTER, RADIANS, RAND, REGEXP, REPLACE, ROUND, SECOND, SHA1, SHA2, SIN, SOUNDEX, STD, STRTODATE, TAN, TIME, TIMESTAMPADD, TIMESTAMPDIFF, UUID_SHORT, WEEK, WEEKDAY, YEAR` |
+| Oracle | `DAY, MONTH, NVL, TODATE, TRUNC, YEAR` |
+
 
 Installation
 ------------
 
-Using Composer (recommended)
-----------------------------
-The recommended way to get a working copy of this project is to clone the repository
-and use `composer` to install dependencies using the `create-project` command:
+To install this library, run the command below and you will get the latest
+version:
 
-    curl -s https://getcomposer.org/installer | php --
-    php composer.phar create-project -sdev --repository-url="https://packages.zendframework.com" zendframework/skeleton-application path/to/install
+```sh
+composer require beberlei/DoctrineExtensions
+```
 
-Alternately, clone the repository and manually invoke `composer` using the shipped
-`composer.phar`:
+If you want to run the tests:
 
-    cd my/project/dir
-    git clone git://github.com/zendframework/ZendSkeletonApplication.git
-    cd ZendSkeletonApplication
-    php composer.phar self-update
-    php composer.phar install
+```sh
+vendor/bin/phpunit
+```
 
-(The `self-update` directive is to ensure you have an up-to-date `composer.phar`
-available.)
+To include the DoctrineExtensions you should fire up an autoloader, for example:
 
-Another alternative for downloading the project is to grab it via `curl`, and
-then pass it to `tar`:
+```php
+<?php
 
-    cd my/project/dir
-    curl -#L https://github.com/zendframework/ZendSkeletonApplication/tarball/master | tar xz --strip-components=1
+$classLoader = new \Doctrine\Common\ClassLoader('DoctrineExtensions', '/path/to/extensions');
+$classLoader->register();
+```
 
-You would then invoke `composer` to install dependencies per the previous
-example.
+You can find an example configuration for using the additional MySQL functions
+in Symfony2 in [config/mysql.yml](config/mysql.yml).
 
-Using Git submodules
---------------------
-Alternatively, you can install using native git submodules:
 
-    git clone git://github.com/zendframework/ZendSkeletonApplication.git --recursive
+Legacy versions
+---------------
 
-Web Server Setup
-----------------
+If you're still using Paginator, LargeCollections, Phing, PHPUnit or Versionable
+behaviours available in `0.1`–`0.3`, you're welcome to use `0.3` – but do note,
+**this functionality is now available in Doctrine core, no longer supported in
+this library, and was removed in 1.0**.
 
-### PHP CLI Server
-
-The simplest way to get started if you are using PHP 5.4 or above is to start the internal PHP cli-server in the root directory:
-
-    php -S 0.0.0.0:8080 -t public/ public/index.php
-
-This will start the cli-server on port 8080, and bind it to all network
-interfaces.
-
-**Note: ** The built-in CLI server is *for development only*.
-
-### Apache Setup
-
-To setup apache, setup a virtual host to point to the public/ directory of the
-project and you should be ready to go! It should look something like below:
-
-    <VirtualHost *:80>
-        ServerName zf2-tutorial.localhost
-        DocumentRoot /path/to/zf2-tutorial/public
-        SetEnv APPLICATION_ENV "development"
-        <Directory /path/to/zf2-tutorial/public>
-            DirectoryIndex index.php
-            AllowOverride All
-            Order allow,deny
-            Allow from all
-        </Directory>
-    </VirtualHost>
+Whilst pull requests for bugfixes to this functionality will be considered for
+0.x releases, you are encouraged to switch out your implementations and upgrade
+to ~1.0.

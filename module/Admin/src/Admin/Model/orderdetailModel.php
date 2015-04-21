@@ -55,17 +55,24 @@ class orderdetailModel extends globalModel {
 
     }
 
-    public function createQueryMenu($strQuery){
+    public function createQueryMenu($strQuery,$offset = -1, $limit = -1){
 
         $querybuilder = $this->objectManager->getRepository($this->entityName)->createQueryBuilder('table');
-        $rs = $querybuilder
+        $querybuilder = $querybuilder
             ->select(' table, sum(table.quantity) as count_menu, table.menuId, sum(table.realCost) as realCost, o.createDate, mn.name')
             ->from(' Admin\Entity\Orders','o')
             ->from(' Admin\Entity\Menu','mn')
             ->where($strQuery.' AND o.id = table.orderId AND table.menuId = mn.id')
             ->groupBy('table.menuId')
-            ->orderBy('table.id','DESC')
-            ->getQuery()
+            ->orderBy('table.realCost','DESC');
+        if($limit != -1 && $offset != -1){
+
+            $querybuilder =  $querybuilder
+                ->setFirstResult($offset)
+                ->setMaxResults($limit);
+        }
+
+        $rs = $querybuilder->getQuery()
             ->getResult();
 
         return $rs;
@@ -73,7 +80,7 @@ class orderdetailModel extends globalModel {
     }
 
 
-    public function createQueryMenuType($strQuery){
+    public function createQueryMenuType($strQuery,$limit=10,$offset=0){
         $querybuilder = $this->objectManager->getRepository($this->entityName)->createQueryBuilder('table');
         $rs = $querybuilder
             ->select(' sum(table.quantity) as cost_type_quantity, table.costType, sum(table.realCost) as realCost ')

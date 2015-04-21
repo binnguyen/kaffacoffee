@@ -1471,6 +1471,16 @@ class Utility extends AbstractActionController
         }
         return $return;
     }
+    public static function getUserForPieChart($data){
+        $jsonData = array();
+        $jsonData[] = array('name'=>'cost');
+        foreach($data as $item){
+            $subItem =  array();
+            $subItem[$item['userId']] = $item['total_real_cost'];
+            $jsonData[] = $subItem;
+        }
+        return $jsonData;
+    }
 }
 
 

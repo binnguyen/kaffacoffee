@@ -10,6 +10,7 @@ namespace Admin\Model;
 
 
 use Admin\Entity\Orders;
+use Doctrine\ORM\Query\Expr\GroupBy;
 use Velacolib\Utility\Utility;
 use Zend\InputFilter\InputFilterInterface;
 
@@ -96,7 +97,7 @@ class orderModel extends globalModel {
 
         $querybuilder = $this->objectManager->getRepository($this->entityName)->createQueryBuilder('table');
         $rs = $querybuilder
-            ->select(' count(table) as count_user, table.userId')
+            ->select(' count(table) as count_user, table.userId, table.totalRealCost as total_real_cost, table.totalCost as total_cost ')
             ->where($strQuery)
             ->groupBy('table.userId')
             ->getQuery()
@@ -188,5 +189,18 @@ class orderModel extends globalModel {
     }
 
 
+    public function test(){
+        $querybuilder = $this->objectManager
+            ->getRepository($this->entityName)->createQueryBuilder('table');
+        $rs = $querybuilder
+            ->select ('table')
+            ->groupBy('DATE(table.createDate)')
+            ->getQuery()
+            ->getResult();
 
+        echo '<pre>';
+        print_r($rs);
+        echo '</pre>';
+        die;
+    }
 }

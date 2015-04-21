@@ -30,7 +30,7 @@ use Zend\Http\Header;
 use Zend\Http\Response\Stream;
 
 
-class ReportController extends AdminGlobalController
+class ReportnewController extends AdminGlobalController
 {
     protected $modelCategories;
     protected $modelOrder;
@@ -52,143 +52,30 @@ class ReportController extends AdminGlobalController
         $this->menuModel = new menuModel($doctrine);
     }
     public function indexAction(){
-
-
-
-        if ($this->getRequest()->isPost()) {
-
             $str = '';
             $strOrder = '';
-            $fromDate = '';
-            $toDate = '';
             $strUser = '';
             $strMenu = '';
             $strMenuForAllMenu = '';
-
             $params = $this->params()->fromPost();
-            $fromDate = $params['formDate'];
-            $toDate = $params['toDate'];
-            $user = $params['user'];
+            $fromDate = date('Y-m-d');
+            $fromDate = str_replace('-','/',$fromDate);
+            $fromDate = date('Y-m-d',strtotime($fromDate . "-30 days"));
+            $toDate = date('Y-m-d');
+            // $user = $params['user'];
             $strUserOrder = '';
             $userText = '';
             $fromText = '';
             $toText = '';
             $menuText = '';
 
-            if ($fromDate) {
-                $fromDateTime = strtotime($fromDate . ' 00:00:00');
-                $str .= ' AND table.createDate >= ' . $fromDateTime;
-                $strOrder .= ' AND o.createDate >= ' . $fromDateTime;
-                $fromText = $this->translator->translate('from ') . date('d-m-Y',$fromDateTime);
-            }
+       // if ($this->getRequest()->isPost()) {
 
-            if ($toDate) {
-                $toDateTime = strtotime($toDate . ' 23:59:00');
-                $str .= ' AND table.createDate <= ' . $toDateTime;
-                $strOrder .= ' AND o.createDate <= ' . $toDateTime;
-                $toText = $this->translator->translate(' to ') . date('d-m-Y',$toDateTime);
-            }
-            if (isset($params['user']) && $params['user'] != 0) {
-                $strUserOrder .= ' AND table.userId = ' . $user;
-                $strUser .= ' AND table.userId = ' . $user;
-                $userInfo = Utility::getUserInfo($user);
-                $userText = $this->translator->translate(' by '). $userInfo->getUserName();
-            }
-            if (isset($params['menu']) && $params['menu'] != 0) {
-
-                $strMenu .= ' AND mn.catId =' . $params['menu'];
-                $strMenuForAllMenu .= ' AND table.id = od.orderId AND od.menuId = mn.id ' . $strMenu;
-                $menuInfo = Utility::getCatInfo($params['menu']);
-                $menuText = $this->translator->translate(' in '). $menuInfo->getName();
-            }
-
-            // fetch data
-
-            $orderBy = "  ";
-
-            $reportMenu = $this->modelOrderDetail->createQueryMenu('table.isdelete = 0 ' . $strOrder . $strMenu);
-
-            $reportMenu = reportModel::convertMenuReportArray($reportMenu);
-
-            $reporAllOrder = $this->modelOrder->createQueryAllMenu('table.isdelete = 0 ' . $str . $strUser);
-
-            /*  report order and count cost by menu id  */
-            if (isset($params['menu']) && $params['menu'] != 0) {
-                $reporAllOrder = $this->modelOrder->createQueryByMenu('table.isdelete = 0 ' . $str . $strUser . $strMenuForAllMenu);
-            }
-
-
-//            echo '<pre>';
-//            print_r($reportMenu);
-//            echo '<hr/>';
-//            print_r($reporAllOrder);
-//            die;
-
-            // remove all report file
-            Utility::deleteAllFileInFolder('public/export/');
-
-            $link = renderExcel::renderMenuOrder($reportMenu);
-
-            $reportText = $this->translator->translate('Report ') .$fromText . $toText .$userText . $menuText ;
-
-            $dataMenu = array(
-                'tableTitle' => $this->translator->translate('Report menu'),
-                'link' => 'admin/order',
-                'data' => $reportMenu,
-                'heading' => array(
-                    'orderDetailId' => $this->translator->translate('Order Detail Id'),
-                    'OrderId' => $this->translator->translate('Order Id'),
-                    'menuId' => $this->translator->translate('Name'),
-                    'menuName' => $this->translator->translate('Menu'),
-                    'count_menu' => $this->translator->translate('Count number'),
-                    'realCost' => $this->translator->translate('Real cost'),
-                    'time' => $this->translator->translate('Time')
-                ),
-                'hideEditButton' => 1,
-                'hideDeleteButton' => 1,
-                'hideDetailButton' => 1
-            );
-
-
-            return new ViewModel(array(
-
-                'totalTable'=>$reporAllOrder[0]['count_table'],
-                'tCost'=>$reporAllOrder[0]['tCost'],
-                'tRCost'=>$reporAllOrder[0]['tRCost'],
-                'excelLink'=>$link,
-                'reportText' => $reportText,
-                'reportMenu' => $dataMenu,
-                'title'=>$this->translator->translate('Report')
-
-            ));
-
-
-        }
-
-        return new ViewModel(array(
-
-            'title'=>$this->translator->translate('Report')
-
-        ));
-
-    }
-    public function indexAction_bk()
-    {
-
-        $str = '';
-        $strOrder = '';
-        $fromDate = '';
-        $toDate = '';
-        $strUser = '';
-        $strMenu = '';
-        $strMenuForAllMenu = '';
-        if ($this->getRequest()->isPost()) {
-
-            $params = $this->params()->fromPost();
-            $fromDate = $params['formDate'];
-            $toDate = $params['toDate'];
-            $user = $params['user'];
-            $strUserOrder = '';
+//            $params = $this->params()->fromPost();
+//            $fromDate = $params['formDate'];
+//            $toDate = $params['toDate'];
+//            $user = $params['user'];
+//            $strUserOrder = '';
 
             if ($fromDate) {
                 $fromDateTime = strtotime($fromDate . ' 00:00:00');
@@ -212,7 +99,7 @@ class ReportController extends AdminGlobalController
                 $strMenuForAllMenu .= ' AND table.id = od.orderId AND od.menuId = mn.id ' . $strMenu;
             }
 
-        }
+//        }
 
         $year = date('Y');
         if ($this->params()->fromQuery('year')) {
@@ -230,7 +117,7 @@ class ReportController extends AdminGlobalController
         $reportTable = reportModel::convertTableReportArray($reportTable);
 
 
-        $reportMenu = $this->modelOrderDetail->createQueryMenu('table.isdelete = 0 ' . $strOrder . $strMenu);
+        $reportMenu = $this->modelOrderDetail->createQueryMenu('table.isdelete = 0 ' . $strOrder . $strMenu,0,10);
 
         $reportMenu = reportModel::convertMenuReportArray($reportMenu);
 
@@ -243,7 +130,7 @@ class ReportController extends AdminGlobalController
 
         /*  report order and count cost by menu id  */
         if (isset($params['menu']) && $params['menu'] != 0) {
-            $reporAllOrder = $this->modelOrder->createQueryByMenu('table.isdelete = 0 ' . $str . $strUser . $strMenuForAllMenu);
+            $reporAllOrder = $this->modelOrder->createQueryByMenu('table.isdelete = 0 ' . $str . $strUser . $strMenuForAllMenu,0,10);
         }
 
 
@@ -260,19 +147,7 @@ class ReportController extends AdminGlobalController
         //$dataRow = $this->modelCategories->convertToArray($categories);
 
         //setup data user table
-        $dataUser = array(
-            'tableTitle' => $this->translator->translate('Report user'),
-            'link' => 'admin/order',
-            'data' => $reportUser,
-            'heading' => array(
-                'userId' => $this->translator->translate('User create'),
-                'count_user' => $this->translator->translate('Count number'),
-
-            ),
-            'hideEditButton' => 1,
-            'hideDeleteButton' => 1,
-            'hideDetailButton' => 1
-        );
+        $dataUser = Utility::getUserForPieChart($reportUser);
 
         //setup data table
         $dataTable = array(
@@ -294,13 +169,9 @@ class ReportController extends AdminGlobalController
             'link' => 'admin/order',
             'data' => $reportMenu,
             'heading' => array(
-                'orderDetailId' => $this->translator->translate('Order Detail Id'),
-                'OrderId' => $this->translator->translate('Order Id'),
-                'menuId' => $this->translator->translate('Name'),
                 'menuName' => $this->translator->translate('Menu'),
                 'count_menu' => $this->translator->translate('Count number'),
                 'realCost' => $this->translator->translate('Real cost'),
-                'time' => $this->translator->translate('Time')
             ),
             'hideEditButton' => 1,
             'hideDeleteButton' => 1,
@@ -410,7 +281,6 @@ class ReportController extends AdminGlobalController
         die;
 
     }
-
     public function editAction()
     {
         //get user by id
@@ -421,7 +291,6 @@ class ReportController extends AdminGlobalController
         //update user
 
     }
-
     public function exportAction()
     {
         $reportOrder = $this->modelOrderDetail->createQuery();
@@ -429,7 +298,6 @@ class ReportController extends AdminGlobalController
         echo '<a href="/' . $link . '">Download</a>';
         die;
     }
-
     public function exportMenuAction()
     {
         $str = '';
@@ -456,14 +324,11 @@ class ReportController extends AdminGlobalController
         echo '<a href="/' . $link . '">Download</a>';
         die;
     }
-
-
     public function userReportAction()
     {
 
 
     }
-
     public function menuAction()
     {
 
@@ -492,7 +357,6 @@ class ReportController extends AdminGlobalController
         }
 
     }
-
     public function paymentAction()
     {
 
@@ -550,7 +414,6 @@ class ReportController extends AdminGlobalController
         }
 
     }
-
     public function reportMenuDateRangeAction()
     {
         if ($this->getRequest()->isPost()) {
@@ -586,7 +449,6 @@ class ReportController extends AdminGlobalController
 
         }
     }
-
     public function reportTrackingAction()
     {
         if ($this->getRequest()->isPost()) {
@@ -646,8 +508,6 @@ class ReportController extends AdminGlobalController
         $response->setHeaders($headers);
         return $response;
     }
-
-
     public function reportExpenseAction()
     {
         $allCategory = Utility::getPaymentCate();
