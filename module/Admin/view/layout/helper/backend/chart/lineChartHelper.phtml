@@ -1,7 +1,7 @@
 <?php
-
-$day = $data['day'];
-$cost = $data['cost'];
+$config = \Velacolib\Utility\Utility::getConfig();
+$day = array_reverse($data['day']);
+$cost = array_reverse($data['cost']);
 
 $jsonDay = str_replace(":",",",json_encode($day));
 $jsonDay = str_replace("{","[",$jsonDay);
@@ -43,7 +43,7 @@ $jsonCost = str_replace('"','',$jsonCost);
                 }]
             },
             tooltip: {
-                valueSuffix: ' VND'
+                valueSuffix: '<?php echo $config['currency'] ?>'
             },
             legend: {
                 layout: 'vertical',
@@ -52,7 +52,7 @@ $jsonCost = str_replace('"','',$jsonCost);
                 borderWidth: 0
             },
             series: [{
-                name: 'Kaffa',
+                name: 'Income',
                 data: <?php echo $jsonCost ?>
             }]
         });
