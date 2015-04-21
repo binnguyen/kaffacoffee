@@ -60,17 +60,19 @@ class ReportnewController extends AdminGlobalController
             $params = $this->params()->fromPost();
             $fromDate = date('Y-m-d');
             $fromDate = str_replace('-','/',$fromDate);
-            $fromDate = date('Y-m-d',strtotime($fromDate . "-30 days"));
+            $fromDate = date('Y-m-d',strtotime($fromDate . "-29 days"));
             $toDate = date('Y-m-d');
             // $user = $params['user'];
             $strUserOrder = '';
             if ($fromDate) {
+
                 $fromDateTime = strtotime($fromDate . ' 00:00:00');
                 $str .= ' AND table.createDate >= ' . $fromDateTime;
                 $strOrder .= ' AND o.createDate >= ' . $fromDateTime;
             }
 
             if ($toDate) {
+
                 $toDateTime = strtotime($toDate . ' 23:59:00');
                 $str .= ' AND table.createDate <= ' . $toDateTime;
                 $strOrder .= ' AND o.createDate <= ' . $toDateTime;
@@ -200,6 +202,11 @@ class ReportnewController extends AdminGlobalController
 
 
         $dataByDay = Utility::rsReportPerDay(30);
+        $total =0;
+        foreach($dataByDay['cost'] as $item){
+            $total += $item;
+        }
+
 
         return new ViewModel(array(
                 'data_table' => $dataTable,
