@@ -17,7 +17,13 @@ $this->titleHelper($title);
 $allUser = \Velacolib\Utility\Utility::getUser();
 $allMenu = \Velacolib\Utility\Utility::getCategories();
 ?>
-
+<div class="row-fluid">
+    <div class="span12 box bordered-box blue-border">
+        <div class="box-content box-statistic">
+            <?php  $this->lineChartHelper($reportPerDay,'Report Income 30 nearly 30 days'); ?>
+        </div>
+    </div>
+</div>
 <!--control box -->
 <div class="row-fluid">
     <div class="span6 box bordered-box blue-border ">

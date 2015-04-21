@@ -1511,8 +1511,8 @@ class Utility extends AbstractActionController
                 'cost'=>$rows['Cost']
             );
         }
-        echo json_encode($rs);
-        die;
+       return  ($rs);
+
     }
 }
 

@@ -90,8 +90,8 @@ class ReportnewController extends AdminGlobalController
 
             }
             if (isset($params['user']) && $params['user'] != 0) {
-                $strUserOrder .= ' AND table.userId = ' . $user;
-                $strUser .= ' AND table.userId = ' . $user;
+                //$strUserOrder .= ' AND table.userId = ' . $user;
+              //  $strUser .= ' AND table.userId = ' . $user;
             }
             if (isset($params['menu']) && $params['menu'] != 0) {
 
@@ -210,6 +210,8 @@ class ReportnewController extends AdminGlobalController
         );
 
 
+        $dataByDay = Utility::rsReportPerDay();
+
         return new ViewModel(array(
                 'data_table' => $dataTable,
                 'data_user' => $dataUser,
@@ -233,7 +235,8 @@ class ReportnewController extends AdminGlobalController
                 'reportMonth' => $reportMonth,
                 'fromDate' => $fromDate,
                 'toDate' => $toDate,
-                'excelLink' => $link
+                'excelLink' => $link,
+                'reportPerDay'=>$dataByDay
             )
         );
     }
