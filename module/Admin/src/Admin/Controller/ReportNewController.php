@@ -148,6 +148,8 @@ class ReportnewController extends AdminGlobalController
 
         //setup data user table
         $dataUser = Utility::getUserForPieChart($reportUser);
+        $dataUserCountOrder = Utility::getUserForPieChart($reportUser,'userId','count_user');
+       // $dataUserCountOrder = Utility::getUserForPieChart($reportUser);
 
         //setup data table
         $dataTable = array(
@@ -215,6 +217,7 @@ class ReportnewController extends AdminGlobalController
         return new ViewModel(array(
                 'data_table' => $dataTable,
                 'data_user' => $dataUser,
+                'data_user_count_order' => $dataUserCountOrder,
                 'data_menu' => $dataMenu,
                 'data_menu_costtype' => $dataMenuCostType,
                 'data_payment' => $dataPayment,
