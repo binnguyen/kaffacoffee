@@ -212,7 +212,7 @@ class ReportnewController extends AdminGlobalController
         );
 
 
-        $dataByDay = Utility::rsReportPerDay();
+        $dataByDay = Utility::rsReportPerDay(30);
 
         return new ViewModel(array(
                 'data_table' => $dataTable,

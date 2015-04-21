@@ -1506,10 +1506,8 @@ class Utility extends AbstractActionController
         ";
         $reportDayInMonth = mysql_query($stringSql);
         while($rows = mysql_fetch_array($reportDayInMonth)){
-            $rs[] = array(
-                'day'=>$rows['ForDate'],
-                'cost'=>$rows['Cost']
-            );
+            $rs['day'][] = $rows['ForDate']  ;
+            $rs['cost'][] =   $rows['Cost'];
         }
        return  ($rs);
 
