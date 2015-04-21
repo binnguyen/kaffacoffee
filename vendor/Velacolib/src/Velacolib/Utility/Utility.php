@@ -1481,6 +1481,39 @@ class Utility extends AbstractActionController
         }
         return $jsonData;
     }
+
+    static function connect(){
+        $service_locator_str = 'doctrine.connection.orm_default';
+        $sm = self::getSM();
+        $service = $sm->get($service_locator_str);
+        $params = $service->getParams();
+        $host = $params['host'];
+        $user = $params['user'];
+        $pass = $params['password'];
+        $name = $params['dbname'];
+        $link = mysql_connect($host,$user,$pass);
+        mysql_select_db($name,$link);
+        return $link;
+    }
+
+    static function rsReportPerDay($limit = 30){
+        $connect = self::connect();
+        $stringSql = " SELECT DATE(FROM_UNIXTIME(`create_date`)) AS ForDate,
+        SUM(`total_real_cost`) AS Cost
+        FROM   `orders`
+        GROUP BY DATE(FROM_UNIXTIME(`create_date`))
+        ORDER BY ForDate DESC LIMIT 0,$limit
+        ";
+        $reportDayInMonth = mysql_query($stringSql);
+        while($rows = mysql_fetch_array($reportDayInMonth)){
+            $rs[] = array(
+                'day'=>$rows['ForDate'],
+                'cost'=>$rows['Cost']
+            );
+        }
+        echo json_encode($rs);
+        die;
+    }
 }
 
 
