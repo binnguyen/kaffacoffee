@@ -97,7 +97,10 @@ class orderModel extends globalModel {
 
         $querybuilder = $this->objectManager->getRepository($this->entityName)->createQueryBuilder('table');
         $rs = $querybuilder
-            ->select(' count(table) as count_user, table.userId, table.totalRealCost as total_real_cost, table.totalCost as total_cost ')
+            ->select(' count(table) as count_user,
+             table.userId,
+             SUM(table.totalRealCost) as total_real_cost,
+             SUM(table.totalCost) as total_cost ')
             ->where($strQuery)
             ->groupBy('table.userId')
             ->getQuery()
