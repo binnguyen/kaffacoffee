@@ -17,12 +17,14 @@ use Admin\Entity\Payment;
 class reportModel {
 
     public static  function convertUserReportArray($data){
+
         foreach($data as $k => $val){
 
             $userInfo = Utility::getUserInfo($val['userId']);
             $data[$k]['userId'] = $userInfo->getUserName();
             $data[$k]['id'] = $k;
         }
+
         return $data;
     }
 

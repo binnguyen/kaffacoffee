@@ -12,6 +12,7 @@ use Admin\Entity\Table;
 use Admin\Entity\Payment;
 use Admin\Entity\MenuItem;
 use Admin\Model\categoryModel;
+use Admin\Model\menuModel;
 use Admin\Model\orderdetailModel;
 use Admin\Model\orderModel;
 use Admin\Model\reportModel;
@@ -29,7 +30,7 @@ use Zend\Http\Header;
 use Zend\Http\Response\Stream;
 
 
-class ReportController extends AbstractActionController
+class ReportController extends AdminGlobalController
 {
     protected $modelCategories;
     protected $modelOrder;
@@ -38,37 +39,20 @@ class ReportController extends AbstractActionController
     protected $modelTracking;
     protected $translator;
     protected $menuItem;
-
-    public function onDispatch(\Zend\Mvc\MvcEvent $e)
+    protected $menuModel;
+    public function init()
     {
-
-        $service_locator_str = 'doctrine';
-        $this->sm = $this->getServiceLocator();
-        $doctrine = $this->sm->get($service_locator_str);
+        $doctrine = $this->doctrineService;
         $this->modelCategories = new categoryModel($doctrine);
         $this->modelOrder = new orderModel($doctrine);
         $this->modelOrderDetail = new orderdetailModel($doctrine);
         $this->modelPayment = new paymentModel($doctrine);
         $this->menuItem = new menuItemModel($doctrine);
         $this->modelTracking = new trackingToreModel($doctrine);
-        $this->translator = Utility::translate();
-
-        //check login
-        $user = Utility::checkLogin($this);
-        if (!is_object($user) && $user == 0) {
-            $this->redirect()->toRoute('admin/child', array('controller' => 'login'));
-        } else {
-            $isPermission = Utility::checkRole($user->userType, ROLE_ADMIN);
-            if ($isPermission == false)
-                $this->redirect()->toRoute('admin/child', array('controller' => 'login'));
-        }
-        //end check login
-
-        return parent::onDispatch($e);
+        $this->menuModel = new menuModel($doctrine);
     }
-
-
     public function indexAction(){
+
 
 
         if ($this->getRequest()->isPost()) {
@@ -188,7 +172,6 @@ class ReportController extends AbstractActionController
         ));
 
     }
-
     public function indexAction_bk()
     {
 
@@ -383,9 +366,6 @@ class ReportController extends AbstractActionController
             )
         );
     }
-
-
-
     public function addAction()
     {
         $request = $this->getRequest();
@@ -415,7 +395,6 @@ class ReportController extends AbstractActionController
             ));
         }
     }
-
     public function deleteAction()
     {
         //get user by id

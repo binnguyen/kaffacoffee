@@ -39,6 +39,8 @@ use Admin\Model\supplyItemModel;
 use Admin\Model\surTaxModel;
 use Admin\Model\tableModel;
 use Admin\Model\transactionModel;
+use Admin\Model\unitConvertModel;
+use Admin\Model\unitModel;
 use Admin\Model\userHistoryModel;
 use Admin\Model\userModel;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -423,7 +425,6 @@ class Utility extends AbstractActionController
 
     static function  insertOrderDetail($data, $orderID)
     {
-
         $table = self::$servicelocator->get('doctrine');
         $table = new orderdetailModel($table);
         $orderDetail = new OrderDetail();
@@ -918,17 +919,7 @@ class Utility extends AbstractActionController
 
     public static function getUnitArray()
     {
-        return array(
-            'KG' => 'Kilograms',
-            'G' => 'Grams',
-            'MG' => 'Milligram',
-            'L' => 'Liter',
-            'ML' => 'Milliliter',
-            'Goi' => 'Goi',
-            'Hu' => 'Hu',
-            'Cai' => 'Cai',
-            'Trai' => 'Trai'
-        );
+        return self::getUnitListForSelect();
     }
 
 
@@ -1225,21 +1216,21 @@ class Utility extends AbstractActionController
     static function getPaymentCateInfo($id){
         $doctrine = self::$servicelocator->get('doctrine');
         $customerModel = new paymentCategoryModel($doctrine);
-        $result  = $customerModel->findOneBy(array(
-            'id'=>$id
-        ));
+       $result  = $customerModel->findOneBy(array(
+           'id'=>$id
+       ));
         if($result)
-            return $result;
+        return $result;
         return new PaymentCategory();
     }
 
     static function messageErrorArray($message){
 
         $messageArray = array(
-            'Please insert order detail !',
-            'Please insert order detail !',
-            'Please insert order detail !',
-            'Please insert order detail !',
+           'Please insert order detail !',
+           'Please insert order detail !',
+           'Please insert order detail !',
+           'Please insert order detail !',
         );
         if(isset($messageArray[$message])){
             return $messageArray[$message];
@@ -1480,7 +1471,64 @@ class Utility extends AbstractActionController
         }
         return $return;
     }
+    public static function getUserForPieChart($data,$column='userId',$value='total_real_cost'){
 
+        $jsonData = array();
+        $jsonData[] = array('name'=>'cost');
+        foreach($data as $item){
+            $subItem =  array();
+            $subItem[$item[$column]] =  floatval($item[$value]);
+            $jsonData[] =$subItem;
+        }
+        return $jsonData;
+    }
+
+    static function connect(){
+        $service_locator_str = 'doctrine.connection.orm_default';
+        $sm = self::getSM();
+        $service = $sm->get($service_locator_str);
+        $params = $service->getParams();
+        $host = $params['host'];
+        $user = $params['user'];
+        $pass = $params['password'];
+        $name = $params['dbname'];
+        $link = mysql_connect($host,$user,$pass);
+        mysql_select_db($name,$link);
+        return $link;
+    }
+
+    static function rsReportPerDay($limit = 30){
+        $connect = self::connect();
+        $stringSql = " SELECT DATE(FROM_UNIXTIME(`create_date`)) AS ForDate,
+        SUM(`total_real_cost`) AS Cost
+        FROM   `orders`
+        GROUP BY DATE(FROM_UNIXTIME(`create_date`))
+        ORDER BY ForDate DESC LIMIT 0,$limit
+        ";
+        $rs = array();
+        $reportDayInMonth = mysql_query($stringSql);
+        while($rows = mysql_fetch_array($reportDayInMonth)){
+            $rs['day'][] = $rows['ForDate']  ;
+            $rs['cost'][] =   $rows['Cost'];
+        }
+       return  ($rs);
+
+    }
+
+    public static function getUnitListForSelect(){
+        $units = self::getUnitList();
+        $returnArray = array();
+        foreach($units as $unit){
+            $returnArray[$unit->getId()] = $unit->getName();
+        }
+        return $returnArray;
+    }
+    public static function getUnitList(){
+        $doctrineService = self::$servicelocator->get('doctrine');
+        $unitModel = new unitModel($doctrineService);
+        $units = $unitModel->findAll();
+        return $units;
+    }
 }
 
 

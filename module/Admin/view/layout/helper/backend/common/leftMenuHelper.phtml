@@ -64,7 +64,7 @@
         <li class=''>
             <a href='/admin/menustoremain/managerinout'>
                 <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('Manager Import/Export') ?></span>
+                <span><?php echo $translator->translate('Manager') ?></span>
             </a>
         </li>
 
@@ -106,7 +106,7 @@
         <li class=''>
             <a href='/admin/menustore/managerinout'>
                 <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('Manager Inventory Import/Export') ?></span>
+                <span><?php echo $translator->translate('Manager Inventory') ?></span>
             </a>
         </li>
 
@@ -140,20 +140,20 @@
 <li>
     <a class='dropdown-collapse ' href='/admin/supplieritem'>
         <i class='icon-supplier'></i>
-        <span><?php echo $translator->translate('Supplier Item') ?></span>
+        <span><?php echo $translator->translate('Raw Material') ?></span>
         <i class='icon-angle-down angle-down'></i>
     </a>
     <ul class='nav nav-stacked'>
         <li class=''>
             <a href='/admin/supplieritem'>
                 <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('Supplier Item') ?></span>
+                <span><?php echo $translator->translate('Raw Material') ?></span>
             </a>
         </li>
         <li class=''>
             <a href='/admin/supplieritem/add'>
                 <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('Add Supplier Item') ?></span>
+                <span><?php echo $translator->translate('Add Raw Material') ?></span>
             </a>
         </li>
     </ul>
@@ -411,11 +411,31 @@
 </li>
 
 <li>
-    <a class=' ' href='/admin/config'>
+    <a class='dropdown-collapse' href='/admin/config'>
         <i class='icon-config'></i>
         <span><?php echo $translator->translate('Config') ?></span>
         <i class='icon-angle-down angle-down'></i>
     </a>
+    <ul class='nav nav-stacked'>
+        <li class=''>
+            <a href='/admin/config'>
+                <i class='icon-caret-right'></i>
+                <span><?php echo $translator->translate('Config') ?></span>
+            </a>
+        </li>
+        <li class=''>
+            <a href='/admin/config/unitlist'>
+                <i class='icon-caret-right'></i>
+                <span><?php echo $translator->translate('Item Unit') ?></span>
+            </a>
+        </li>
+        <li class=''>
+            <a href='/admin/config/additemunit'>
+                <i class='icon-caret-right'></i>
+                <span><?php echo $translator->translate('Add New Item Unit') ?></span>
+            </a>
+        </li>
+    </ul>
 </li>
 
 <li>

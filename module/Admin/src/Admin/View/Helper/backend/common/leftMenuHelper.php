@@ -17,6 +17,8 @@ use Zend\View\Helper\AbstractHelper;
 class leftMenuHelper extends AbstractHelper {
     public function __invoke($text = '')
     {
+
+
         echo $this->getView()->render('layout/helper/backend/common/leftMenuHelper.phtml');
     }
 }

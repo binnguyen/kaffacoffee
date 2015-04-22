@@ -61,7 +61,7 @@ class LoginController extends AbstractActionController
             $user = Utility::checkLogin($this);
             if($user!=null){
                 Utility::insertHistory('login');
-                $this->redirect()->toRoute('admin/child',array('controller'=>'index'));
+                $this->redirect()->toRoute('admin/child',array('controller'=>'dashboard'));
             }
 
             else
@@ -75,7 +75,7 @@ class LoginController extends AbstractActionController
         Utility::insertHistory('logout');
         $auth = new AuthenticationService();
         $auth->clearIdentity();
-        $this->redirect()->toRoute('frontend/child',array('controller'=>'login'));
+        $this->redirect()->toRoute('admin/child',array('controller'=>'login'));
     }
 
 }
