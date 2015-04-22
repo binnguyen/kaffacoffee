@@ -18,7 +18,7 @@ return array(
             'Admin\Controller\Coupon' => 'Admin\Controller\CouponController',
             'Admin\Controller\Combo' => 'Admin\Controller\ComboController',
             'Admin\Controller\Report' => 'Admin\Controller\ReportController',
-            'Admin\Controller\ReportNew' => 'Admin\Controller\ReportNewController',
+            'Admin\Controller\dashboard' => 'Admin\Controller\DashboardController',
             'Admin\Controller\Surtax' => 'Admin\Controller\SurtaxController',
             'Admin\Controller\Config' => 'Admin\Controller\ConfigController',
             'Admin\Controller\Menustore' => 'Admin\Controller\MenustoreController',
@@ -44,7 +44,7 @@ return array(
                     'route'    => '/admin',
                     'defaults' => array(
                         '__NAMESPACE__' => 'Admin\Controller',
-                        'controller'    => 'index',
+                        'controller'    => 'dashboard',
                         'action'        => 'index',
                     ),
                 ),
