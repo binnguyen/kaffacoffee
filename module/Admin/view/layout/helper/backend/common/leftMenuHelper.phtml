@@ -1,280 +1,285 @@
 <?php $translator = \Velacolib\Utility\Utility::translate(); ?>
 <ul class='nav nav-stacked'>
-<li class=''>
-    <a class='dropdown-collapse' href='/admin'>
-        <i class='icon-menu'></i>
-        <span><?php echo $translator->translate('Menu') ?></span>
-        <i class='icon-angle-down angle-down'></i>
-    </a>
-    <ul class='nav nav-stacked'>
-        <li class=''>
-            <a href='/admin'>
-                <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('All Menu') ?></span>
-            </a>
-        </li>
-        <li class=''>
-            <a href='/admin/index/add'>
-                <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('Add New Menu') ?></span>
-            </a>
-        </li>
-        <li class=''>
-            <a href='/admin/combo'>
-                <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('All Combo') ?></span>
-            </a>
-        </li>
-        <li class=''>
-            <a href='/admin/category'>
-                <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('Category') ?> </span>
-            </a>
-        </li>
-        <li class=''>
-            <a href='/admin/category/add'>
-                <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('Add New Category') ?> </span>
-            </a>
-        </li>
+    <li>
+        <a class=' ' href='/admin/dashboard'>
+            <i class='icon-config'></i>
+            <span><?php echo $translator->translate('Dashboard') ?></span>
+            <i class='icon-angle-down angle-down'></i>
+        </a>
+    </li>
+    <li class=''>
+        <a class='dropdown-collapse' href='/admin/index'>
+            <i class='icon-menu'></i>
+            <span><?php echo $translator->translate('Menu') ?></span>
+            <i class='icon-angle-down angle-down'></i>
+        </a>
+        <ul class='nav nav-stacked'>
+            <li class=''>
+                <a href='/admin/index'>
+                    <i class='icon-caret-right'></i>
+                    <span><?php echo $translator->translate('All Menu') ?></span>
+                </a>
+            </li>
+            <li class=''>
+                <a href='/admin/index/add'>
+                    <i class='icon-caret-right'></i>
+                    <span><?php echo $translator->translate('Add New Menu') ?></span>
+                </a>
+            </li>
+            <li class=''>
+                <a href='/admin/combo'>
+                    <i class='icon-caret-right'></i>
+                    <span><?php echo $translator->translate('All Combo') ?></span>
+                </a>
+            </li>
+            <li class=''>
+                <a href='/admin/category'>
+                    <i class='icon-caret-right'></i>
+                    <span><?php echo $translator->translate('Category') ?> </span>
+                </a>
+            </li>
+            <li class=''>
+                <a href='/admin/category/add'>
+                    <i class='icon-caret-right'></i>
+                    <span><?php echo $translator->translate('Add New Category') ?> </span>
+                </a>
+            </li>
 
 
-    </ul>
-</li>
+        </ul>
+    </li>
 
-<li class=''>
-    <a class='dropdown-collapse' href='/admin'>
-        <i class='icon-menustore'></i>
-        <span><?php echo $translator->translate('Warehouse') ?></span>
-        <i class='icon-angle-down angle-down'></i>
-    </a>
-    <ul class='nav nav-stacked'>
-        <li class=''>
-            <a href='/admin/menustoremain'>
-                <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('Warehouse') ?></span>
-            </a>
-        </li>
-        <li class=''>
-            <a href='/admin/menustoremain/add'>
-                <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('Add Warehouse') ?></span>
-            </a>
-        </li>
-        <li class=''>
-            <a href='/admin/menustoremain/managerinout'>
-                <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('Manager Import/Export') ?></span>
-            </a>
-        </li>
-
-
+    <li class=''>
+        <a class='dropdown-collapse' href='/admin'>
+            <i class='icon-menustore'></i>
+            <span><?php echo $translator->translate('Warehouse') ?></span>
+            <i class='icon-angle-down angle-down'></i>
+        </a>
+        <ul class='nav nav-stacked'>
+            <li class=''>
+                <a href='/admin/menustoremain'>
+                    <i class='icon-caret-right'></i>
+                    <span><?php echo $translator->translate('Warehouse') ?></span>
+                </a>
+            </li>
+            <li class=''>
+                <a href='/admin/menustoremain/add'>
+                    <i class='icon-caret-right'></i>
+                    <span><?php echo $translator->translate('Add Warehouse') ?></span>
+                </a>
+            </li>
+            <li class=''>
+                <a href='/admin/menustoremain/managerinout'>
+                    <i class='icon-caret-right'></i>
+                    <span><?php echo $translator->translate('Manager Import/Export') ?></span>
+                </a>
+            </li>
 
 
-    </ul>
-</li>
+        </ul>
+    </li>
 
 
-<li class=''>
-    <a class='dropdown-collapse' href='/admin'>
-        <i class='icon-menustore'></i>
-        <span><?php echo $translator->translate('Inventory') ?></span>
-        <i class='icon-angle-down angle-down'></i>
-    </a>
-    <ul class='nav nav-stacked'>
-        <li class=''>
-            <a href='/admin/menustore'>
-                <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('Inventory') ?></span>
-            </a>
-        </li>
+    <li class=''>
+        <a class='dropdown-collapse' href='/admin'>
+            <i class='icon-menustore'></i>
+            <span><?php echo $translator->translate('Inventory') ?></span>
+            <i class='icon-angle-down angle-down'></i>
+        </a>
+        <ul class='nav nav-stacked'>
+            <li class=''>
+                <a href='/admin/menustore'>
+                    <i class='icon-caret-right'></i>
+                    <span><?php echo $translator->translate('Inventory') ?></span>
+                </a>
+            </li>
 
-        <li class=''>
-            <a href='/admin/menustore/add'>
-                <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('Add Inventory') ?></span>
-            </a>
-        </li>
+            <li class=''>
+                <a href='/admin/menustore/add'>
+                    <i class='icon-caret-right'></i>
+                    <span><?php echo $translator->translate('Add Inventory') ?></span>
+                </a>
+            </li>
 
-        <li class=''>
-            <a href='/admin/menustore/addmulti'>
-                <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('Add Multi Inventory') ?></span>
-            </a>
-        </li>
+            <li class=''>
+                <a href='/admin/menustore/addmulti'>
+                    <i class='icon-caret-right'></i>
+                    <span><?php echo $translator->translate('Add Multi Inventory') ?></span>
+                </a>
+            </li>
 
-        <li class=''>
-            <a href='/admin/menustore/managerinout'>
-                <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('Manager Inventory Import/Export') ?></span>
-            </a>
-        </li>
-
-
-    </ul>
-</li>
+            <li class=''>
+                <a href='/admin/menustore/managerinout'>
+                    <i class='icon-caret-right'></i>
+                    <span><?php echo $translator->translate('Manager Inventory Import/Export') ?></span>
+                </a>
+            </li>
 
 
-<li class=''>
-    <a class='dropdown-collapse' href='/admin'>
-        <i class='icon-supplier'></i>
-        <span><?php echo $translator->translate('Supplier') ?></span>
-        <i class='icon-angle-down angle-down'></i>
-    </a>
-    <ul class='nav nav-stacked'>
-        <li class=''>
-            <a href='/admin/supplier'>
-                <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('Supplier') ?></span>
-            </a>
-        </li>
-        <li class=''>
-            <a href='/admin/supplier/add'>
-                <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('Add Supplier') ?></span>
-            </a>
-        </li>
-    </ul>
-</li>
-
-<li>
-    <a class='dropdown-collapse ' href='/admin/supplieritem'>
-        <i class='icon-supplier'></i>
-        <span><?php echo $translator->translate('Supplier Item') ?></span>
-        <i class='icon-angle-down angle-down'></i>
-    </a>
-    <ul class='nav nav-stacked'>
-        <li class=''>
-            <a href='/admin/supplieritem'>
-                <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('Supplier Item') ?></span>
-            </a>
-        </li>
-        <li class=''>
-            <a href='/admin/supplieritem/add'>
-                <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('Add Supplier Item') ?></span>
-            </a>
-        </li>
-    </ul>
-</li>
-
-<li>
-    <a class='dropdown-collapse ' href='/admin/table'>
-        <i class='icon-tables'></i>
-        <span><?php echo $translator->translate('Table') ?></span>
-        <i class='icon-angle-down angle-down'></i>
-    </a>
-    <ul class='nav nav-stacked'>
-        <li class=''>
-            <a href='/admin/table'>
-                <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('Table') ?></span>
-            </a>
-        </li>
-        <li class=''>
-            <a href='/admin/table/add'>
-                <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('Add New Table') ?></span>
-            </a>
-        </li>
-    </ul>
-</li>
+        </ul>
+    </li>
 
 
-<!--<li class=''>-->
-<!--    <a href='buttons_and_icons.html'>-->
-<!--        <i class='icon-star'></i>-->
-<!--        <span>Buttons & Icons</span>-->
-<!--    </a>-->
-<!--</li>-->
+    <li class=''>
+        <a class='dropdown-collapse' href='/admin'>
+            <i class='icon-supplier'></i>
+            <span><?php echo $translator->translate('Supplier') ?></span>
+            <i class='icon-angle-down angle-down'></i>
+        </a>
+        <ul class='nav nav-stacked'>
+            <li class=''>
+                <a href='/admin/supplier'>
+                    <i class='icon-caret-right'></i>
+                    <span><?php echo $translator->translate('Supplier') ?></span>
+                </a>
+            </li>
+            <li class=''>
+                <a href='/admin/supplier/add'>
+                    <i class='icon-caret-right'></i>
+                    <span><?php echo $translator->translate('Add Supplier') ?></span>
+                </a>
+            </li>
+        </ul>
+    </li>
+
+    <li>
+        <a class='dropdown-collapse ' href='/admin/supplieritem'>
+            <i class='icon-supplier'></i>
+            <span><?php echo $translator->translate('Supplier Item') ?></span>
+            <i class='icon-angle-down angle-down'></i>
+        </a>
+        <ul class='nav nav-stacked'>
+            <li class=''>
+                <a href='/admin/supplieritem'>
+                    <i class='icon-caret-right'></i>
+                    <span><?php echo $translator->translate('Supplier Item') ?></span>
+                </a>
+            </li>
+            <li class=''>
+                <a href='/admin/supplieritem/add'>
+                    <i class='icon-caret-right'></i>
+                    <span><?php echo $translator->translate('Add Supplier Item') ?></span>
+                </a>
+            </li>
+        </ul>
+    </li>
+
+    <li>
+        <a class='dropdown-collapse ' href='/admin/table'>
+            <i class='icon-tables'></i>
+            <span><?php echo $translator->translate('Table') ?></span>
+            <i class='icon-angle-down angle-down'></i>
+        </a>
+        <ul class='nav nav-stacked'>
+            <li class=''>
+                <a href='/admin/table'>
+                    <i class='icon-caret-right'></i>
+                    <span><?php echo $translator->translate('Table') ?></span>
+                </a>
+            </li>
+            <li class=''>
+                <a href='/admin/table/add'>
+                    <i class='icon-caret-right'></i>
+                    <span><?php echo $translator->translate('Add New Table') ?></span>
+                </a>
+            </li>
+        </ul>
+    </li>
 
 
-<li>
-    <a class='dropdown-collapse ' href='/admin/config'>
-        <i class='icon-order'></i>
-        <span><?php echo $translator->translate('Order') ?></span>
-        <i class='icon-angle-down angle-down'></i>
-    </a>
-    <ul class='nav nav-stacked'>
-        <li class=''>
-            <a href='/admin/order'>
-                <i class='icon-bar-chart'></i>
-                <span><?php echo $translator->translate('Order') ?></span>
-            </a>
-        </li>
-        <li class=''>
-            <a href='/admin/order/add'>
-                <i class='icon-bar-chart'></i>
-                <span><?php echo $translator->translate('New Order') ?></span>
-            </a>
-        </li>
-    </ul>
-</li>
-<li>
-    <a class='dropdown-collapse ' href='/admin/users'>
-        <i class='icon-users'></i>
-        <span><?php echo $translator->translate('User') ?></span>
-        <i class='icon-angle-down angle-down'></i>
-    </a>
-    <ul class='nav nav-stacked'>
-        <li class=''>
-            <a href='/admin/users'>
-                <i class='icon-bar-chart'></i>
-                <span><?php echo $translator->translate('User') ?></span>
-            </a>
-        </li>
-        <li class=''>
-            <a href='/admin/users/add'>
-                <i class='icon-bar-chart'></i>
-                <span><?php echo $translator->translate('Add New User') ?></span>
-            </a>
-        </li>
-    </ul>
-</li>
-<li>
-    <a class='dropdown-collapse ' href='/admin/coupon'>
-        <i class='icon-coupon'></i>
-        <span><?php echo $translator->translate('Coupon') ?></span>
-        <i class='icon-angle-down angle-down'></i>
-    </a>
-    <ul class='nav nav-stacked'>
-        <li class=''>
-            <a href='/admin/coupon'>
-                <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('All Coupon') ?></span>
-            </a>
-        </li>
-        <li class=''>
-            <a href='/admin/coupon/add'>
-                <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('Add New Coupon') ?></span>
-            </a>
-        </li>
-    </ul>
-</li>
-<!-- customer -->
-<li>
-    <a class='dropdown-collapse ' href='/admin/customer'>
-        <i class='icon-customer'></i>
-        <span><?php echo $translator->translate('Customer') ?></span>
-        <i class='icon-angle-down angle-down'></i>
-    </a>
-    <ul class='nav nav-stacked'>
-        <li class=''>
-            <a href='/admin/customer'>
-                <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('All Customer') ?></span>
-            </a>
-        </li>
-        <li class=''>
-            <a href='/admin/customer/add'>
-                <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('Add New Customer') ?></span>
-            </a>
-        </li>
-    </ul>
-</li>
+    <!--<li class=''>-->
+    <!--    <a href='buttons_and_icons.html'>-->
+    <!--        <i class='icon-star'></i>-->
+    <!--        <span>Buttons & Icons</span>-->
+    <!--    </a>-->
+    <!--</li>-->
+
+
+    <li>
+        <a class='dropdown-collapse ' href='/admin/config'>
+            <i class='icon-order'></i>
+            <span><?php echo $translator->translate('Order') ?></span>
+            <i class='icon-angle-down angle-down'></i>
+        </a>
+        <ul class='nav nav-stacked'>
+            <li class=''>
+                <a href='/admin/order'>
+                    <i class='icon-bar-chart'></i>
+                    <span><?php echo $translator->translate('Order') ?></span>
+                </a>
+            </li>
+            <li class=''>
+                <a href='/admin/order/add'>
+                    <i class='icon-bar-chart'></i>
+                    <span><?php echo $translator->translate('New Order') ?></span>
+                </a>
+            </li>
+        </ul>
+    </li>
+    <li>
+        <a class='dropdown-collapse ' href='/admin/users'>
+            <i class='icon-users'></i>
+            <span><?php echo $translator->translate('User') ?></span>
+            <i class='icon-angle-down angle-down'></i>
+        </a>
+        <ul class='nav nav-stacked'>
+            <li class=''>
+                <a href='/admin/users'>
+                    <i class='icon-bar-chart'></i>
+                    <span><?php echo $translator->translate('User') ?></span>
+                </a>
+            </li>
+            <li class=''>
+                <a href='/admin/users/add'>
+                    <i class='icon-bar-chart'></i>
+                    <span><?php echo $translator->translate('Add New User') ?></span>
+                </a>
+            </li>
+        </ul>
+    </li>
+    <li>
+        <a class='dropdown-collapse ' href='/admin/coupon'>
+            <i class='icon-coupon'></i>
+            <span><?php echo $translator->translate('Coupon') ?></span>
+            <i class='icon-angle-down angle-down'></i>
+        </a>
+        <ul class='nav nav-stacked'>
+            <li class=''>
+                <a href='/admin/coupon'>
+                    <i class='icon-caret-right'></i>
+                    <span><?php echo $translator->translate('All Coupon') ?></span>
+                </a>
+            </li>
+            <li class=''>
+                <a href='/admin/coupon/add'>
+                    <i class='icon-caret-right'></i>
+                    <span><?php echo $translator->translate('Add New Coupon') ?></span>
+                </a>
+            </li>
+        </ul>
+    </li>
+    <!-- customer -->
+    <li>
+        <a class='dropdown-collapse ' href='/admin/customer'>
+            <i class='icon-customer'></i>
+            <span><?php echo $translator->translate('Customer') ?></span>
+            <i class='icon-angle-down angle-down'></i>
+        </a>
+        <ul class='nav nav-stacked'>
+            <li class=''>
+                <a href='/admin/customer'>
+                    <i class='icon-caret-right'></i>
+                    <span><?php echo $translator->translate('All Customer') ?></span>
+                </a>
+            </li>
+            <li class=''>
+                <a href='/admin/customer/add'>
+                    <i class='icon-caret-right'></i>
+                    <span><?php echo $translator->translate('Add New Customer') ?></span>
+                </a>
+            </li>
+        </ul>
+    </li>
 
 
     <li>
@@ -329,123 +334,123 @@
             </li>
         </ul>
     </li>
-<li>
-    <a class='dropdown-collapse ' href='/admin/surtax'>
-        <i class='icon-surtax'></i>
-        <span><?php echo $translator->translate('Surtax') ?></span>
-        <i class='icon-angle-down angle-down'></i>
-    </a>
-    <ul class='nav nav-stacked'>
-        <li class=''>
-            <a href='/admin/surtax'>
-                <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('All Surtax') ?></span>
-            </a>
-        </li>
-        <li class=''>
-            <a href='/admin/surtax/add'>
-                <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('Add New Surtax') ?></span>
-            </a>
-        </li>
-    </ul>
-</li>
+    <li>
+        <a class='dropdown-collapse ' href='/admin/surtax'>
+            <i class='icon-surtax'></i>
+            <span><?php echo $translator->translate('Surtax') ?></span>
+            <i class='icon-angle-down angle-down'></i>
+        </a>
+        <ul class='nav nav-stacked'>
+            <li class=''>
+                <a href='/admin/surtax'>
+                    <i class='icon-caret-right'></i>
+                    <span><?php echo $translator->translate('All Surtax') ?></span>
+                </a>
+            </li>
+            <li class=''>
+                <a href='/admin/surtax/add'>
+                    <i class='icon-caret-right'></i>
+                    <span><?php echo $translator->translate('Add New Surtax') ?></span>
+                </a>
+            </li>
+        </ul>
+    </li>
 
-<li>
-    <a class='dropdown-collapse ' href='/admin/payment'>
-        <i class='icon-accrued'></i>
-        <span><?php echo $translator->translate('Accrued') ?></span>
-        <i class='icon-angle-down angle-down'></i>
-    </a>
-    <ul class='nav nav-stacked'>
-        <li class=''>
-            <a href='/admin/payment'>
-                <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('All Accrued') ?></span>
-            </a>
-        </li>
-        <li class=''>
-            <a href='/admin/payment/add'>
-                <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('Add New Accrued') ?></span>
-            </a>
-        </li>
+    <li>
+        <a class='dropdown-collapse ' href='/admin/payment'>
+            <i class='icon-accrued'></i>
+            <span><?php echo $translator->translate('Accrued') ?></span>
+            <i class='icon-angle-down angle-down'></i>
+        </a>
+        <ul class='nav nav-stacked'>
+            <li class=''>
+                <a href='/admin/payment'>
+                    <i class='icon-caret-right'></i>
+                    <span><?php echo $translator->translate('All Accrued') ?></span>
+                </a>
+            </li>
+            <li class=''>
+                <a href='/admin/payment/add'>
+                    <i class='icon-caret-right'></i>
+                    <span><?php echo $translator->translate('Add New Accrued') ?></span>
+                </a>
+            </li>
 
-        <li class=''>
-            <a href='/admin/payment-category'>
-                <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('Accrued Category') ?></span>
-            </a>
-        </li>
+            <li class=''>
+                <a href='/admin/payment-category'>
+                    <i class='icon-caret-right'></i>
+                    <span><?php echo $translator->translate('Accrued Category') ?></span>
+                </a>
+            </li>
 
-        <li class=''>
-            <a href='/admin/payment-category/add'>
-                <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('Add Accrued Category') ?></span>
-            </a>
-        </li>
-    </ul>
-</li>
+            <li class=''>
+                <a href='/admin/payment-category/add'>
+                    <i class='icon-caret-right'></i>
+                    <span><?php echo $translator->translate('Add Accrued Category') ?></span>
+                </a>
+            </li>
+        </ul>
+    </li>
 
 
-<li>
-    <a class='dropdown-collapse ' href='/admin/property'>
-        <i class='icon-property'></i>
-        <span><?php echo $translator->translate('Property') ?></span>
-        <i class='icon-angle-down angle-down'></i>
-    </a>
-    <ul class='nav nav-stacked'>
-        <li class=''>
-            <a href='/admin/property'>
-                <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('Property') ?></span>
-            </a>
-        </li>
-        <li class=''>
-            <a href='/admin/property/add'>
-                <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('Add New Property') ?></span>
-            </a>
-        </li>
-    </ul>
-</li>
+    <li>
+        <a class='dropdown-collapse ' href='/admin/property'>
+            <i class='icon-property'></i>
+            <span><?php echo $translator->translate('Property') ?></span>
+            <i class='icon-angle-down angle-down'></i>
+        </a>
+        <ul class='nav nav-stacked'>
+            <li class=''>
+                <a href='/admin/property'>
+                    <i class='icon-caret-right'></i>
+                    <span><?php echo $translator->translate('Property') ?></span>
+                </a>
+            </li>
+            <li class=''>
+                <a href='/admin/property/add'>
+                    <i class='icon-caret-right'></i>
+                    <span><?php echo $translator->translate('Add New Property') ?></span>
+                </a>
+            </li>
+        </ul>
+    </li>
 
-<li>
-    <a class=' ' href='/admin/config'>
-        <i class='icon-config'></i>
-        <span><?php echo $translator->translate('Config') ?></span>
-        <i class='icon-angle-down angle-down'></i>
-    </a>
-</li>
+    <li>
+        <a class=' ' href='/admin/config'>
+            <i class='icon-config'></i>
+            <span><?php echo $translator->translate('Config') ?></span>
+            <i class='icon-angle-down angle-down'></i>
+        </a>
+    </li>
 
-<li>
-    <a class='dropdown-collapse ' href='/admin/tracking-tore'>
-        <i class='icon-tracking'></i>
-        <span><?php echo $translator->translate('Tracking') ?></span>
-        <i class='icon-angle-down angle-down'></i>
-    </a>
-    <ul class='nav nav-stacked'>
-        <li class=''>
-            <a href='/admin/tracking-tore'>
-                <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('Tracking') ?></span>
-            </a>
-        </li>
-        <li class=''>
-            <a href='/admin/tracking-tore/add'>
-                <i class='icon-caret-right'></i>
-                <span><?php echo $translator->translate('Add New Tracking') ?></span>
-            </a>
-        </li>
-    </ul>
-</li>
+    <li>
+        <a class='dropdown-collapse ' href='/admin/tracking-tore'>
+            <i class='icon-tracking'></i>
+            <span><?php echo $translator->translate('Tracking') ?></span>
+            <i class='icon-angle-down angle-down'></i>
+        </a>
+        <ul class='nav nav-stacked'>
+            <li class=''>
+                <a href='/admin/tracking-tore'>
+                    <i class='icon-caret-right'></i>
+                    <span><?php echo $translator->translate('Tracking') ?></span>
+                </a>
+            </li>
+            <li class=''>
+                <a href='/admin/tracking-tore/add'>
+                    <i class='icon-caret-right'></i>
+                    <span><?php echo $translator->translate('Add New Tracking') ?></span>
+                </a>
+            </li>
+        </ul>
+    </li>
 
-<li>
-    <a class=' ' href='/admin/history'>
-        <i class='icon-history'></i>
-        <span><?php echo $translator->translate('History') ?></span>
-        <i class='icon-angle-down angle-down'></i>
-    </a>
-</li>
+    <li>
+        <a class=' ' href='/admin/history'>
+            <i class='icon-history'></i>
+            <span><?php echo $translator->translate('History') ?></span>
+            <i class='icon-angle-down angle-down'></i>
+        </a>
+    </li>
 
 </ul>
