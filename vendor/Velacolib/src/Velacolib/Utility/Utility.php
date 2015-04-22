@@ -1505,6 +1505,7 @@ class Utility extends AbstractActionController
         GROUP BY DATE(FROM_UNIXTIME(`create_date`))
         ORDER BY ForDate DESC LIMIT 0,$limit
         ";
+        $rs = array();
         $reportDayInMonth = mysql_query($stringSql);
         while($rows = mysql_fetch_array($reportDayInMonth)){
             $rs['day'][] = $rows['ForDate']  ;
@@ -1515,14 +1516,18 @@ class Utility extends AbstractActionController
     }
 
     public static function getUnitListForSelect(){
-        $doctrineService = self::$servicelocator->get('doctrine');
-        $unitModel = new unitModel($doctrineService);
-        $units = $unitModel->findAll();
+        $units = self::getUnitList();
         $returnArray = array();
         foreach($units as $unit){
             $returnArray[$unit->getId()] = $unit->getName();
         }
-        $returnArray;
+        return $returnArray;
+    }
+    public static function getUnitList(){
+        $doctrineService = self::$servicelocator->get('doctrine');
+        $unitModel = new unitModel($doctrineService);
+        $units = $unitModel->findAll();
+        return $units;
     }
 }
 

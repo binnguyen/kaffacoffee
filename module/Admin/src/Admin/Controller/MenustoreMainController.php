@@ -80,11 +80,11 @@ class MenustoreMainController extends    AdminGlobalController
             ),
             array('title' =>'Unit', 'db' => 'unit','dt' => 6 ,'search'=>false, 'type' => 'text',
 
-                'formatter'=>
-                    function($d,$row){
-                        $unitList = Utility::getUnitListForSelect();
-                        return $unitList[$d];
-                    }
+//                'formatter'=>
+//                    function($d,$row){
+//                        $unitList = Utility::getUnitListForSelect();
+//                        return $unitList[$d];
+//                    }
             ),
 
             array('title' =>'Supplier', 'db' => 'supplier','dt' => 7, 'search'=>true, 'type' => 'text' ),
