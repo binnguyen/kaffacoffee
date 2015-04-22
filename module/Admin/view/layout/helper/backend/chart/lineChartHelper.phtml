@@ -1,0 +1,64 @@
+<?php
+$config = \Velacolib\Utility\Utility::getConfig();
+if(!empty($data['day']) && !empty($data['cost'])){
+
+
+$day = array_reverse($data['day']);
+$cost = array_reverse($data['cost']);
+
+$jsonDay = str_replace(":",",",json_encode($day));
+$jsonDay = str_replace("{","[",$jsonDay);
+$jsonDay = str_replace("}","]",$jsonDay);
+
+$jsonCost = str_replace(":",",",json_encode($cost));
+$jsonCost = str_replace("{","[",$jsonCost);
+$jsonCost = str_replace("}","]",$jsonCost);
+$jsonCost = str_replace('"','',$jsonCost);
+
+
+?>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+
+<div id="container" style="width: 100%; height: 400px;"></div>
+<script>
+    $(function () {
+        $('#container').highcharts({
+            title: {
+                text: 'Daily Report Income',
+                x: -20 //center
+            },
+            subtitle: {
+                text: 'Source: Kaffa.vn',
+                x: -20
+            },
+            xAxis: {
+                categories: <?php echo $jsonDay ?>
+            },
+            yAxis: {
+                title: {
+                    text: '<?php echo $config['currency'] ?>'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                valueSuffix: '<?php echo $config['currency'] ?>'
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle',
+                borderWidth: 0
+            },
+            series: [{
+                name: 'Income',
+                data: <?php echo $jsonCost ?>
+            }]
+        });
+    });
+</script>
+<?php } ?>
