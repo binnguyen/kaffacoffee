@@ -1513,6 +1513,17 @@ class Utility extends AbstractActionController
        return  ($rs);
 
     }
+
+    public static function getUnitListForSelect(){
+        $doctrineService = self::$servicelocator->get('doctrine');
+        $unitModel = new unitModel($doctrineService);
+        $units = $unitModel->findAll();
+        $returnArray = array();
+        foreach($units as $unit){
+            $returnArray[$unit->getId()] = $unit->getName();
+        }
+        $returnArray;
+    }
 }
 
 
