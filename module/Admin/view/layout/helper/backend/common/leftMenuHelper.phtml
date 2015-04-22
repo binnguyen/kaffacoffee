@@ -1,14 +1,21 @@
 <?php $translator = \Velacolib\Utility\Utility::translate(); ?>
 <ul class='nav nav-stacked'>
+    <li>
+        <a class=' ' href='/admin/dashboard'>
+            <i class='icon-history'></i>
+            <span><?php echo $translator->translate('Dashboard') ?></span>
+            <i class='icon-angle-down angle-down'></i>
+        </a>
+    </li>
 <li class=''>
-    <a class='dropdown-collapse' href='/admin'>
+    <a class='dropdown-collapse' href='/admin/index'>
         <i class='icon-menu'></i>
         <span><?php echo $translator->translate('Menu') ?></span>
         <i class='icon-angle-down angle-down'></i>
     </a>
     <ul class='nav nav-stacked'>
         <li class=''>
-            <a href='/admin'>
+            <a href='/admin/index'>
                 <i class='icon-caret-right'></i>
                 <span><?php echo $translator->translate('All Menu') ?></span>
             </a>
