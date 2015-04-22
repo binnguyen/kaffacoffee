@@ -1063,6 +1063,28 @@ if ($data) {
 
     }
 
+    $(document).on('change','.select_discount',function(){
+
+        var classVal =    $(this).find('option:selected').attr('class');
+        var reuse =    $(this).find('option:selected').attr('data-reuse');
+
+        if( classVal == 'select-default' ){
+
+            $('.select_discount option').removeAttr('disabled');
+        }
+
+        if(reuse == 0){
+
+            $('.select_discount .'+classVal).attr('disabled', 'disabled');
+
+
+        }
+
+
+
+
+    });
+
 
 </script>
 <!--end table add order -->

@@ -39,8 +39,6 @@ use Admin\Model\supplyItemModel;
 use Admin\Model\surTaxModel;
 use Admin\Model\tableModel;
 use Admin\Model\transactionModel;
-use Admin\Model\unitConvertModel;
-use Admin\Model\unitModel;
 use Admin\Model\userHistoryModel;
 use Admin\Model\userModel;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -425,6 +423,7 @@ class Utility extends AbstractActionController
 
     static function  insertOrderDetail($data, $orderID)
     {
+
         $table = self::$servicelocator->get('doctrine');
         $table = new orderdetailModel($table);
         $orderDetail = new OrderDetail();
@@ -919,7 +918,17 @@ class Utility extends AbstractActionController
 
     public static function getUnitArray()
     {
-        return self::getUnitListForSelect();
+        return array(
+            'KG' => 'Kilograms',
+            'G' => 'Grams',
+            'MG' => 'Milligram',
+            'L' => 'Liter',
+            'ML' => 'Milliliter',
+            'Goi' => 'Goi',
+            'Hu' => 'Hu',
+            'Cai' => 'Cai',
+            'Trai' => 'Trai'
+        );
     }
 
 
@@ -1216,21 +1225,21 @@ class Utility extends AbstractActionController
     static function getPaymentCateInfo($id){
         $doctrine = self::$servicelocator->get('doctrine');
         $customerModel = new paymentCategoryModel($doctrine);
-       $result  = $customerModel->findOneBy(array(
-           'id'=>$id
-       ));
+        $result  = $customerModel->findOneBy(array(
+            'id'=>$id
+        ));
         if($result)
-        return $result;
+            return $result;
         return new PaymentCategory();
     }
 
     static function messageErrorArray($message){
 
         $messageArray = array(
-           'Please insert order detail !',
-           'Please insert order detail !',
-           'Please insert order detail !',
-           'Please insert order detail !',
+            'Please insert order detail !',
+            'Please insert order detail !',
+            'Please insert order detail !',
+            'Please insert order detail !',
         );
         if(isset($messageArray[$message])){
             return $messageArray[$message];
@@ -1471,6 +1480,7 @@ class Utility extends AbstractActionController
         }
         return $return;
     }
+
 }
 
 
