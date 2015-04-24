@@ -45,7 +45,7 @@ class reportModel {
             $data[$k]['OrderId'] = $menuInfo->getId();
             $data[$k]['menuName'] = $menuInfo->getName();
             $data[$k]['realCost'] = $data[$k]['realCost'];
-            $data[$k]['time'] = $val[0]->getTime();
+            $data[$k]['time'] = date('d-m-Y',$val[0]->getTime());
             $data[$k]['id'] = $k;
         }
         return $data;

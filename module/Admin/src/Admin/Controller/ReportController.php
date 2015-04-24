@@ -450,7 +450,7 @@ class ReportController extends AdminGlobalController
             $reports = $this->modelCategories->reportCategories($start, $end);
             $totalCost = 0;
             $totalQuantity = 0;
-            $reportTitle = 'Report by category in ' . date('d ,M Y', strtotime($start)) . ' to ' . date('d ,M Y', strtotime($end));
+            $reportTitle = 'Report by category in ' . date('d ,M Y', $start) . ' to ' . date('d ,M Y', $end);
             $column = array(
                 'category_id' => 'Category id',
                 'category_name' => 'Category name',
