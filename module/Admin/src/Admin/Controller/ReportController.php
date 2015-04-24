@@ -366,61 +366,7 @@ class ReportController extends AdminGlobalController
             )
         );
     }
-    public function addAction()
-    {
-        $request = $this->getRequest();
-        $id = $this->params()->fromRoute('id');
-        //insert
-        if ($id == '') {
-            if ($request->isPost()) {
-                $cat = new Categories();
-                $cat->setName($this->params()->fromPost('name'));
-                $catInserted = $this->modelCategories->insert($cat);
-            }
-            //insert new user
-            //$this->redirect()->toRoute('admin/child',array('controller'=>'category'));
-            return new ViewModel(array('title' => $this->translator->translate('Add new category')));
-        } else {
 
-            $cat = $this->modelCategories->findOneBy(array('id' => $id));
-            if ($request->isPost()) {
-                $idFormPost = $this->params()->fromPost('id');
-                $cat = $this->modelCategories->findOneBy(array('id' => $idFormPost));
-                $cat->setName($this->params()->fromPost('name'));
-                $this->modelCategories->edit($cat);
-            }
-            return new ViewModel(array(
-                'data' => $cat,
-                'title' => $this->translator->translate('Edit Category') . ': ' . $cat->getName()
-            ));
-        }
-    }
-    public function deleteAction()
-    {
-        //get user by id
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $id = $this->params()->fromPost('id');
-            $menu = $this->modelCategories->findOneBy(array('id' => $id));
-            $menu->setIsdelete(1);
-            $this->modelCategories->edit($menu);
-            //$this->model->delete(array('id'=>$id));
-            echo 1;
-        }
-        die;
-
-    }
-
-    public function editAction()
-    {
-        //get user by id
-        $id = $this->params()->fromRoute('id');
-        $user = $this->model->findOneBy(array('id' => $id));
-        $user->setFullName('tri 1234');
-        $this->model->edit($user);
-        //update user
-
-    }
 
     public function exportAction()
     {
@@ -458,12 +404,6 @@ class ReportController extends AdminGlobalController
     }
 
 
-    public function userReportAction()
-    {
-
-
-    }
-
     public function menuAction()
     {
 
@@ -493,11 +433,6 @@ class ReportController extends AdminGlobalController
 
     }
 
-    public function paymentAction()
-    {
-
-
-    }
 
     //start tri
     public function reportCategoriesAction()
@@ -510,8 +445,8 @@ class ReportController extends AdminGlobalController
             $data = $this->params()->fromPost();
 
             //format search day
-            $data['start'] == 0 ? $start = 0 : $start = date('Y-m-d', strtotime($data['start']));
-            $data['end'] == 0 ? $end = 0 : $end = date('Y-m-d', strtotime($data['end']));
+            $data['start'] == 0 ? $start = 0 : $start =strtotime($data['start']);
+            $data['end'] == 0 ? $end = 0 : $end =  strtotime($data['end']);
             $reports = $this->modelCategories->reportCategories($start, $end);
             $totalCost = 0;
             $totalQuantity = 0;
@@ -556,10 +491,10 @@ class ReportController extends AdminGlobalController
         if ($this->getRequest()->isPost()) {
             $data = $this->params()->fromPost();
             //format search day
-            $data['start'] == 0 ? $start = 0 : $start = date('Y-m-d', strtotime($data['start']));
-            $data['end'] == 0 ? $end = 0 : $end = date('Y-m-d', strtotime($data['end']));
+            $data['start'] == 0 ? $start = 0 : $start = strtotime($data['start']);
+            $data['end'] == 0 ? $end = 0 : $end = strtotime($data['end']);
             $reports = $this->modelOrderDetail->reportMenuByDateRange($start, $end);
-            $reportTitle = 'Report by menu in ' . $start . ' - ' . $end;
+            $reportTitle = 'Report by menu in ' . date("d-m-Y",$start) . ' - ' . date("d-m-Y",$end);
             $column = array(
                 'menu_id' => 'Menu id',
                 'name' => 'Name',
